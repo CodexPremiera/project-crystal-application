@@ -25,13 +25,13 @@ export const onAuthenticateUser = async () => {
     // Step 2: Check if user already exists in our database
     const userExist = await client.user.findUnique({
       where: {
-        clerkid: user.id, // Search by Clerk user ID
+        clerkId: user.id, // Search by Clerk user ID
       },
       include: {
         workspace: {
           where: {
             User: {
-              clerkid: user.id,
+              clerkId: user.id,
             },
           },
         },
@@ -40,6 +40,7 @@ export const onAuthenticateUser = async () => {
     
     // Step 3: If user exists, return their data
     if (userExist) {
+      console.log(userExist)
       return { status: 200, user: userExist }
     }
     
@@ -47,7 +48,7 @@ export const onAuthenticateUser = async () => {
     const newUser = await client.user.create({
       data: {
         // Basic user information from Clerk
-        clerkid: user.id,
+        clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
         firstname: user.firstName,
         lastname: user.lastName,
@@ -67,7 +68,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: 'PERSONAL',
+            type: 'INDIVIDUAL',
           },
         },
       },
@@ -76,7 +77,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           where: {
             User: {
-              clerkid: user.id,
+              clerkId: user.id,
             },
           },
         },
@@ -91,6 +92,7 @@ export const onAuthenticateUser = async () => {
     
     // Step 5: Return the newly created user data
     if (newUser) {
+      console.log(newUser);
       return { status: 201, user: newUser }
     }
     
