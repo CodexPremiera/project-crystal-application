@@ -19,11 +19,12 @@ import Sidebar from "@/components/global/sidebar";
  */
 
 type Props = {
-  params: { workspaceId: string } // Workspace ID from the URL parameter
+  params: Promise<{ workspaceId: string }> // Workspace ID from the URL parameter
   children: React.ReactNode // Child components to render
 }
 
-const Layout = async ({ params: { workspaceId }, children }: Props) => {
+const Layout = async ({ params, children }: Props) => {
+  const { workspaceId } = await params
   // Step 1: Authenticate user and get their data
   const auth = await onAuthenticateUser()
   
