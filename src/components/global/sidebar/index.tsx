@@ -26,7 +26,7 @@ function Sidebar({ activeWorkspaceId }: Props) {
   
   const {data, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces);
   
-  const {data: workspace} = data as WorkSpaceProps;
+  const {data: workspaces} = data as WorkSpaceProps;
   
   const onChangeActiveWorkspace = (value: string) => {
     router.push(`/dashboard/${value}`);
@@ -54,7 +54,7 @@ function Sidebar({ activeWorkspaceId }: Props) {
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
             <Separator />
-            {workspace.workspace.map((item) => (
+            {workspaces.workspace.map((item) => (
               <SelectItem
                 key={item.id}
                 value={item.id}
@@ -63,6 +63,18 @@ function Sidebar({ activeWorkspaceId }: Props) {
                 {item.name}
               </SelectItem>
             ))}
+            {workspaces.members.length > 0 &&
+              workspaces.members.map(
+                (workspace) =>
+                  workspace.Workspace && (
+                    <SelectItem
+                      value={workspace.Workspace.id}
+                      key={workspace.Workspace.id}
+                    >
+                      {workspace.Workspace.name}
+                    </SelectItem>
+                  )
+              )}
           </SelectGroup>
         </SelectContent>
       </Select>
