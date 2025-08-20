@@ -1,10 +1,8 @@
 import React from 'react'
-import { onAuthenticateUser } from '@/actions/user'
-import { verifyAccessToWorkspace } from '@/actions/workspace'
+import {getNotifications, onAuthenticateUser} from '@/actions/user'
+import { verifyAccessToWorkspace, getWorkspaceFolders, getAllUserVideos, getWorkSpaces } from '@/actions/workspace'
 import { redirect } from 'next/navigation'
-import {
-  QueryClient,
-} from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 
 /**
  * Dashboard Workspace Layout Component
@@ -42,7 +40,25 @@ const Layout = async ({ params: { workspaceId }, children }: Props) => {
   // Step 5: If workspace data is missing, don't render anything
   if (!hasAccess.data?.workspace) return null
   
-  // Step 6: User has access - render the workspace layout with children
+  const query = new QueryClient()
+  
+  await query.prefetchQuery({
+    queryKey:['workspace-folders'],
+    queryFn: () => getWorkspaceFolders(workspaceId),
+  })
+  await query.prefetchQuery({
+    queryKey:['user-videos'],
+    queryFn: () => getAllUserVideos(workspaceId),
+  })
+  await query.prefetchQuery({
+    queryKey:['user-workspaces'],
+    queryFn: () => getWorkSpaces(),
+  })
+  await query.prefetchQuery({
+    queryKey:['user-notifications'],
+    queryFn: () => getNotifications(),
+  })
+  
   return <div>{children}</div>
 }
 

@@ -4,67 +4,45 @@ import {currentUser} from "@clerk/nextjs/server";
 import {client} from "@/lib/prisma";
 
 /**
- * Authenticates and manages user data in the database
+ * Authenticates user and manages their database record
  * 
  * This function handles the complete user authentication flow:
- * 1. Checks if user is authenticated via Clerk
- * 2. Verifies if user exists in our database
- * 3. Creates new user record if they don't exist
- * 4. Sets up initial workspace, subscription, and studio data
+ * 1. Gets current authenticated user from Clerk
+ * 2. Checks if user already exists in our database
+ * 3. If user exists, returns their data with workspaces
+ * 4. If user doesn't exist, creates new user record with:
+ *    - Basic profile information from Clerk
+ *    - Default studio settings
+ * 5. Creates default subscription (FREE plan)
+ * 6. Creates personal workspace for the user
  * 
  * @returns Promise with status and user data or error information
  */
 export const onAuthenticateUser = async () => {
   try {
-    // Step 1: Get current authenticated user from Clerk
     const user = await currentUser()
-    if (!user) {
-      return {status: 403}; // User not authenticated
-    }
+    if (!user) return { status: 403 }
     
-    // Step 2: Check if user already exists in our database
+    // Check if user exists in database
     const userExist = await client.user.findUnique({
-      where: {
-        clerkId: user.id, // Search by Clerk user ID
-      },
+      where: { clerkId: user.id },
       include: {
-        workspace: {
-          where: {
-            User: {
-              clerkId: user.id,
-            },
-          },
-        },
+        workspace: { where: { User: { clerkId: user.id } } },
       },
     })
     
-    // Step 3: If user exists, return their data
-    if (userExist) {
-      console.log(userExist)
-      return { status: 200, user: userExist }
-    }
+    if (userExist) return { status: 200, user: userExist }
     
-    // Step 4: Create new user if they don't exist in our database
+    // Create new user with all associated data
     const newUser = await client.user.create({
       data: {
-        // Basic user information from Clerk
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
         firstname: user.firstName,
         lastname: user.lastName,
         image: user.imageUrl,
-        
-        // Create associated studio settings
-        studio: {
-          create: {},
-        },
-        
-        // Create subscription with default FREE plan
-        subscription: {
-          create: {},
-        },
-        
-        // Create default personal workspace for the user
+        studio: { create: {} },
+        subscription: { create: {} },
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
@@ -73,33 +51,45 @@ export const onAuthenticateUser = async () => {
         },
       },
       include: {
-        // Include workspace data for the created user
-        workspace: {
-          where: {
-            User: {
-              clerkId: user.id,
-            },
-          },
-        },
-        // Include subscription plan information
-        subscription: {
-          select: {
-            plan: true, // Only select the plan type
-          },
-        },
+        workspace: { where: { User: { clerkId: user.id } } },
+        subscription: { select: { plan: true } },
       },
     })
     
-    // Step 5: Return the newly created user data
-    if (newUser) {
-      console.log(newUser);
-      return { status: 201, user: newUser }
-    }
-    
-    // Fallback: User creation failed
-    return { status: 400, message: 'User creation failed' }
+    return newUser ? { status: 201, user: newUser } : { status: 400, message: 'User creation failed' }
   } catch (error: any) {
-    // Error handling: Return error message with 500 status
     return { status: 500, error: error.message }
+  }
+}
+
+/**
+ * Retrieves user notifications and notification count
+ * 
+ * This function fetches all notifications for the current user:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries database for user's notifications
+ * 3. Includes notification count for UI display
+ * 4. Returns notifications array or empty array if none found
+ * 
+ * @returns Promise with notifications data or empty array
+ */
+export const getNotifications = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const notifications = await client.user.findUnique({
+      where: { clerkId: user.id }, // Fixed field name
+      select: {
+        notification: true,
+        _count: { select: { notification: true } },
+      },
+    })
+    
+    return notifications && notifications.notification.length > 0
+      ? { status: 200, data: notifications }
+      : { status: 404, data: [] }
+  } catch (error) {
+    return { status: 400, data: [] }
   }
 }
