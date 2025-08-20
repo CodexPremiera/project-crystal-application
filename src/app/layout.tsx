@@ -8,6 +8,8 @@ import React from "react";
 
 const manrope = Manrope({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  style: ["normal"],
   variable: "--font-manrope",
 });
 
