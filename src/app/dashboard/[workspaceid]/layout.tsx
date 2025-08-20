@@ -2,7 +2,9 @@ import React from 'react'
 import {getNotifications, onAuthenticateUser} from '@/actions/user'
 import { verifyAccessToWorkspace, getWorkspaceFolders, getAllUserVideos, getWorkSpaces } from '@/actions/workspace'
 import { redirect } from 'next/navigation'
-import { QueryClient } from '@tanstack/react-query'
+import {HydrationBoundary, QueryClient} from '@tanstack/react-query'
+import {dehydrate} from "@tanstack/query-core";
+import Sidebar from "@/components/global/sidebar";
 
 /**
  * Dashboard Workspace Layout Component
@@ -59,7 +61,11 @@ const Layout = async ({ params: { workspaceId }, children }: Props) => {
     queryFn: () => getNotifications(),
   })
   
-  return <div>{children}</div>
+  return <HydrationBoundary state={dehydrate(query)}>
+    <div className="flex flex-screen h-screen">
+      <Sidebar actionWorkspaceId={workspaceId} />
+    </div>
+  </HydrationBoundary>
 }
 
 export default Layout;
