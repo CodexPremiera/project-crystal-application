@@ -62,11 +62,16 @@ const Layout = async ({ params, children }: Props) => {
     queryFn: () => getNotifications(),
   })
   
-  return <HydrationBoundary state={dehydrate(query)}>
-    <div className="flex flex-screen h-screen">
-      <Sidebar actionWorkspaceId={workspaceId} />
-    </div>
-  </HydrationBoundary>
+  return (
+    <HydrationBoundary state={dehydrate(query)}>
+      <div className="flex h-screen">
+        <Sidebar activeWorkspaceId={workspaceId} />
+        <main className="flex-1 overflow-hidden">
+          {children}
+        </main>
+      </div>
+    </HydrationBoundary>
+  );
 }
 
 export default Layout;
