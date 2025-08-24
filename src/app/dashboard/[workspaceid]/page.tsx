@@ -1,6 +1,7 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import React from 'react'
 import CreateWorkspace from "@/components/global/create-workspace";
+import Folders from "@/components/global/folders/folders";
 
 type Props = {
   params: { workspaceId: string }
@@ -50,6 +51,12 @@ export default function Page ({ params }: Props) {
             <CreateWorkspace />
           </div>
         </div>
+        
+        <section className="py-9">
+          <TabsContent value="videos">
+            <Folders workspaceId={params.workspaceId} />
+          </TabsContent>
+        </section>
       </Tabs>
     </div>
   )
