@@ -22,9 +22,6 @@ function Folders({ workspaceId }: Props) {
       </div>
       <section className={cn('flex items-center gap-4 overflow-x-auto w-full scrollbar-minimal pb-2')}>
         <Folder name="Folder Title"/>
-        <Folder name="Folder Title"/>
-        <Folder name="Folder Title"/>
-        <Folder name="Folder Title"/>
       </section>
     </div>
   )
