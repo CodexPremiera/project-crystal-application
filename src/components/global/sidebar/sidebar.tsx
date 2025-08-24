@@ -22,6 +22,7 @@ import Search from "@/components/global/search";
 import {MENU_ITEMS} from "@/constants/constants";
 import SidebarItem from "@/components/global/sidebar/sidebar-item";
 import {getNotifications} from "@/actions/user";
+import WorkspacePlaceholder from "@/components/global/sidebar/workspace-placeholder";
 
 type Props = {
   activeWorkspaceId: string;
@@ -114,6 +115,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           <Search workspaceId={activeWorkspaceId} />
         </Modal>
       )}
+      
       <p className="w-full text-[#9D9D9D] font-bold mt-4">Menu</p>
       <nav className="w-full">
         <ul>
@@ -132,6 +134,28 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
               }
             />
           ))}
+        </ul>
+      </nav>
+      
+      <Separator className="w-4/5" />
+      <p className="w-full text-[#9D9D9D] font-bold mt-4">Workspaces</p>
+      <nav className="w-full">
+        <ul className="h-[150px] overflow-auto overflow-x-hidden fade-layer scrollbar-minimal">
+          {workspace.workspace.length > 0 &&
+            workspace.workspace.map((item) => (
+              <SidebarItem
+                href={`/dashboard/${item.id}`}
+                selected={pathName === `/dashboard/${item.id}`}
+                title={item.name}
+                notifications={0}
+                key={item.name}
+                icon={
+                  <WorkspacePlaceholder>
+                    {item.name.charAt(0)}
+                  </WorkspacePlaceholder>
+                }
+              />
+            ))}
         </ul>
       </nav>
     </div>
