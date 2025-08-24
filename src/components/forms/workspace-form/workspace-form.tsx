@@ -1,6 +1,8 @@
 import { useCreateWorkspace } from '@/hooks/useCreateWorkspace'
 import React from 'react'
 import FormGenerator from "@/components/forms/form-generator";
+import {Button} from "@/components/ui/button";
+import Loader from "@/components/global/loader/loader";
 
 /**
  * WorkspaceForm Component
@@ -22,22 +24,27 @@ const WorkspaceForm = () => {
   // Get all form functionality from the custom hook
   // This includes form registration, validation, submission, and error handling
   const { errors, isPending, onFormSubmit, register } = useCreateWorkspace()
-  
   return (
     <form
       onSubmit={onFormSubmit}
       className="flex flex-col gap-y-3"
     >
-      {/* Workspace Name Input Field */}
       <FormGenerator
         register={register}
         name="name"
         placeholder={'Workspace Name'}
-        label="Workspace Name"
+        label="Name"
         errors={errors}
         inputType="input"
         type="text"
       />
+      <Button
+        className="text-sm w-full mt-2"
+        type="submit"
+        disabled={isPending}
+      >
+        <Loader state={isPending}>Create Workspace</Loader>
+      </Button>
     </form>
   )
 }
