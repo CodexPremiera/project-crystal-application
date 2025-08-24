@@ -46,7 +46,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: 'INDIVIDUAL',
+            type: 'PERSONAL',
           },
         },
       },
@@ -57,8 +57,9 @@ export const onAuthenticateUser = async () => {
     })
     
     return newUser ? { status: 201, user: newUser } : { status: 400, message: 'User creation failed' }
-  } catch (error: any) {
-    return { status: 500, error: error.message }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    return { status: 500, error: errorMessage }
   }
 }
 
