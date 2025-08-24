@@ -16,7 +16,7 @@ import {client} from "@/lib/prisma";
  * This function performs workspace access verification:
  * 1. Gets current authenticated user from Clerk
  * 2. Checks if user is the workspace owner/creator
- * 3. Checks if user is a member of the workspace (for team workspaces)
+ * 3. Checks if user is a member of the workspace (for public workspaces)
  * 4. Uses OR condition to allow either ownership or membership
  * 5. Returns workspace data if access granted, null if denied
  * 

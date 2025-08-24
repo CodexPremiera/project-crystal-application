@@ -129,6 +129,6 @@ enum PRESET {
 }
 
 enum Type {
-  INDIVIDUAL
-  TEAM
+  PERSONAL
+  PUBLIC
 }
