@@ -29,11 +29,12 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   
   const {data, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces);
   
-  const {data: workspaces} = data as WorkSpaceProps;
+  const {data: workspace} = data as WorkSpaceProps;
   
   const onChangeActiveWorkspace = (value: string) => {
     router.push(`/dashboard/${value}`);
   }
+  const currentWorkspace = workspace?.workspace.find(item => item.id === activeWorkspaceId);
   
   return (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
@@ -57,7 +58,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
             <Separator />
-            {workspaces.workspace.map((item) => (
+            {workspace.workspace.map((item) => (
               <SelectItem
                 key={item.id}
                 value={item.id}
@@ -66,8 +67,8 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
                 {item.name}
               </SelectItem>
             ))}
-            {workspaces.members.length > 0 &&
-              workspaces.members.map(
+            {workspace.members.length > 0 &&
+              workspace.members.map(
                 (workspace) =>
                   workspace.Workspace && (
                     <SelectItem
@@ -81,9 +82,10 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <Modal
-        trigger={
-          <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
+      {currentWorkspace?.type==="PUBLIC" && workspace.subscription?.plan === "PRO" && (
+        <Modal
+          trigger={
+            <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
             <PlusCircle
               size={15}
               className="text-neutral-800/90 fill-neutral-500"
@@ -92,12 +94,14 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
                 Invite To Workspace
             </span>
         </span>
-        }
-        title="Invite To Workspace"
-        description="Invite other users to your workspace"
-      >
-        <Search workspaceId={activeWorkspaceId} />
-      </Modal>
+          }
+          title="Invite To Workspace"
+          description="Invite other users to your workspace"
+        >
+          <Search workspaceId={activeWorkspaceId} />
+        </Modal>
+      )}
+      
     </div>
   );
 }
