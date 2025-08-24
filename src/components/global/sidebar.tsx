@@ -16,12 +16,15 @@ import {Separator} from "@radix-ui/react-menu";
 import {userQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {WorkSpaceProps} from "@/types/index.type";
+import Modal from "@/components/global/modal";
+import {PlusCircle} from "lucide-react";
+import Search from "@/components/global/search";
 
 type Props = {
   activeWorkspaceId: string;
 };
 
-function Sidebar({ activeWorkspaceId }: Props) {
+export default function Sidebar({ activeWorkspaceId }: Props) {
   const router = useRouter();
   
   const {data, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces);
@@ -78,8 +81,23 @@ function Sidebar({ activeWorkspaceId }: Props) {
           </SelectGroup>
         </SelectContent>
       </Select>
+      <Modal
+        trigger={
+          <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
+            <PlusCircle
+              size={15}
+              className="text-neutral-800/90 fill-neutral-500"
+            />
+            <span className="text-neutral-400 font-semibold text-xs">
+                Invite To Workspace
+            </span>
+        </span>
+        }
+        title="Invite To Workspace"
+        description="Invite other users to your workspace"
+      >
+        <Search workspaceId={activeWorkspaceId} />
+      </Modal>
     </div>
   );
 }
-
-export default Sidebar;

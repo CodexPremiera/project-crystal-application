@@ -90,6 +90,65 @@ export const getNotifications = async () => {
       ? { status: 200, data: notifications }
       : { status: 404, data: [] }
   } catch (error) {
+    console.error(error)
     return { status: 400, data: [] }
+  }
+}
+
+/**
+ * Searches for users in the database based on provided query
+ * 
+ * This function enables user discovery for workspace invitations:
+ * 1. Authenticates current user from Clerk
+ * 2. Searches database for users matching query in:
+ *    - First name (case-insensitive)
+ *    - Last name (case-insensitive) 
+ *    - Email address (case-insensitive)
+ * 3. Excludes current user from search results
+ * 4. Returns user data with subscription plan for UI display
+ * 
+ * @param query - Search string to match against user names and emails
+ * @returns Promise with array of matching users or empty result
+ */
+export const searchUsers = async (query: string) => {
+  try {
+    // Get current authenticated user
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // Search for users matching query in multiple fields
+    const users = await client.user.findMany({
+      where: {
+        OR: [
+          { firstname: { contains: query } },
+          { email: { contains: query } },
+          { lastname: { contains: query } },
+        ],
+        // Exclude current user from search results
+        NOT: [{ clerkId: user.id }],
+      },
+      select: {
+        id: true,
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+        firstname: true,
+        lastname: true,
+        image: true,
+        email: true,
+      },
+    })
+    
+    // Return users if found, otherwise return empty result
+    if (users && users.length > 0) {
+      return { status: 200, data: users }
+    }
+    
+    return { status: 404, data: undefined }
+  } catch (error) {
+    console.log(error);
+    return { status: 500, data: undefined };
   }
 }
