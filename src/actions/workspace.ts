@@ -154,7 +154,7 @@ export const getWorkSpaces = async () => {
       select: {
         subscription: { select: { plan: true } },
         workspace: { select: { id: true, name: true, type: true } }, // User's workspaces
-        members: { 
+        members: {
           select: { 
             WorkSpace: { select: { id: true, name: true, type: true } } 
           } 
@@ -165,6 +165,50 @@ export const getWorkSpaces = async () => {
     return workspaces ? { status: 200, data: workspaces } : { status: 404 }
   } catch (error) {
     console.log(error)
+    return { status: 400 }
+  }
+}
+
+export const createWorkspace = async (name: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    const authorized = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    })
+    
+    if (authorized?.subscription?.plan === 'PRO') {
+      const workspace = await client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          workspace: {
+            create: {
+              name,
+              type: 'PUBLIC',
+            },
+          },
+        },
+      })
+      if (workspace) {
+        return { status: 201, data: 'Workspace Created' }
+      }
+    }
+    return {
+      status: 401,
+      data: 'You are not authorized to create a workspace.',
+    }
+  } catch (error) {
     return { status: 400 }
   }
 }
