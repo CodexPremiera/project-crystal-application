@@ -139,23 +139,60 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
       
       <Separator className="w-4/5" />
       <p className="w-full text-[#9D9D9D] font-bold mt-4">Workspaces</p>
+      
+      {workspace.workspace.length === 1 && workspace.members.length === 0 && (
+        <div className="w-full mt-[-10px] cursor-pointer">
+          <p className="text-[#3c3c3c] font-medium text-sm">
+            {workspace.subscription?.plan === 'FREE'
+              ? 'Upgrade to create workspaces'
+              : 'No Workspaces'}
+          </p>
+        </div>
+      )}
+      
       <nav className="w-full">
         <ul className="h-[150px] overflow-auto overflow-x-hidden fade-layer scrollbar-minimal">
           {workspace.workspace.length > 0 &&
-            workspace.workspace.map((item) => (
-              <SidebarItem
-                href={`/dashboard/${item.id}`}
-                selected={pathName === `/dashboard/${item.id}`}
-                title={item.name}
-                notifications={0}
-                key={item.name}
-                icon={
-                  <WorkspacePlaceholder>
-                    {item.name.charAt(0)}
-                  </WorkspacePlaceholder>
-                }
-              />
-            ))}
+            workspace.workspace.map(
+              (item) =>
+                item.type !== "PERSONAL" && (
+                  <SidebarItem
+                    href={`/dashboard/${item.id}`}
+                    selected={pathName === `/dashboard/${item.id}`}
+                    title={item.name}
+                    notifications={0}
+                    key={item.name}
+                    icon={
+                      <WorkspacePlaceholder>
+                        {item.name.charAt(0)}
+                      </WorkspacePlaceholder>
+                    }
+                  />
+                )
+            )
+          }
+          {workspace.members.length > 0 &&
+            workspace.members.map(
+              (item) =>
+                item.Workspace &&
+                item.Workspace.type !== "PERSONAL" && (
+                  <SidebarItem
+                    href={`/dashboard/${item.Workspace.id}`}
+                    selected={
+                      pathName === `/dashboard/${item.Workspace.id}`
+                    }
+                    title={item.Workspace.name}
+                    notifications={0}
+                    key={item.Workspace.id}
+                    icon={
+                      <WorkspacePlaceholder>
+                        {item.Workspace.name.charAt(0)}
+                      </WorkspacePlaceholder>
+                    }
+                  />
+                )
+            )
+          }
         </ul>
       </nav>
     </div>
