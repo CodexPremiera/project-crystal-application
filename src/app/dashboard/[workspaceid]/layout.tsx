@@ -4,7 +4,7 @@ import { verifyAccessToWorkspace, getWorkspaceFolders, getAllUserVideos, getWork
 import { redirect } from 'next/navigation'
 import {HydrationBoundary, QueryClient} from '@tanstack/react-query'
 import {dehydrate} from "@tanstack/query-core";
-import Sidebar from "@/components/global/sidebar";
+import Sidebar from "@/components/global/sidebar/sidebar";
 
 /**
  * Dashboard Workspace Layout Component
