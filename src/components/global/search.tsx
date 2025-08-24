@@ -5,7 +5,7 @@ import {Input} from "@/components/ui/input";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {User} from "lucide-react";
 import { Button } from '../ui/button';
-import Loader from "@/components/global/loader";
+import Loader from "@/components/global/loader/loader";
 
 type Props = {
   workspaceId: string

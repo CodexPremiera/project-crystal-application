@@ -23,12 +23,16 @@ import {MENU_ITEMS} from "@/constants/constants";
 import SidebarItem from "@/components/global/sidebar/sidebar-item";
 import {getNotifications} from "@/actions/user";
 import WorkspacePlaceholder from "@/components/global/sidebar/workspace-placeholder";
+import GlobalCard from "@/components/global/global-card";
+import {Button} from "@/components/ui/button";
+import Loader from "@/components/global/loader/loader";
 
 type Props = {
   activeWorkspaceId: string;
 };
 
 export default function Sidebar({ activeWorkspaceId }: Props) {
+  // TODO: Add the upgrade functionality
   const router = useRouter();
   const pathName = usePathname();
   
@@ -195,6 +199,19 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           }
         </ul>
       </nav>
+      
+      <Separator className="w-4/5"/>
+      {workspace.subscription?.plan === 'FREE' && (
+        <GlobalCard
+          title="Upgrade to Pro"
+          description=" Unlock AI features like transcription, AI summary, and more."
+          footer={
+            <Button className="text-sm w-full ">
+              <Loader state={false}>Upgrade</Loader>
+            </Button>
+          }
+        />
+      )}
     </div>
   );
 }
