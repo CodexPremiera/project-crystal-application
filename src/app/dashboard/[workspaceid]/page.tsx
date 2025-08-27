@@ -2,6 +2,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import React from 'react'
 import CreateWorkspace from "@/components/global/create-workspace";
 import Folders from "@/components/global/folders/folders";
+import CreateFolders from "@/components/global/create-folders";
 
 type Props = {
   params: { workspaceId: string }
@@ -49,6 +50,7 @@ export default function Page ({ params }: Props) {
           <div className="flex gap-x-3">
             {/* Workspace creation button - only visible to PRO users */}
             <CreateWorkspace />
+            <CreateFolders workspaceId={params.workspaceId} />
           </div>
         </div>
         

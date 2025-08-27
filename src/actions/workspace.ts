@@ -258,3 +258,49 @@ export const renameFolders = async (folderId: string, name: string) => {
     return { status: 500, data: 'Opps! something went wrong' }
   }
 }
+
+
+/**
+ * Creates a new folder within a specified workspace
+ * 
+ * This server action handles folder creation in the database:
+ * 1. Uses Prisma's nested create operation to add a folder to the workspace
+ * 2. Creates folder with default "Untitled" name for immediate use
+ * 3. Returns success status with confirmation message if creation succeeds
+ * 4. Handles database errors gracefully with appropriate error responses
+ * 
+ * Purpose: Provide a server-side function for creating folders that can be
+ * called from client components through React Query mutations.
+ * 
+ * How it works:
+ * - Updates the workspace record by adding a new folder to its folders relation
+ * - Uses Prisma's nested create syntax for efficient single-query operation
+ * - Returns standardized response format for consistent error handling
+ * - Integrates with the useCreateFolders hook for complete folder creation flow
+ * 
+ * @param workspaceId - The UUID of the workspace where the folder will be created
+ * @returns Promise with creation status and confirmation/error message
+ */
+export const createFolder = async (workspaceId: string) => {
+  try {
+    // Create new folder within the specified workspace using nested create
+    const isNewFolder = await client.workSpace.update({
+      where: {
+        id: workspaceId,
+      },
+      data: {
+        folders: {
+          create: { name: 'Untitled' }, // Create folder with default name
+        },
+      },
+    })
+    
+    // Return success response if folder creation was successful
+    if (isNewFolder) {
+      return { status: 200, message: 'New Folder Created' }
+    }
+  } catch (error) {
+    // Handle database errors and return appropriate error response
+    return { status: 500, message: 'Something went wrong when creating folder' }
+  }
+}
