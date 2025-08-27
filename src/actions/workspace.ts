@@ -3,6 +3,7 @@
 import {currentUser} from "@clerk/nextjs/server";
 import {client} from "@/lib/prisma";
 
+
 /**
  * Workspace Access Verification Utility
  * 
@@ -169,6 +170,19 @@ export const getWorkSpaces = async () => {
   }
 }
 
+/**
+ * Creates a new workspace for the current authenticated user
+ * 
+ * This function handles workspace creation with subscription validation:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Validates user has PRO subscription plan for workspace creation
+ * 3. Creates new PUBLIC workspace associated with the user
+ * 4. Returns success status with confirmation message
+ * 5. Returns unauthorized status if user doesn't have PRO plan
+ * 
+ * @param name - The name for the new workspace
+ * @returns Promise with creation status and confirmation/error message
+ */
 export const createWorkspace = async (name: string) => {
   try {
     const user = await currentUser()
@@ -213,6 +227,19 @@ export const createWorkspace = async (name: string) => {
   }
 }
 
+/**
+ * Renames an existing folder within a workspace
+ * 
+ * This function handles folder renaming operations:
+ * 1. Updates the folder name in the database using the provided folder ID
+ * 2. Returns success status with confirmation message if update successful
+ * 3. Returns error status if folder doesn't exist or update fails
+ * 4. Handles database errors gracefully with appropriate error messages
+ * 
+ * @param folderId - The unique identifier of the folder to rename
+ * @param name - The new name for the folder
+ * @returns Promise with update status and confirmation/error message
+ */
 export const renameFolders = async (folderId: string, name: string) => {
   try {
     const folder = await client.folder.update({
