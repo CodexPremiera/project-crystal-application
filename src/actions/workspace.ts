@@ -3,6 +3,7 @@
 import {currentUser} from "@clerk/nextjs/server";
 import {client} from "@/lib/prisma";
 
+
 /**
  * Workspace Access Verification Utility
  * 
@@ -169,6 +170,19 @@ export const getWorkSpaces = async () => {
   }
 }
 
+/**
+ * Creates a new workspace for the current authenticated user
+ * 
+ * This function handles workspace creation with subscription validation:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Validates user has PRO subscription plan for workspace creation
+ * 3. Creates new PUBLIC workspace associated with the user
+ * 4. Returns success status with confirmation message
+ * 5. Returns unauthorized status if user doesn't have PRO plan
+ * 
+ * @param name - The name for the new workspace
+ * @returns Promise with creation status and confirmation/error message
+ */
 export const createWorkspace = async (name: string) => {
   try {
     const user = await currentUser()
@@ -210,5 +224,115 @@ export const createWorkspace = async (name: string) => {
     }
   } catch (error) {
     return { status: 400 }
+  }
+}
+
+/**
+ * Renames an existing folder within a workspace
+ * 
+ * This function handles folder renaming operations:
+ * 1. Updates the folder name in the database using the provided folder ID
+ * 2. Returns success status with confirmation message if update successful
+ * 3. Returns error status if folder doesn't exist or update fails
+ * 4. Handles database errors gracefully with appropriate error messages
+ * 
+ * @param folderId - The unique identifier of the folder to rename
+ * @param name - The new name for the folder
+ * @returns Promise with update status and confirmation/error message
+ */
+export const renameFolders = async (folderId: string, name: string) => {
+  try {
+    const folder = await client.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        name,
+      },
+    })
+    if (folder) {
+      return { status: 200, data: 'Folder Renamed' }
+    }
+    return { status: 400, data: 'Folder does not exist' }
+  } catch (error) {
+    return { status: 500, data: 'Opps! something went wrong' }
+  }
+}
+
+
+/**
+ * Creates a new folder within a specified workspace
+ * 
+ * This server action handles folder creation in the database:
+ * 1. Uses Prisma's nested create operation to add a folder to the workspace
+ * 2. Creates folder with default "Untitled" name for immediate use
+ * 3. Returns success status with confirmation message if creation succeeds
+ * 4. Handles database errors gracefully with appropriate error responses
+ * 
+ * Purpose: Provide a server-side function for creating folders that can be
+ * called from client components through React Query mutations.
+ * 
+ * How it works:
+ * - Updates the workspace record by adding a new folder to its folders relation
+ * - Uses Prisma's nested create syntax for efficient single-query operation
+ * - Returns standardized response format for consistent error handling
+ * - Integrates with the useCreateFolders hook for complete folder creation flow
+ * 
+ * @param workspaceId - The UUID of the workspace where the folder will be created
+ * @returns Promise with creation status and confirmation/error message
+ */
+export const createFolder = async (workspaceId: string) => {
+  try {
+    // Create new folder within the specified workspace using nested create
+    const isNewFolder = await client.workSpace.update({
+      where: {
+        id: workspaceId,
+      },
+      data: {
+        folders: {
+          create: { name: 'Untitled' }, // Create folder with default name
+        },
+      },
+    })
+    
+    // Return success response if folder creation was successful
+    if (isNewFolder) {
+      return { status: 200, message: 'New Folder Created' }
+    }
+  } catch (error) {
+    // Handle database errors and return appropriate error response
+    return { status: 500, message: 'Something went wrong when creating folder' }
+  }
+}
+
+export const getFolderInfo = async (folderId: string) => {
+  try {
+    const folder = await client.folder.findUnique({
+      where: {
+        id: folderId,
+      },
+      select: {
+        name: true,
+        _count: {
+          select: {
+            videos: true,
+          },
+        },
+      },
+    })
+    if (folder)
+      return {
+        status: 200,
+        data: folder,
+      }
+    return {
+      status: 400,
+      data: null,
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      data: null,
+    }
   }
 }
