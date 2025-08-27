@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import React, {useRef, useState} from 'react'
 import Loader from "@/components/global/loader/loader";
 import { Folder as FolderIcon } from 'lucide-react';
-import {useMutationData} from "@/hooks/useMutationData";
+import {useMutationData, useMutationDataState} from "@/hooks/useMutationData";
 import {renameFolders} from "@/actions/workspace";
 import {Input} from "@/components/ui/input";
 
@@ -31,10 +31,12 @@ function Folder({ id, name, optimistic, count }: Props) {
   //optimistic
   const { mutate, isPending } = useMutationData(
     ['rename-folders'],
-    (data: { name: string }) => renameFolders(id, name),
+    (data: { name: string }) => renameFolders(id, data.name),
     'workspace-folders',
     Renamed
   )
+  
+  const { latestVariables } = useMutationDataState(['rename-folders'])
   
   const handleFolderClick = () => {
     router.push(`${pathName}/folder/${id}`)
@@ -53,7 +55,7 @@ function Folder({ id, name, optimistic, count }: Props) {
   const updateFolderName = () => {
     if (inputRef.current && folderCardRef.current) {
       if (inputRef.current.value) {
-        mutate({ name: inputRef.current.value })
+        mutate({ name: inputRef.current.value, id })
       } else Renamed()
     }
   }
@@ -83,7 +85,11 @@ function Folder({ id, name, optimistic, count }: Props) {
               className="text-neutral-300"
               onDoubleClick={handleNameDoubleClick}
             >
-              {name}
+              {latestVariables &&
+              latestVariables.status === 'pending' &&
+              latestVariables.variables.id === id
+                ? latestVariables.variables.name
+                : name}
             </p>
           )}
           <span className="text-sm text-neutral-500">{count || 0} videos</span>
