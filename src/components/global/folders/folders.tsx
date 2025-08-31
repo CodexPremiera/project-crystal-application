@@ -10,6 +10,7 @@ import {ArrowRight} from "lucide-react";
 import FolderDuotone from "@/components/icons/folder-duotone";
 import {useDispatch} from "react-redux";
 import {FOLDERS} from "@/redux/slices/folders";
+import Videos from "@/components/global/videos/videos";
 
 export type FoldersProps = {
   status: number
@@ -81,6 +82,11 @@ function Folders({ workspaceId }: Props) {
           </>
         )}
       </section>
+      <Videos
+        workspaceId={workspaceId}
+        folderId={workspaceId}
+        videosKey="user-videos"
+      />
     </div>
   )
 }
