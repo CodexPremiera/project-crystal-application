@@ -55,43 +55,31 @@ function VideoCard(props: Props) {
           <video
             controls={false}
             preload="metadata"
-            className="w-full aspect-video opacity-50 z-20"
+            className="w-full aspect-video border-[1px] border-[#252525] rounded-xl opacity-50 z-20"
           >
             <source
               src={`${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${props.source}#t=1`}
             />
           </video>
-          <div className="px-5 py-3 flex flex-col gap-7-2 z-20">
-            <h2 className="text-sm font-semibold text-[#BDBDBD]">
+          <div className="px-6 py-3 flex flex-col gap-4-2 z-20">
+            <h2 className="text-lg font-semibold text-[#BDBDBD]">
               {props.title}
             </h2>
-            <div className="flex gap-x-2 items-center mt-4">
-              <Avatar className="!rounded-full w-8 h-8">
+            <div className="flex gap-x-3 items-center mt-4 w-full mb-3">
+              <Avatar className="!rounded-full w-10 !overflow-hidden">
                 <AvatarImage src={props.User?.image as string} />
                 <AvatarFallback>
                   <User />
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <p className="capitalize text-xs text-[#BDBDBD]">
+              <div className="w-full flex flex-col">
+                <p className="capitalize text-sm text-[#BDBDBD]">
                   {props.User?.firstname} {props.User?.lastname}
                 </p>
-                <p className="text-[#6d6b6b]  text-xs flex items-center ">
-                  <Dot /> {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
+                <p className="text-[#6d6b6b] text-sm flex">
+                  {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
                 </p>
               </div>
-            </div>
-            <div className="mt-4">
-              <span className="flex gap-x-1 items-center">
-                <Share2
-                  fill="#9D9D9D"
-                  className="text-[#9D9D9D]"
-                  size={12}
-                />
-                <p className="text-xs text-[#9D9D9D] capitalize">
-                  {props.User?.firstname}&#39;s Workspace
-                </p>
-              </span>
             </div>
           </div>
         </Link>
