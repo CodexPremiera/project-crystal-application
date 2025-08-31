@@ -9,13 +9,14 @@ import FolderInfo from "@/components/global/folders/folder-info";
 import Videos from "@/components/global/videos/videos";
 
 type Props = {
-  params: {
+  params: Promise<{
     folder: string // Changed from folderId to match [folder] dynamic route
     workspaceId: string
-  }
+  }>
 }
 
-const page = async ({ params: { folder, workspaceId } }: Props) => {
+const page = async ({ params }: Props) => {
+  const { folder, workspaceId } = await params
   const query = new QueryClient()
   
   // Prefetch folder videos data

@@ -5,7 +5,7 @@ import Folders from "@/components/global/folders/folders";
 import CreateFolders from "@/components/global/create-folders";
 
 type Props = {
-  params: { workspaceId: string }
+  params: Promise<{ workspaceId: string }>
 }
 
 /**
@@ -21,9 +21,11 @@ type Props = {
  * - Dynamic routing based on workspaceId parameter
  * - Clean, organized layout for workspace content
  * 
- * @param params - Contains the workspaceId from the URL route
+ * @param params - Contains the workspaceId from the URL route (must be awaited)
  */
-export default function Page ({ params }: Props) {
+export default async function Page ({ params }: Props) {
+  const { workspaceId } = await params
+  
   return (
     <div>
       {/* Main content tabs for workspace navigation */}
@@ -50,13 +52,13 @@ export default function Page ({ params }: Props) {
           <div className="flex gap-x-3">
             {/* Workspace creation button - only visible to PRO users */}
             <CreateWorkspace />
-            <CreateFolders workspaceId={params.workspaceId} />
+            <CreateFolders workspaceId={workspaceId} />
           </div>
         </div>
         
         <section className="py-9">
           <TabsContent value="videos">
-            <Folders workspaceId={params.workspaceId} />
+            <Folders workspaceId={workspaceId} />
           </TabsContent>
         </section>
       </Tabs>
