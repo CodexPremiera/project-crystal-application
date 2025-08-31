@@ -13,6 +13,23 @@ type Props = {
   workspaceId: string
 }
 
+const video = {
+  User: {
+    firstname: 'John',
+    lastname: 'Doe',
+    image: 'https://example.com/profile-image.jpg',
+  },
+  id: 'video123',
+  processing: false,
+  Folder: {
+    id: 'folder456',
+    name: 'Marketing Videos',
+  },
+  createdAt: new Date('2023-04-15T10:30:00Z'),
+  title: 'Product Demo: New Features',
+  source: 'https://example.com/videos/product-demo.mp4',
+};
+
 function VideoCard(props: {
   workspaceId: string,
   User: { firstname: string | null; lastname: string | null; image: string | null } | null,
