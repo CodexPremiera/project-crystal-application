@@ -118,17 +118,31 @@ export const getAllUserVideos = async (workSpaceId: string) => {
         createdAt: true,
         source: true,
         processing: true,
-        Folder: { select: { id: true, name: true } },
-        User: { select: { firstname: true, lastname: true, image: true } },
+        Folder: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+          },
+        },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: {
+        createdAt: 'asc',
+      },
     })
     
-    return videos && videos.length > 0 
-      ? { status: 200, data: videos }
-      : { status: 404 }
+    if (videos && videos.length > 0) {
+      return { status: 200, data: videos }
+    }
+    
+    return { status: 404 }
   } catch (error) {
-    console.log(error)
     return { status: 400 }
   }
 }

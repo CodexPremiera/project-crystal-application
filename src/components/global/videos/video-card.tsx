@@ -33,7 +33,7 @@ function VideoCard(props: Props) {
   return (
     <Loader
       className="bg-[#171717] flex justify-center items-center border-[1px] border-[rgb(37,37,37)] rounded-xl"
-      state={props.processing}
+      state={false}
     >
       <div className=" group overflow-hidden cursor-pointer bg-[#171717] relative border-[1px] border-[#252525] flex flex-col rounded-xl">
         <div className="absolute top-3 right-3 z-50 gap-x-3 hidden group-hover:flex">
@@ -66,7 +66,7 @@ function VideoCard(props: Props) {
               {props.title}
             </h2>
             <div className="flex gap-x-2 items-center mt-4">
-              <Avatar className=" w-8 h-8">
+              <Avatar className="!rounded-full w-8 h-8">
                 <AvatarImage src={props.User?.image as string} />
                 <AvatarFallback>
                   <User />

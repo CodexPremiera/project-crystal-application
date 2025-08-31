@@ -6,41 +6,12 @@ import {getAllUserVideos} from "@/actions/workspace";
 import {VideosProps} from "@/types/index.type";
 import VideoRecorderDuotone from "@/components/icons/video-recorder-duotone";
 import {cn} from "@/lib/utils";
+import VideoCard from "@/components/global/videos/video-card";
 
 type Props = {
   folderId: string
   videosKey: string
   workspaceId: string
-}
-
-const video = {
-  User: {
-    firstname: 'John',
-    lastname: 'Doe',
-    image: 'https://example.com/profile-image.jpg',
-  },
-  id: 'video123',
-  processing: false,
-  Folder: {
-    id: 'folder456',
-    name: 'Marketing Videos',
-  },
-  createdAt: new Date('2023-04-15T10:30:00Z'),
-  title: 'Product Demo: New Features',
-  source: 'https://example.com/videos/product-demo.mp4',
-};
-
-function VideoCard(props: {
-  workspaceId: string,
-  User: { firstname: string | null; lastname: string | null; image: string | null } | null,
-  id: string,
-  processing: boolean,
-  Folder: { id: string; name: string } | null,
-  createdAt: Date,
-  title: string | null,
-  source: string
-}) {
-  return null;
 }
 
 function Videos({ folderId, videosKey, workspaceId }: Props) {
