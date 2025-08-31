@@ -44,6 +44,24 @@ const ChangeVideoLocation = ({
       </div>
       <Separator orientation="horizontal" />
       <div className="flex flex-col gap-y-5 p-5 border-[1px] rounded-xl">
+        <h2 className="text-xs text-[#a4a4a4]">To</h2>
+        <Label className="flex-col gap-y-2 flex w-full items-start">
+          <p className="text-xs w-full">Workspace</p>
+          <select
+            className="rounded-xl text-base bg-transparent w-full"
+            {...register('workspace_id')}
+          >
+            {workspaces.map((space) => (
+              <option
+                key={space.id}
+                className="text-[#a4a4a4]"
+                value={space.id}
+              >
+                {space.name}
+              </option>
+            ))}
+          </select>
+        </Label>
         {isFetching ? (
           <Skeleton className="w-full h-[40px] rounded-xl" />
         ) : (

@@ -319,18 +319,6 @@ export const createFolder = async (workspaceId: string) => {
   }
 }
 
-/**
- * Retrieves detailed information about a specific folder
- * 
- * This function fetches folder metadata and video count:
- * 1. Queries database for folder using the provided folder ID
- * 2. Selects folder name and video count using _count aggregation
- * 3. Returns folder data with name and video count for UI display
- * 4. Returns null data if folder doesn't exist or query fails
- * 
- * @param folderId - The unique identifier of the folder to retrieve information for
- * @returns Promise with folder data (name and video count) or null if not found
- */
 export const getFolderInfo = async (folderId: string) => {
   try {
     const folder = await client.folder.findUnique({
@@ -363,21 +351,6 @@ export const getFolderInfo = async (folderId: string) => {
   }
 }
 
-/**
- * Moves a video to a different location within the workspace hierarchy
- * 
- * This function handles video relocation operations:
- * 1. Updates video's workspace and folder associations in the database
- * 2. Sets folderId to null if moving to workspace root (no folder)
- * 3. Updates workSpaceId to move video between workspaces if needed
- * 4. Returns success confirmation if video location updated successfully
- * 5. Returns error status if video, workspace, or folder doesn't exist
- * 
- * @param videoId - The unique identifier of the video to move
- * @param workSpaceId - The target workspace ID where the video will be moved
- * @param folderId - The target folder ID (or empty string for workspace root)
- * @returns Promise with move status and confirmation/error message
- */
 export const moveVideoLocation = async (
   videoId: string,
   workSpaceId: string,
