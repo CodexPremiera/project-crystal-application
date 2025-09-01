@@ -479,8 +479,10 @@ export const sendEmailForFirstView = async (videoId: string) => {
         },
       })
       
+      if (!video.User?.email) return
+      
       const { transporter, mailOptions } = await sendEmail(
-        video.User?.email,
+        video.User.email,
         'You got a viewer',
         `Your video ${video.title} just got its first viewer`
       )

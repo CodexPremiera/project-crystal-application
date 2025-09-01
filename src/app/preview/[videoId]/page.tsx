@@ -1,6 +1,6 @@
 import { getUserProfile, getVideoComments } from '@/actions/user'
 import { getPreviewVideo } from '@/actions/workspace'
-import VideoPreview from '@/components/global/videos/preview'
+import VideoPreview from "@/components/global/videos/video-preview";
 
 import {
   dehydrate,
@@ -8,6 +8,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import React from 'react'
+
 
 type Props = {
   params: {
