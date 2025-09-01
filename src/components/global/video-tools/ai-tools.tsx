@@ -16,17 +16,17 @@ type Props = {
   videoId: string
 }
 
-  const AiTools = ({ plan, trial, videoId }: Props) => {
+const AiTools = ({ plan, trial, videoId }: Props) => {
   //Are they on a free plan?
   //have they already tried the AI feature?
   //if not? Try button
   
   // useMutationData
   // server action titles and description
-
+  
   // TODO: setup the ai hook
   return (
-    <TabsContent value="Ai tools">
+    <TabsContent value="AI Tools">
       <div className="p-5 bg-[#1D1D1D]  rounded-xl flex flex-col gap-y-6 ">
         <div className="flex items-center gap-4">
           <div className="w-full">

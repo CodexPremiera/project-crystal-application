@@ -73,7 +73,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: 'INDIVIDUAL',
+            type: 'PERSONAL',
           },
         },
       },
@@ -266,6 +266,30 @@ export const getVideoComments = async (Id: string) => {
     })
     
     return { status: 200, data: comments }
+  } catch (error) {
+    console.log(error);
+    return { status: 400 }
+  }
+}
+
+export const getPaymentInfo = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const payment = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        subscription: {
+          select: { plan: true },
+        },
+      },
+    })
+    if (payment) {
+      return { status: 200, data: payment }
+    }
   } catch (error) {
     console.log(error);
     return { status: 400 }
