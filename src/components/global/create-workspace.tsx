@@ -5,8 +5,8 @@ import Modal from "@/components/global/modal";
 import {getWorkSpaces} from "@/actions/workspace";
 import {useQueryData} from "@/hooks/useQueryData";
 import {Button} from "@/components/ui/button";
-import {FolderPlus} from "lucide-react";
 import WorkspaceForm from "@/components/forms/workspace-form/workspace-form";
+import FolderPlusDuotine from "@/components/icons/folder-plus-duotone";
 
 /**
  * CreateWorkspace Component
@@ -47,8 +47,8 @@ function CreateWorkspace() {
         trigger={
           // Main trigger button that opens the workspace creation modal
           <Button className="bg-[#1D1D1D] text-[#707070] flex items-center gap-2 py-6 px-4 rounded-2xl">
-            <FolderPlus />
-            Create a workspace
+            <FolderPlusDuotine />
+            Create Workspace
           </Button>
         }
       >

@@ -6,24 +6,12 @@ import {getAllUserVideos} from "@/actions/workspace";
 import {VideosProps} from "@/types/index.type";
 import VideoRecorderDuotone from "@/components/icons/video-recorder-duotone";
 import {cn} from "@/lib/utils";
+import VideoCard from "@/components/global/videos/video-card";
 
 type Props = {
   folderId: string
   videosKey: string
   workspaceId: string
-}
-
-function VideoCard(props: {
-  workspaceId: string,
-  User: { firstname: string | null; lastname: string | null; image: string | null } | null,
-  id: string,
-  processing: boolean,
-  Folder: { id: string; name: string } | null,
-  createdAt: Date,
-  title: string | null,
-  source: string
-}) {
-  return null;
 }
 
 function Videos({ folderId, videosKey, workspaceId }: Props) {

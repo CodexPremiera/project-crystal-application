@@ -30,6 +30,21 @@ model User {
   sender        Invite[]        @relation("sender")
   receiver      Invite[]        @relation("receiver")
   trial         Boolean         @default(false)
+  firstView     Boolean         @default(false)
+  comment       Comment[]
+}
+
+model Comment {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  comment   String
+  reply     Comment[] @relation("reply")
+  Comment   Comment?  @relation("reply", fields: [commentId], references: [id])
+  commentId String?   @db.Uuid
+  User      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?   @db.Uuid
+  Video     Video?    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId   String?   @db.Uuid
+  createdAt DateTime  @default(now())
 }
 
 model Subscription {
@@ -89,6 +104,7 @@ model Video {
   workSpaceId  String?    @db.Uuid
   views        Int        @default(0)
   summary      String?
+  Comment      Comment[]
 }
 
 model Member {
@@ -118,17 +134,16 @@ model Invite {
   workSpaceId String?    @db.Uuid
 }
 
-enum SUBSCRIPTION_PLAN {
-  FREE
-  PRO
+enum Type {
+  PERSONAL
+  PUBLIC
 }
 
 enum PRESET {
   SD
   HD
 }
-
-enum Type {
-  PERSONAL
-  PUBLIC
+enum SUBSCRIPTION_PLAN {
+  PRO
+  FREE
 }

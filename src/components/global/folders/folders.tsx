@@ -8,6 +8,9 @@ import {getWorkspaceFolders} from "@/actions/workspace";
 import {useMutationDataState} from "@/hooks/useMutationData";
 import {ArrowRight} from "lucide-react";
 import FolderDuotone from "@/components/icons/folder-duotone";
+import {useDispatch} from "react-redux";
+import {FOLDERS} from "@/redux/slices/folders";
+import Videos from "@/components/global/videos/videos";
 
 export type FoldersProps = {
   status: number
@@ -28,6 +31,8 @@ type Props = {
 }
 
 function Folders({ workspaceId }: Props) {
+  const dispatch = useDispatch()
+  
   //get folders
   const { data, isFetched } = useQueryData(
     ['workspace-folders'],
@@ -38,7 +43,9 @@ function Folders({ workspaceId }: Props) {
   
   const { status, data: folders } = data as FoldersProps
   
-  // if (isFetched && folders) {}
+  if (isFetched && folders) {
+    dispatch(FOLDERS({ folders: folders }))
+  }
   
   return (
     <div className="flex flex-col gap-4">
@@ -75,6 +82,11 @@ function Folders({ workspaceId }: Props) {
           </>
         )}
       </section>
+      <Videos
+        workspaceId={workspaceId}
+        folderId={workspaceId}
+        videosKey="user-videos"
+      />
     </div>
   )
 }

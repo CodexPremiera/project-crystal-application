@@ -28,6 +28,8 @@ import {Button} from "@/components/ui/button";
 import Loader from "@/components/global/loader/loader";
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
 import Infobar from "@/components/global/infobar";
+import {useDispatch} from "react-redux";
+import {WORKSPACES} from "@/redux/slices/workspaces";
 
 type Props = {
   activeWorkspaceId: string;
@@ -37,6 +39,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   // TODO: Add the upgrade functionality
   const router = useRouter();
   const pathName = usePathname();
+  const dispatch = useDispatch()
   
   const {data, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces);
   
@@ -54,7 +57,13 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
     router.push(`/dashboard/${value}`);
   }
   
-  const currentWorkspace = workspace?.workspace.find(item => item.id === activeWorkspaceId);
+  const currentWorkspace = workspace?.workspace.find(
+    item => item.id === activeWorkspaceId
+  );
+  
+  if (isFetched && workspace) {
+    dispatch(WORKSPACES({ workspaces: workspace.workspace }))
+  }
   
   const SidebarSection = (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
