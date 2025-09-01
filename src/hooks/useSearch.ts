@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {userQueryData} from "@/hooks/useQueryData";
+import {useQueryData} from "@/hooks/useQueryData";
 import {searchUsers} from "@/actions/user";
 
 /**
@@ -52,7 +52,7 @@ export const useSearch = (key: string, type: 'USERS') => {
   }, [query])
   
   // React Query integration for data fetching
-  const { refetch, isFetching } = userQueryData(
+  const { refetch, isFetching } = useQueryData(
     [key, debounce],
     async ({ queryKey }) => {
       if (type === 'USERS') {

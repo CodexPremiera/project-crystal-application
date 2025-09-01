@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import {usePathname, useRouter} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
-import {userQueryData} from "@/hooks/useQueryData";
+import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {NotificationProps, WorkSpaceProps} from "@/types/index.type";
 import Modal from "@/components/global/modal";
@@ -41,11 +41,11 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   const pathName = usePathname();
   const dispatch = useDispatch()
   
-  const {data, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces);
+  const {data, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces);
   
   const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId});
   
-  const {data: notifications} = userQueryData(
+  const {data: notifications} = useQueryData(
     ["user-notifications"],
     getNotifications
   )
