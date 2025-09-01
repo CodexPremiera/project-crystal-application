@@ -81,19 +81,18 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         onValueChange={onChangeActiveWorkspace}
       >
         <SelectTrigger className="mt-16 text-neutral-400 bg-transparent">
-          <SelectValue placeholder="Select a workspace">Select a workspace</SelectValue>
+          <SelectValue placeholder="Select a workspace"></SelectValue>
         </SelectTrigger>
         <SelectContent className="bg-[#111111] backdrop-blur-xl">
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
             <Separator />
-            {workspace.workspace.map((item) => (
+            {workspace.workspace.map((workspace) => (
               <SelectItem
-                key={item.id}
-                value={item.id}
-                className="text-neutral-400 hover:bg-neutral-800"
+                value={workspace.id}
+                key={workspace.id}
               >
-                {item.name}
+                {workspace.name}
               </SelectItem>
             ))}
             {workspace.members.length > 0 &&

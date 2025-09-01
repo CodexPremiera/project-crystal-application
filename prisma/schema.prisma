@@ -132,6 +132,8 @@ model Invite {
   receiverId  String?    @db.Uuid
   WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id])
   workSpaceId String?    @db.Uuid
+  content     String     @default("You are invited to join this workspace")
+  createdAt   DateTime   @default(now())
 }
 
 enum Type {
