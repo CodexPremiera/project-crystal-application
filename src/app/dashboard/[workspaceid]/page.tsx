@@ -12,17 +12,17 @@ type Props = {
 
 /**
  * Dashboard Page Component
- * 
+ *
  * This is the main workspace dashboard page that displays content for a specific workspace.
  * It provides navigation between different content types (Videos, Archive) and includes
  * workspace management features like creating new workspaces.
- * 
+ *
  * Page Features:
  * - Tab navigation between Videos and Archive sections
  * - Workspace creation button for PRO users
  * - Dynamic routing based on workspaceId parameter
  * - Clean, organized layout for workspace content
- * 
+ *
  * @param params - Contains the workspaceId from the URL route (must be awaited)
  */
 const Page = async ({ params: { workspaceId } }: Props) => {

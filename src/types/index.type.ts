@@ -6,13 +6,13 @@ export type WorkSpaceProps = {
     workspace: {
       id: string
       name: string
-      type: 'PERSONAL' | 'PUBLIC'
+      type: 'PUBLIC' | 'PERSONAL'
     }[]
     members: {
       Workspace: {
         id: string
         name: string
-        type: 'PERSONAL' | 'PUBLIC'
+        type: 'PUBLIC' | 'PERSONAL'
       }
     }[]
   }
