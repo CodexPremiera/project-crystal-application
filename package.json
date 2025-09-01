@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:stable": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:health": "node -e \"import('./src/lib/db-health.ts').then(m => m.checkDatabaseHealth()).then(console.log).catch(console.error)\"",
+    "db:reset": "node -e \"import('./src/lib/db-health.ts').then(m => m.resetConnectionPool()).then(console.log).catch(console.error)\""
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.3",
