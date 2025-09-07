@@ -3,6 +3,9 @@
 import {currentUser} from "@clerk/nextjs/server";
 import { client } from "@/lib/prisma";
 import nodemailer from 'nodemailer'
+import Stripe from 'stripe'
+
+const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET as string)
 
 export const sendEmail = async (
   to: string,
@@ -73,7 +76,7 @@ export const onAuthenticateUser = async () => {
         workspace: {
           create: {
             name: `${user.firstName}'s Workspace`,
-            type: 'INDIVIDUAL',
+            type: 'PERSONAL',
           },
         },
       },
@@ -268,6 +271,248 @@ export const getVideoComments = async (Id: string) => {
     return { status: 200, data: comments }
   } catch (error) {
     console.log(error);
+    return { status: 400 }
+  }
+}
+
+export const getPaymentInfo = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const payment = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        subscription: {
+          select: { plan: true },
+        },
+      },
+    })
+    if (payment) {
+      return { status: 200, data: payment }
+    }
+  } catch (error) {
+    console.log(error);
+    return { status: 400 }
+  }
+}
+
+export const enableFirstView = async (state: boolean) => {
+  try {
+    const user = await currentUser()
+    
+    if (!user) return { status: 404 }
+    
+    const view = await client.user.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: {
+        firstView: state,
+      },
+    })
+    
+    if (view) {
+      return { status: 200, data: 'Setting updated' }
+    }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+export const getFirstView = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    const userData = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        firstView: true,
+      },
+    })
+    if (userData) {
+      return { status: 200, data: userData.firstView }
+    }
+    return { status: 400, data: false }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+export const inviteMembers = async (
+  workspaceId: string,
+  receiverId: string,
+  email: string
+) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    const senderInfo = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+      },
+    })
+    if (senderInfo?.id) {
+      const workspace = await client.workSpace.findUnique({
+        where: {
+          id: workspaceId,
+        },
+        select: {
+          name: true,
+        },
+      })
+      if (workspace) {
+        const invitation = await client.invite.create({
+          data: {
+            senderId: senderInfo.id,
+            receiverId: receiverId,
+            workSpaceId: workspaceId,
+            content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
+          },
+          select: {
+            id: true,
+          },
+        })
+        
+        await client.user.update({
+          where: {
+            clerkId: user.id,
+          },
+          data: {
+            notification: {
+              create: {
+                content: `${user.firstName} ${user.lastName} invited ${senderInfo.firstname} into ${workspace.name}`,
+              },
+            },
+          },
+        })
+        if (invitation) {
+          const { transporter, mailOptions } = await sendEmail(
+            email,
+            'You got an invitation',
+            'You are invited to join ${workspace.name} Workspace, click accept to confirm',
+            `<a href="${process.env.NEXT_PUBLIC_HOST_URL}/invite/${invitation.id}" style="background-color: #000; padding: 5px 10px; border-radius: 10px;">Accept Invite</a>`
+          )
+          
+          transporter.sendMail(mailOptions, (error) => {
+            if (error) {
+              console.log('🔴', error.message)
+            } else {
+              console.log('✅ Email send')
+            }
+          })
+          return { status: 200, data: 'Invite sent' }
+        }
+        return { status: 400, data: 'invitation failed' }
+      }
+      return { status: 404, data: 'workspace not found' }
+    }
+    return { status: 404, data: 'recipient not found' }
+  } catch (error) {
+    console.log(error)
+    return { status: 400, data: 'Oops! something went wrong' }
+  }
+}
+
+export const acceptInvite = async (inviteId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user)
+      return {
+        status: 404,
+      }
+    const invitation = await client.invite.findUnique({
+      where: {
+        id: inviteId,
+      },
+      select: {
+        workSpaceId: true,
+        receiver: {
+          select: {
+            clerkId: true,
+          },
+        },
+      },
+    })
+    
+    if (user.id !== invitation?.receiver?.clerkId) return { status: 401 }
+    const acceptInvite = client.invite.update({
+      where: {
+        id: inviteId,
+      },
+      data: {
+        accepted: true,
+      },
+    })
+    
+    const updateMember = client.user.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: {
+        members: {
+          create: {
+            workSpaceId: invitation.workSpaceId,
+          },
+        },
+      },
+    })
+    
+    const membersTransaction = await client.$transaction([
+      acceptInvite,
+      updateMember,
+    ])
+    
+    if (membersTransaction) {
+      return { status: 200 }
+    }
+    return { status: 400 }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+export const completeSubscription = async (session_id: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const session = await stripe.checkout.sessions.retrieve(session_id)
+    if (session) {
+      const customer = await client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          subscription: {
+            update: {
+              data: {
+                customerId: session.customer as string,
+                plan: 'PRO',
+              },
+            },
+          },
+        },
+      })
+      if (customer) {
+        return { status: 200 }
+      }
+    }
+    return { status: 404 }
+  } catch (error) {
+    console.log(error)
     return { status: 400 }
   }
 }

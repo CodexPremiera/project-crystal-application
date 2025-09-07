@@ -13,7 +13,7 @@ type Props = {
   close?: () => void
 }
 
-const CommentForm = ({ author, videoId, close, commentId }: Props) => {
+const CommentForm = ({ author, videoId, commentId }: Props) => {
   const { errors, isPending, onFormSubmit, register } = useVideoComment(
     videoId,
     commentId

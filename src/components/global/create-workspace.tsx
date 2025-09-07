@@ -5,8 +5,8 @@ import Modal from "@/components/global/modal";
 import {getWorkSpaces} from "@/actions/workspace";
 import {useQueryData} from "@/hooks/useQueryData";
 import {Button} from "@/components/ui/button";
-import WorkspaceForm from "@/components/forms/workspace-form/workspace-form";
 import FolderPlusDuotine from "@/components/icons/folder-plus-duotone";
+import WorkspaceForm from "@/components/forms/workspace-form";
 
 /**
  * CreateWorkspace Component

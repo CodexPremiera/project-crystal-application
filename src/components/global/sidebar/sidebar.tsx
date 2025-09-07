@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import {usePathname, useRouter} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
-import {userQueryData} from "@/hooks/useQueryData";
+import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {NotificationProps, WorkSpaceProps} from "@/types/index.type";
 import Modal from "@/components/global/modal";
@@ -25,11 +25,11 @@ import {getNotifications} from "@/actions/user";
 import WorkspacePlaceholder from "@/components/global/sidebar/workspace-placeholder";
 import GlobalCard from "@/components/global/global-card";
 import {Button} from "@/components/ui/button";
-import Loader from "@/components/global/loader/loader";
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
 import Infobar from "@/components/global/infobar";
 import {useDispatch} from "react-redux";
 import {WORKSPACES} from "@/redux/slices/workspaces";
+import PaymentButton from "@/components/global/payment-button";
 
 type Props = {
   activeWorkspaceId: string;
@@ -41,11 +41,11 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   const pathName = usePathname();
   const dispatch = useDispatch()
   
-  const {data, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces);
+  const {data, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces);
   
   const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId});
   
-  const {data: notifications} = userQueryData(
+  const {data: notifications} = useQueryData(
     ["user-notifications"],
     getNotifications
   )
@@ -67,11 +67,11 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   
   const SidebarSection = (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
-      <div className="bg-[#111111] p-4 flex gap-2 justify-center items-center mb-4 absolute top-0 left-0 right-0">
+      <div className="bg-[#111111] p-4 flex gap-3 justify-center items-center mb-4 absolute top-0 left-0 right-0">
         <Image
-          src="/favicon.ico"
-          height={40}
-          width={40}
+          src="/opal-logo.svg"
+          height={32}
+          width={32}
           alt="logo"
         />
         <p className="text-2xl">Opal</p>
@@ -81,30 +81,29 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         onValueChange={onChangeActiveWorkspace}
       >
         <SelectTrigger className="mt-16 text-neutral-400 bg-transparent">
-          <SelectValue placeholder="Select a workspace">Select a workspace</SelectValue>
+          <SelectValue placeholder="Select a workspace"></SelectValue>
         </SelectTrigger>
         <SelectContent className="bg-[#111111] backdrop-blur-xl">
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
             <Separator />
-            {workspace.workspace.map((item) => (
+            {workspace.workspace.map((workspace) => (
               <SelectItem
-                key={item.id}
-                value={item.id}
-                className="text-neutral-400 hover:bg-neutral-800"
+                value={workspace.id}
+                key={workspace.id}
               >
-                {item.name}
+                {workspace.name}
               </SelectItem>
             ))}
             {workspace.members.length > 0 &&
               workspace.members.map(
                 (workspace) =>
-                  workspace.Workspace && (
+                  workspace.WorkSpace && (
                     <SelectItem
-                      value={workspace.Workspace.id}
-                      key={workspace.Workspace.id}
+                      value={workspace.WorkSpace.id}
+                      key={workspace.WorkSpace.id}
                     >
-                      {workspace.Workspace.name}
+                      {workspace.WorkSpace.name}
                     </SelectItem>
                   )
               )}
@@ -189,19 +188,19 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           {workspace.members.length > 0 &&
             workspace.members.map(
               (item) =>
-                item.Workspace &&
-                item.Workspace.type !== "PERSONAL" && (
+                item.WorkSpace &&
+                item.WorkSpace.type !== "PERSONAL" && (
                   <SidebarItem
-                    href={`/dashboard/${item.Workspace.id}`}
+                    href={`/dashboard/${item.WorkSpace.id}`}
                     selected={
-                      pathName === `/dashboard/${item.Workspace.id}`
+                      pathName === `/dashboard/${item.WorkSpace.id}`
                     }
-                    title={item.Workspace.name}
+                    title={item.WorkSpace.name}
                     notifications={0}
-                    key={item.Workspace.id}
+                    key={item.WorkSpace.id}
                     icon={
                       <WorkspacePlaceholder>
-                        {item.Workspace.name.charAt(0)}
+                        {item.WorkSpace.name.charAt(0)}
                       </WorkspacePlaceholder>
                     }
                   />
@@ -216,11 +215,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         <GlobalCard
           title="Upgrade to Pro"
           description=" Unlock AI features like transcription, AI summary, and more."
-          footer={
-            <Button className="text-sm w-full ">
-              <Loader state={false}>Upgrade</Loader>
-            </Button>
-          }
+          footer={<PaymentButton />}
         />
       )}
     </div>

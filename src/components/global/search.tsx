@@ -6,6 +6,8 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {User} from "lucide-react";
 import { Button } from '../ui/button';
 import Loader from "@/components/global/loader/loader";
+import {useMutationData} from "@/hooks/useMutationData";
+import {inviteMembers} from "@/actions/user";
 
 type Props = {
   workspaceId: string
@@ -30,13 +32,11 @@ const Search = ({ workspaceId }: Props) => {
     'USERS'
   )
   
-  // TODO: Implement invite functionality using useMutationData
-  // const { mutate, isPending } = useMutationData(
-  //      ['invite-member'],
-  //      (data: { recieverId: string; email: string }) => {
-  //
-  //      }
-  // )
+  const { mutate, isPending } = useMutationData(
+    ['invite-member'],
+    (data: { receiverId: string; email: string }) =>
+      inviteMembers(workspaceId, data.receiverId, data.email)
+  )
   
   return (
     <div className="flex flex-col gap-y-5">
@@ -60,7 +60,7 @@ const Search = ({ workspaceId }: Props) => {
       ) : (
         // Results state: display found users with invite options
         <div>
-          {onUsers?.map((user) => (
+          {onUsers.map((user) => (
             <div key={user.id} className="flex gap-x-3 items-center border-2 w-full p-3 rounded-xl">
               {/* User avatar with fallback icon */}
               <Avatar>
@@ -84,15 +84,14 @@ const Search = ({ workspaceId }: Props) => {
               {/* Invite button (functionality to be implemented) */}
               <div className="flex-1 flex justify-end items-center">
                 <Button
-                  onClick={() => {
-                    // TODO: Implement invite functionality
-                    // mutate({ recieverId: user.id, email: user.email })
-                  }}
+                  onClick={() =>
+                    mutate({ receiverId: user.id, email: user.email })
+                  }
                   variant={'default'}
                   className="w-5/12 font-bold"
                 >
                   <Loader
-                    state={false}
+                    state={isPending}
                     color="#000"
                   >
                     Invite
