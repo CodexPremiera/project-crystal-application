@@ -7,7 +7,7 @@ import {getAllUserVideos, getWorkspaceFolders} from '@/actions/workspace';
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
 
 type Props = {
-  params: Promise<{ workspaceId: string }>
+  params: Promise<{ workspaceid: string }>
 }
 
 /**
@@ -51,17 +51,17 @@ type Props = {
  * @returns JSX element with workspace dashboard interface
  */
 const Page = async ({ params }: Props) => {
-  const { workspaceId } = await params
+  const { workspaceid } = await params
   const query = new QueryClient()
   
   await query.prefetchQuery({
     queryKey: ['workspace-folders'],
-    queryFn: () => getWorkspaceFolders(workspaceId),
+    queryFn: () => getWorkspaceFolders(workspaceid),
   })
   
   await query.prefetchQuery({
     queryKey: ['user-videos'],
-    queryFn: () => getAllUserVideos(workspaceId),
+    queryFn: () => getAllUserVideos(workspaceid),
   })
   
   return (
@@ -88,12 +88,12 @@ const Page = async ({ params }: Props) => {
             </TabsList>
             <div className="flex gap-x-3">
               <CreateWorkspace />
-              <CreateFolders workspaceId={workspaceId} />
+              <CreateFolders workspaceId={workspaceid} />
             </div>
           </div>
           <section className="py-9">
             <TabsContent value="videos">
-              <Folders workspaceId={workspaceId} />
+              <Folders workspaceId={workspaceid} />
             </TabsContent>
           </section>
         </Tabs>

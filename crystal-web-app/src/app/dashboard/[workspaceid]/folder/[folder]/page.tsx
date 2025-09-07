@@ -11,7 +11,7 @@ import Videos from "@/components/global/videos/videos";
 type Props = {
   params: Promise<{
     folder: string // Changed from folderId to match [folder] dynamic route
-    workspaceId: string
+    workspaceid: string
   }>
 }
 
@@ -66,7 +66,7 @@ type Props = {
  * @returns JSX element with folder content management interface
  */
 const page = async ({ params }: Props) => {
-  const { folder, workspaceId } = await params
+  const { folder, workspaceid } = await params
   const query = new QueryClient()
   
   // Prefetch folder videos data
@@ -85,7 +85,7 @@ const page = async ({ params }: Props) => {
     <HydrationBoundary state={dehydrate(query)}>
       <FolderInfo folderId={folder} />
       <Videos
-        workspaceId={workspaceId}
+        workspaceId={workspaceid}
         folderId={folder}
         videosKey="folder-videos"
       />

@@ -55,12 +55,12 @@ import GlobalHeader from "@/components/global/global-header";
  * @returns JSX element with workspace layout and security controls
  */
 type Props = {
-  params: Promise<{ workspaceId: string }> // Workspace ID from the URL parameter
+  params: Promise<{ workspaceid: string }> // Workspace ID from the URL parameter
   children: React.ReactNode // Child components to render
 }
 
 const Layout = async ({ params, children }: Props) => {
-  const { workspaceId } = await params
+  const { workspaceid } = await params
   // Step 1: Authenticate user and get their data
   const auth = await onAuthenticateUser()
   
@@ -69,7 +69,7 @@ const Layout = async ({ params, children }: Props) => {
   if (!auth.user.workspace.length) redirect('/auth/sign-in')
   
   // Step 3: Verify user has access to the requested workspace
-  const hasAccess = await verifyAccessToWorkspace(workspaceId)
+  const hasAccess = await verifyAccessToWorkspace(workspaceid)
   
   // Step 4: If user doesn't have access, redirect to their default workspace
   if (hasAccess.status !== 200) {
@@ -83,11 +83,11 @@ const Layout = async ({ params, children }: Props) => {
   
   await query.prefetchQuery({
     queryKey:['workspace-folders'],
-    queryFn: () => getWorkspaceFolders(workspaceId),
+    queryFn: () => getWorkspaceFolders(workspaceid),
   })
   await query.prefetchQuery({
     queryKey:['user-videos'],
-    queryFn: () => getAllUserVideos(workspaceId),
+    queryFn: () => getAllUserVideos(workspaceid),
   })
   await query.prefetchQuery({
     queryKey:['user-workspaces'],
@@ -101,7 +101,7 @@ const Layout = async ({ params, children }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div className="flex h-screen">
-        <Sidebar activeWorkspaceId={workspaceId} />
+        <Sidebar activeWorkspaceId={workspaceid} />
         <main className="w-full pt-28 p-6 overflow-y-scroll overflow-x-hidden">
           <GlobalHeader workspace={hasAccess.data.workspace} />
           <div className="mt-4">{children}</div>
