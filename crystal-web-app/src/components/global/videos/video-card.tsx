@@ -1,7 +1,7 @@
 import React from 'react';
 import Loader from '../loader/loader';
 import CardMenu from "@/components/global/videos/video-card-menu";
-import {Dot, Share2, User} from "lucide-react";
+import { User } from "lucide-react";
 import { Avatar } from '@radix-ui/react-avatar';
 import {AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import Link from "next/link";

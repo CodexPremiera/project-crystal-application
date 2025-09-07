@@ -16,7 +16,7 @@ type Props = {
   videoId: string
 }
 
-const AiTools = ({ plan, trial, videoId }: Props) => {
+const AiTools = ({ }: Props) => {
   //Are they on a free plan?
   //have they already tried the AI feature?
   //if not? Try button

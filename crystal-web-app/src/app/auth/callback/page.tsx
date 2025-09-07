@@ -1,4 +1,3 @@
-import { handleAuthRedirect } from "@/lib/auth-redirect";
 import {onAuthenticateUser} from "@/actions/user";
 import {redirect} from "next/navigation";
 

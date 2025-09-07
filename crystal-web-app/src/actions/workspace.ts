@@ -144,6 +144,7 @@ export const getAllUserVideos = async (workSpaceId: string) => {
     
     return { status: 404 }
   } catch (error) {
+    console.log(error)
     return { status: 400 }
   }
 }
@@ -238,6 +239,7 @@ export const createWorkspace = async (name: string) => {
       data: 'You are not authorized to create a workspace.',
     }
   } catch (error) {
+    console.log(error)
     return { status: 400 }
   }
 }
@@ -270,6 +272,7 @@ export const renameFolders = async (folderId: string, name: string) => {
     }
     return { status: 400, data: 'Folder does not exist' }
   } catch (error) {
+    console.log(error)
     return { status: 500, data: 'Opps! something went wrong' }
   }
 }
@@ -316,6 +319,7 @@ export const createFolder = async (workspaceId: string) => {
     }
   } catch (error) {
     // Handle database errors and return appropriate error response
+    console.log(error)
     return { status: 500, message: 'Something went wrong when creating folder' }
   }
 }
@@ -369,6 +373,7 @@ export const getFolderInfo = async (folderId: string) => {
       data: null,
     }
   } catch (error) {
+    console.log(error)
     return {
       status: 500,
       data: null,
@@ -425,6 +430,7 @@ export const moveVideoLocation = async (
     if (location) return { status: 200, data: 'folder changed successfully' }
     return { status: 404, data: 'workspace/folder not found' }
   } catch (error) {
+    console.log(error)
     return { status: 500, data: 'Oops! something went wrong' }
   }
 }
