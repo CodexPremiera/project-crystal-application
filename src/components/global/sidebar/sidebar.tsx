@@ -25,11 +25,11 @@ import {getNotifications} from "@/actions/user";
 import WorkspacePlaceholder from "@/components/global/sidebar/workspace-placeholder";
 import GlobalCard from "@/components/global/global-card";
 import {Button} from "@/components/ui/button";
-import Loader from "@/components/global/loader/loader";
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
 import Infobar from "@/components/global/infobar";
 import {useDispatch} from "react-redux";
 import {WORKSPACES} from "@/redux/slices/workspaces";
+import PaymentButton from "@/components/global/payment-button";
 
 type Props = {
   activeWorkspaceId: string;
@@ -215,11 +215,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         <GlobalCard
           title="Upgrade to Pro"
           description=" Unlock AI features like transcription, AI summary, and more."
-          footer={
-            <Button className="text-sm w-full ">
-              <Loader state={false}>Upgrade</Loader>
-            </Button>
-          }
+          footer={<PaymentButton />}
         />
       )}
     </div>
