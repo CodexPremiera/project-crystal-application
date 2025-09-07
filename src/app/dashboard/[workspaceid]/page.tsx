@@ -7,7 +7,7 @@ import {getAllUserVideos, getWorkspaceFolders} from '@/actions/workspace';
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
 
 type Props = {
-  params: { workspaceId: string }
+  params: Promise<{ workspaceId: string }>
 }
 
 /**
@@ -25,7 +25,8 @@ type Props = {
  *
  * @param params - Contains the workspaceId from the URL route (must be awaited)
  */
-const Page = async ({ params: { workspaceId } }: Props) => {
+const Page = async ({ params }: Props) => {
+  const { workspaceId } = await params
   const query = new QueryClient()
   
   await query.prefetchQuery({
