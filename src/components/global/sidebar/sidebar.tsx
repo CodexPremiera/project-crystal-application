@@ -67,11 +67,11 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   
   const SidebarSection = (
     <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden">
-      <div className="bg-[#111111] p-4 flex gap-2 justify-center items-center mb-4 absolute top-0 left-0 right-0">
+      <div className="bg-[#111111] p-4 flex gap-3 justify-center items-center mb-4 absolute top-0 left-0 right-0">
         <Image
-          src="/favicon.ico"
-          height={40}
-          width={40}
+          src="/opal-logo.svg"
+          height={32}
+          width={32}
           alt="logo"
         />
         <p className="text-2xl">Opal</p>
@@ -98,12 +98,12 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
             {workspace.members.length > 0 &&
               workspace.members.map(
                 (workspace) =>
-                  workspace.Workspace && (
+                  workspace.WorkSpace && (
                     <SelectItem
-                      value={workspace.Workspace.id}
-                      key={workspace.Workspace.id}
+                      value={workspace.WorkSpace.id}
+                      key={workspace.WorkSpace.id}
                     >
-                      {workspace.Workspace.name}
+                      {workspace.WorkSpace.name}
                     </SelectItem>
                   )
               )}
@@ -188,19 +188,19 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           {workspace.members.length > 0 &&
             workspace.members.map(
               (item) =>
-                item.Workspace &&
-                item.Workspace.type !== "PERSONAL" && (
+                item.WorkSpace &&
+                item.WorkSpace.type !== "PERSONAL" && (
                   <SidebarItem
-                    href={`/dashboard/${item.Workspace.id}`}
+                    href={`/dashboard/${item.WorkSpace.id}`}
                     selected={
-                      pathName === `/dashboard/${item.Workspace.id}`
+                      pathName === `/dashboard/${item.WorkSpace.id}`
                     }
-                    title={item.Workspace.name}
+                    title={item.WorkSpace.name}
                     notifications={0}
-                    key={item.Workspace.id}
+                    key={item.WorkSpace.id}
                     icon={
                       <WorkspacePlaceholder>
-                        {item.Workspace.name.charAt(0)}
+                        {item.WorkSpace.name.charAt(0)}
                       </WorkspacePlaceholder>
                     }
                   />
