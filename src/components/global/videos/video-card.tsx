@@ -25,6 +25,46 @@ type Props = {
   workspaceId: string
 }
 
+/**
+ * Video Card Component
+ * 
+ * This component displays individual video items in a card format within
+ * video grids and lists. It provides video metadata, user information,
+ * interactive controls, and navigation to video details.
+ * 
+ * Purpose: Display video information in an interactive card format for browsing
+ * 
+ * How it works:
+ * 1. Calculates time since video creation for display
+ * 2. Shows video thumbnail with processing state indication
+ * 3. Displays video metadata (title, creator, folder, date)
+ * 4. Provides hover-activated action buttons (menu, copy link)
+ * 5. Links to video preview page for detailed viewing
+ * 6. Handles loading states and processing indicators
+ * 
+ * Interactive Features:
+ * - Hover effects reveal action buttons
+ * - Video card menu for editing and management
+ * - Copy link functionality for sharing
+ * - Click navigation to video preview
+ * - Processing state indicators
+ * 
+ * Data Display:
+ * - Video thumbnail with processing overlay
+ * - Video title and creator information
+ * - Folder location and creation date
+ * - User avatar and name display
+ * - Time since creation calculation
+ * 
+ * Integration:
+ * - Used by video grid and list components
+ * - Connects to video management system
+ * - Integrates with user profile system
+ * - Part of video browsing and navigation
+ * 
+ * @param props - Video data object containing all video information
+ * @returns JSX element with interactive video card
+ */
 function VideoCard(props: Props) {
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt.getTime()) / (24 * 60 * 60 * 1000)

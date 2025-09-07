@@ -2,14 +2,40 @@ import { onAuthenticateUser } from "@/actions/user";
 import { redirect } from "next/navigation";
 
 /**
- * Shared authentication and redirect utility
+ * Authentication and Redirect Utility
  * 
- * This function handles the common authentication flow used by:
- * - Dashboard page
- * - Auth callback page
+ * This utility function provides a standardized authentication flow
+ * for pages that require user authentication. It handles user verification,
+ * workspace access, and appropriate redirection based on authentication status.
  * 
- * It authenticates the user and redirects them to their personal workspace
- * or to the sign-in page if authentication fails.
+ * Purpose: Provide consistent authentication flow with proper redirection logic
+ * 
+ * How it works:
+ * 1. Authenticates user using onAuthenticateUser action
+ * 2. Checks authentication status and user data
+ * 3. Redirects to personal workspace if authentication successful
+ * 4. Redirects to sign-in page if authentication fails
+ * 5. Handles edge cases and error scenarios
+ * 
+ * Authentication Flow:
+ * - Success (200/201): Redirect to user's personal workspace
+ * - No workspace: Redirect to sign-in page
+ * - Error (400/500/404): Redirect to sign-in page
+ * - Unexpected status: Redirect to sign-in page
+ * 
+ * Features:
+ * - Comprehensive error handling
+ * - Debug logging for troubleshooting
+ * - Workspace validation
+ * - Consistent redirect behavior
+ * 
+ * Integration:
+ * - Used by dashboard and auth callback pages
+ * - Connects to user authentication system
+ * - Part of authentication flow infrastructure
+ * - Essential for secure page access
+ * 
+ * @returns Promise that resolves to redirect action
  */
 export const handleAuthRedirect = async () => {
   // Step 1: Authenticate user and get their data

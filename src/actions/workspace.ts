@@ -320,6 +320,30 @@ export const createFolder = async (workspaceId: string) => {
   }
 }
 
+/**
+ * Retrieves folder information including name and video count
+ * 
+ * This function fetches essential folder metadata for display in the UI,
+ * including the folder name and the number of videos it contains.
+ * It's used for folder navigation and information display.
+ * 
+ * Purpose: Get folder metadata for UI display and navigation
+ * 
+ * How it works:
+ * 1. Queries database for folder by ID
+ * 2. Includes video count using Prisma's _count aggregation
+ * 3. Returns folder name and video count
+ * 4. Handles database errors gracefully
+ * 
+ * Integration:
+ * - Used by folder navigation components
+ * - Provides data for folder information display
+ * - Connects to folder and video database models
+ * - Essential for folder management UI
+ * 
+ * @param folderId - The unique identifier of the folder
+ * @returns Promise with folder information (name and video count)
+ */
 export const getFolderInfo = async (folderId: string) => {
   try {
     const folder = await client.folder.findUnique({
@@ -352,6 +376,37 @@ export const getFolderInfo = async (folderId: string) => {
   }
 }
 
+/**
+ * Moves a video between workspaces and/or folders
+ * 
+ * This function handles video relocation within the application's
+ * workspace structure. It can move videos between different workspaces
+ * and folders, updating the video's location references in the database.
+ * 
+ * Purpose: Enable video organization and relocation within workspace structure
+ * 
+ * How it works:
+ * 1. Updates video's workspace ID to the new workspace
+ * 2. Updates video's folder ID (null if moving to workspace root)
+ * 3. Returns success status with confirmation message
+ * 4. Handles database errors gracefully
+ * 
+ * Location Types:
+ * - Workspace root: folderId is null, video is directly in workspace
+ * - Folder: folderId is provided, video is inside specific folder
+ * - Cross-workspace: video moves between different workspaces
+ * 
+ * Integration:
+ * - Used by video management and organization components
+ * - Connects to video location change forms
+ * - Part of workspace and folder management system
+ * - Essential for video organization functionality
+ * 
+ * @param videoId - ID of the video to move
+ * @param workSpaceId - ID of the destination workspace
+ * @param folderId - ID of the destination folder (empty string for workspace root)
+ * @returns Promise with move operation status and confirmation message
+ */
 export const moveVideoLocation = async (
   videoId: string,
   workSpaceId: string,
@@ -375,6 +430,38 @@ export const moveVideoLocation = async (
 }
 
 
+/**
+ * Retrieves comprehensive video data for preview and display
+ * 
+ * This function fetches complete video information including metadata,
+ * user details, and subscription information for video preview pages.
+ * It also determines if the current user is the video author for
+ * conditional UI rendering.
+ * 
+ * Purpose: Get complete video data for preview and display pages
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries database for video with complete metadata
+ * 3. Includes user information and subscription details
+ * 4. Determines if current user is the video author
+ * 5. Returns comprehensive video data for UI rendering
+ * 
+ * Data Included:
+ * - Video metadata (title, description, views, processing status)
+ * - User information (name, image, subscription plan)
+ * - Author verification for conditional UI features
+ * - Video source and creation information
+ * 
+ * Integration:
+ * - Used by video preview and display pages
+ * - Provides data for video player and metadata display
+ * - Connects to user authentication and subscription systems
+ * - Essential for video viewing experience
+ * 
+ * @param videoId - The unique identifier of the video to preview
+ * @returns Promise with complete video data and author verification
+ */
 export const getPreviewVideo = async (videoId: string) => {
   try {
     const user = await currentUser()
@@ -422,6 +509,32 @@ export const getPreviewVideo = async (videoId: string) => {
   }
 }
 
+/**
+ * Updates video metadata including title and description
+ * 
+ * This function handles video information editing, allowing users to
+ * update the title and description of their videos. It provides
+ * a simple interface for video metadata management.
+ * 
+ * Purpose: Enable users to edit video information and metadata
+ * 
+ * How it works:
+ * 1. Updates video record in the database with new title and description
+ * 2. Returns success status with confirmation message
+ * 3. Handles database errors gracefully
+ * 4. Validates video existence before updating
+ * 
+ * Integration:
+ * - Used by video editing forms and components
+ * - Connects to video management system
+ * - Part of video metadata management
+ * - Essential for video information updates
+ * 
+ * @param videoId - ID of the video to update
+ * @param title - New title for the video
+ * @param description - New description for the video
+ * @returns Promise with update status and confirmation message
+ */
 export const editVideoInfo = async (
   videoId: string,
   title: string,
@@ -443,6 +556,40 @@ export const editVideoInfo = async (
   }
 }
 
+/**
+ * Handles first view notification system for video creators
+ * 
+ * This function manages the first view notification system, which sends
+ * email notifications to video creators when their videos receive their
+ * first view. It includes view tracking, email sending, and notification
+ * creation with proper user preference checking.
+ * 
+ * Purpose: Notify video creators when their videos get their first view
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Checks user's first view notification preference
+ * 3. Retrieves video information and current view count
+ * 4. If first view (views = 0), increments view count
+ * 5. Sends email notification to video creator
+ * 6. Creates in-app notification for the viewer
+ * 7. Handles email sending errors gracefully
+ * 
+ * Notification Features:
+ * - Respects user's notification preferences
+ * - Only triggers on first view (views = 0)
+ * - Sends both email and in-app notifications
+ * - Includes video title and creator information
+ * 
+ * Integration:
+ * - Used by video viewing system for first view tracking
+ * - Connects to email notification system
+ * - Part of user engagement and creator feedback system
+ * - Essential for creator notification features
+ * 
+ * @param videoId - ID of the video that received its first view
+ * @returns Promise with notification status (no return value on success)
+ */
 export const sendEmailForFirstView = async (videoId: string) => {
   try {
     const user = await currentUser()
