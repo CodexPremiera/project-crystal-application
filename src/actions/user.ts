@@ -3,6 +3,9 @@
 import {currentUser} from "@clerk/nextjs/server";
 import { client } from "@/lib/prisma";
 import nodemailer from 'nodemailer'
+import Stripe from 'stripe'
+
+const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET as string)
 
 export const sendEmail = async (
   to: string,
@@ -402,7 +405,7 @@ export const inviteMembers = async (
             `<a href="${process.env.NEXT_PUBLIC_HOST_URL}/invite/${invitation.id}" style="background-color: #000; padding: 5px 10px; border-radius: 10px;">Accept Invite</a>`
           )
           
-          transporter.sendMail(mailOptions, (error, info) => {
+          transporter.sendMail(mailOptions, (error) => {
             if (error) {
               console.log('🔴', error.message)
             } else {
@@ -481,3 +484,35 @@ export const acceptInvite = async (inviteId: string) => {
   }
 }
 
+export const completeSubscription = async (session_id: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const session = await stripe.checkout.sessions.retrieve(session_id)
+    if (session) {
+      const customer = await client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          subscription: {
+            update: {
+              data: {
+                customerId: session.customer as string,
+                plan: 'PRO',
+              },
+            },
+          },
+        },
+      })
+      if (customer) {
+        return { status: 200 }
+      }
+    }
+    return { status: 404 }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
