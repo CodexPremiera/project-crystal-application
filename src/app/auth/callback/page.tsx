@@ -1,4 +1,6 @@
 import { handleAuthRedirect } from "@/lib/auth-redirect";
+import {onAuthenticateUser} from "@/actions/user";
+import {redirect} from "next/navigation";
 
 /**
  * Auth Callback Page Component
@@ -9,7 +11,13 @@ import { handleAuthRedirect } from "@/lib/auth-redirect";
  * Uses the shared authentication utility to avoid code duplication.
  */
 const AuthCallbackPage = async () => {
-  return await handleAuthRedirect()
+  const auth = await onAuthenticateUser()
+  console.log(auth)
+  if (auth.status === 200 || auth.status === 201)
+    return redirect(`/dashboard/${auth.user?.workspace[0].id}`)
+  
+  if (auth.status === 403 || auth.status === 400 || auth.status === 500)
+    return redirect('/auth/sign-in')
 }
 
 export default AuthCallbackPage
