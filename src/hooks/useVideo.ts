@@ -4,6 +4,42 @@ import { useQueryData } from './useQueryData'
 import useZodForm from './useZodForm'
 import { createCommentAndReply, getUserProfile } from '@/actions/user'
 
+/**
+ * Custom hook for managing video comments and replies
+ * 
+ * This hook provides comprehensive functionality for video commenting system,
+ * including creating new comments, replying to existing comments, and managing
+ * user profile data for comment attribution.
+ * 
+ * Key Features:
+ * 1. Comment creation with form validation
+ * 2. Reply functionality for nested conversations
+ * 3. User profile integration for comment attribution
+ * 4. Real-time cache invalidation after comment creation
+ * 5. Form reset after successful submission
+ * 
+ * Data Flow:
+ * 1. Fetches current user profile for comment attribution
+ * 2. Validates comment form data using Zod schema
+ * 3. Submits comment/reply to server via mutation
+ * 4. Invalidates video comments cache to refresh UI
+ * 5. Resets form for new comment input
+ * 
+ * Comment Types:
+ * - Top-level comments: Created directly on videos
+ * - Replies: Created as responses to existing comments
+ * - Both types use the same validation and submission flow
+ * 
+ * Integration:
+ * - Connects to user actions for profile and comment operations
+ * - Uses React Query for data fetching and mutations
+ * - Integrates with form validation system
+ * - Provides consistent error handling and loading states
+ * 
+ * @param videoId - Unique identifier of the video for comment attribution
+ * @param commentId - Optional ID for reply comments (undefined for top-level)
+ * @returns Object containing form functions, validation errors, and loading state
+ */
 export const useVideoComment = (videoId: string, commentId?: string) => {
   const { data } = useQueryData(['user-profile'], getUserProfile)
 

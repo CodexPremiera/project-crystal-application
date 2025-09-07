@@ -35,6 +35,48 @@ type Props = {
   activeWorkspaceId: string;
 };
 
+/**
+ * Main Sidebar Component
+ * 
+ * This component serves as the primary navigation interface for the dashboard,
+ * providing workspace selection, navigation menu, user information, and
+ * subscription management. It includes responsive design with mobile support
+ * and integrates with Redux for state management.
+ * 
+ * Purpose: Provide comprehensive navigation and workspace management interface
+ * 
+ * How it works:
+ * 1. Fetches user workspaces and notifications using React Query
+ * 2. Manages workspace selection with dropdown interface
+ * 3. Displays navigation menu items based on current workspace
+ * 4. Shows user profile information and subscription status
+ * 5. Provides mobile-responsive design with collapsible sidebar
+ * 6. Integrates with Redux for global state management
+ * 
+ * Key Features:
+ * - Workspace selection and switching
+ * - Navigation menu with active state indication
+ * - User profile display with subscription information
+ * - Notification system integration
+ * - Mobile-responsive design with sheet component
+ * - Payment button for subscription upgrades
+ * - Search functionality integration
+ * 
+ * State Management:
+ * - Uses React Query for data fetching and caching
+ * - Integrates with Redux for workspace state
+ * - Manages local state for UI interactions
+ * - Handles workspace switching and navigation
+ * 
+ * Integration:
+ * - Used by dashboard layout for navigation
+ * - Connects to workspace and user data systems
+ * - Integrates with payment and subscription systems
+ * - Part of global navigation and user management
+ * 
+ * @param activeWorkspaceId - Currently selected workspace ID
+ * @returns JSX element with complete sidebar navigation interface
+ */
 export default function Sidebar({ activeWorkspaceId }: Props) {
   // TODO: Add the upgrade functionality
   const router = useRouter();

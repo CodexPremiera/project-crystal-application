@@ -1,8 +1,41 @@
 import { client } from './prisma'
 
 /**
+ * Database Health Monitoring Utilities
+ * 
+ * This file provides utilities for monitoring database connection health,
+ * checking connection pool status, and managing database connections.
+ * These functions are essential for maintaining database reliability
+ * and troubleshooting connection issues.
+ */
+
+/**
  * Checks the database connection health and returns status information
- * @returns Promise<{ status: 'healthy' | 'unhealthy', message: string, timestamp: Date }>
+ * 
+ * This function performs a simple database query to verify connection
+ * health and measures response time for performance monitoring.
+ * 
+ * Purpose: Monitor database connection health and performance
+ * 
+ * How it works:
+ * 1. Executes a simple SELECT 1 query to test connection
+ * 2. Measures response time for performance monitoring
+ * 3. Returns detailed health status with timing information
+ * 4. Handles connection errors gracefully
+ * 
+ * Features:
+ * - Connection health verification
+ * - Response time measurement
+ * - Detailed error reporting
+ * - Timestamp tracking
+ * 
+ * Integration:
+ * - Used by health check endpoints
+ * - Part of monitoring and debugging tools
+ * - Essential for database reliability
+ * - Available via npm scripts for manual testing
+ * 
+ * @returns Promise with database health status and performance metrics
  */
 export async function checkDatabaseHealth() {
   const startTime = Date.now()
@@ -31,7 +64,32 @@ export async function checkDatabaseHealth() {
 
 /**
  * Gets current database connection pool status
- * @returns Promise<{ activeConnections: number, idleConnections: number }>
+ * 
+ * This function queries the database to retrieve information about
+ * active connections and connection pool limits for monitoring
+ * and capacity planning purposes.
+ * 
+ * Purpose: Monitor database connection pool utilization
+ * 
+ * How it works:
+ * 1. Queries PostgreSQL system tables for connection information
+ * 2. Retrieves active connection count and maximum connections
+ * 3. Returns connection pool status for monitoring
+ * 4. Handles query errors gracefully
+ * 
+ * Features:
+ * - Active connection monitoring
+ * - Maximum connection limit tracking
+ * - PostgreSQL-specific implementation
+ * - Error handling and fallback values
+ * 
+ * Integration:
+ * - Used by monitoring and debugging tools
+ * - Part of database health monitoring system
+ * - Essential for capacity planning
+ * - Helps identify connection pool issues
+ * 
+ * @returns Promise with connection pool status information
  */
 export async function getConnectionPoolStatus() {
   try {
@@ -59,7 +117,38 @@ export async function getConnectionPoolStatus() {
 
 /**
  * Resets the database connection pool
- * Use this sparingly - only when experiencing connection issues
+ * 
+ * This function disconnects the current Prisma client to reset
+ * the connection pool. It should be used sparingly and only
+ * when experiencing persistent connection issues.
+ * 
+ * Purpose: Reset database connection pool for troubleshooting
+ * 
+ * How it works:
+ * 1. Disconnects the current Prisma client
+ * 2. Forces recreation of connection on next use
+ * 3. Returns success/failure status
+ * 4. Handles disconnection errors gracefully
+ * 
+ * Features:
+ * - Connection pool reset
+ * - Error handling and reporting
+ * - Success/failure status tracking
+ * - Safe disconnection process
+ * 
+ * Usage Notes:
+ * - Use sparingly - only for troubleshooting
+ * - Will recreate connection automatically
+ * - May cause temporary service interruption
+ * - Available via npm scripts for manual use
+ * 
+ * Integration:
+ * - Used by debugging and troubleshooting tools
+ * - Part of database maintenance utilities
+ * - Essential for connection issue resolution
+ * - Available via npm scripts for manual execution
+ * 
+ * @returns Promise with reset operation status
  */
 export async function resetConnectionPool() {
   try {

@@ -10,6 +10,57 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
+/**
+ * User Settings and Preferences Page
+ * 
+ * This page provides users with comprehensive settings management including
+ * theme selection (dark/light/system) and video sharing preferences. It
+ * allows users to customize their application experience and control
+ * notification settings for video engagement.
+ * 
+ * Purpose: Provide user settings and preferences management interface
+ * 
+ * How it works:
+ * 1. Manages theme selection with visual theme previews
+ * 2. Handles first-view notification preferences
+ * 3. Fetches current user settings on component mount
+ * 4. Updates settings with real-time feedback via toast notifications
+ * 5. Provides interactive theme selection with visual feedback
+ * 
+ * Theme Management:
+ * - Dark Mode: Dark theme with dark backgrounds
+ * - Light Mode: Light theme with light backgrounds
+ * - System Mode: Follows system preference automatically
+ * - Visual theme previews with selection indicators
+ * 
+ * Video Sharing Settings:
+ * - First View Notifications: Toggle for video view alerts
+ * - Email notifications when videos get first view
+ * - Useful for client outreach and engagement tracking
+ * - Real-time preference updates
+ * 
+ * Features:
+ * - Interactive theme selection with visual feedback
+ * - First-view notification toggle
+ * - Real-time settings updates
+ * - Toast notifications for user feedback
+ * - Responsive settings layout
+ * - Visual theme previews
+ * 
+ * User Experience:
+ * - Intuitive theme selection interface
+ * - Clear setting descriptions and benefits
+ * - Immediate feedback on setting changes
+ * - Organized settings categories
+ * 
+ * Integration:
+ * - Connects to user preference system
+ * - Uses theme management system
+ * - Integrates with notification system
+ * - Part of user account management
+ * 
+ * @returns JSX element with user settings and preferences interface
+ */
 const SettingsPage = () => {
   const [firstView, setFirstView] = useState<undefined | boolean>(undefined)
   const { setTheme, theme } = useTheme()

@@ -11,19 +11,44 @@ type Props = {
 }
 
 /**
- * Dashboard Page Component
- *
- * This is the main workspace dashboard page that displays content for a specific workspace.
- * It provides navigation between different content types (Videos, Archive) and includes
- * workspace management features like creating new workspaces.
- *
+ * Main Workspace Dashboard Page
+ * 
+ * This is the primary dashboard page for workspace content management.
+ * It provides a comprehensive interface for viewing and organizing videos
+ * within a specific workspace, including folder management and content
+ * organization features.
+ * 
+ * Purpose: Provide main workspace interface for video and folder management
+ * 
+ * How it works:
+ * 1. Prefetches workspace folders and videos for performance
+ * 2. Provides tabbed interface for content organization
+ * 3. Includes workspace creation functionality for PRO users
+ * 4. Displays folder structure and video content
+ * 5. Offers content creation and management tools
+ * 
  * Page Features:
  * - Tab navigation between Videos and Archive sections
  * - Workspace creation button for PRO users
  * - Dynamic routing based on workspaceId parameter
  * - Clean, organized layout for workspace content
- *
+ * - Folder management and organization tools
+ * - Video browsing and management interface
+ * 
+ * Data Management:
+ * - Prefetches workspace folders for immediate display
+ * - Prefetches user videos for content browsing
+ * - Uses React Query for efficient data caching
+ * - Provides hydration boundary for SSR optimization
+ * 
+ * Integration:
+ * - Used as main workspace dashboard interface
+ * - Connects to workspace and video management systems
+ * - Integrates with folder organization features
+ * - Part of workspace navigation and content management
+ * 
  * @param params - Contains the workspaceId from the URL route (must be awaited)
+ * @returns JSX element with workspace dashboard interface
  */
 const Page = async ({ params }: Props) => {
   const { workspaceId } = await params

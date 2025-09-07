@@ -13,6 +13,45 @@ type Props = {
   close?: () => void
 }
 
+/**
+ * Comment Form Component
+ * 
+ * This component provides a form interface for creating comments and replies
+ * on videos. It supports both top-level comments and nested replies, with
+ * appropriate placeholder text and submission handling.
+ * 
+ * Purpose: Enable users to comment on videos and reply to existing comments
+ * 
+ * How it works:
+ * 1. Uses useVideoComment hook for form management and submission
+ * 2. Integrates with FormGenerator for consistent input styling
+ * 3. Provides contextual placeholder text based on comment type
+ * 4. Handles both comment creation and reply functionality
+ * 5. Shows loading states during comment submission
+ * 
+ * Comment Types:
+ * - Top-level comments: When commentId is undefined
+ * - Replies: When commentId is provided (reply to existing comment)
+ * 
+ * Features:
+ * - Dynamic placeholder text based on comment type
+ * - Form validation and error handling
+ * - Loading states with send button animation
+ * - Integration with comment submission system
+ * - Consistent styling with application theme
+ * 
+ * Integration:
+ * - Used by video preview and comment display components
+ * - Connects to video commenting system
+ * - Integrates with form validation and submission
+ * - Part of video interaction and engagement features
+ * 
+ * @param videoId - ID of the video being commented on
+ * @param commentId - Optional ID of parent comment for replies
+ * @param author - Name of the comment author for placeholder text
+ * @param close - Optional callback function for form closure
+ * @returns JSX element with comment creation form
+ */
 const CommentForm = ({ author, videoId, commentId }: Props) => {
   const { errors, isPending, onFormSubmit, register } = useVideoComment(
     videoId,

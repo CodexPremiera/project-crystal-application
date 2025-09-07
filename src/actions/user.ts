@@ -7,6 +7,42 @@ import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET as string)
 
+/**
+ * Email Service Utility
+ * 
+ * This file contains server actions for user-related operations including
+ * authentication, profile management, notifications, comments, invitations,
+ * and subscription handling. All functions are server-side only and handle
+ * database operations, email sending, and Stripe integration.
+ */
+
+/**
+ * Configures and prepares email sending functionality
+ * 
+ * This utility function sets up nodemailer with Gmail SMTP configuration
+ * for sending emails throughout the application. It creates a transporter
+ * and prepares mail options for various email types (invitations, notifications).
+ * 
+ * Purpose: Provide email infrastructure for user communications
+ * 
+ * How it works:
+ * 1. Creates nodemailer transporter with Gmail SMTP settings
+ * 2. Configures secure connection (port 465, SSL)
+ * 3. Uses environment variables for authentication
+ * 4. Returns transporter and mail options for sending
+ * 
+ * Integration:
+ * - Used by invitation system for workspace invites
+ * - Used by notification system for user alerts
+ * - Used by first view notification system
+ * - Handles all outbound email communications
+ * 
+ * @param to - Recipient email address
+ * @param subject - Email subject line
+ * @param text - Plain text email content
+ * @param html - Optional HTML email content
+ * @returns Object containing transporter and mail options
+ */
 export const sendEmail = async (
   to: string,
   subject: string,
@@ -183,6 +219,38 @@ export const searchUsers = async (query: string) => {
   }
 }
 
+/**
+ * Creates new comments or replies to existing comments on videos
+ * 
+ * This function handles the complete comment creation flow for the video
+ * commenting system. It supports both top-level comments and nested replies,
+ * maintaining proper relationships in the database.
+ * 
+ * Purpose: Enable users to comment on videos and reply to existing comments
+ * 
+ * How it works:
+ * 1. If commentId is provided, creates a reply to an existing comment
+ * 2. If no commentId, creates a new top-level comment on the video
+ * 3. Uses Prisma's nested create operations for efficient database updates
+ * 4. Returns success status with confirmation message
+ * 5. Handles database errors gracefully
+ * 
+ * Comment Types:
+ * - Top-level comments: Direct comments on videos (commentId is undefined)
+ * - Replies: Responses to existing comments (commentId is provided)
+ * 
+ * Integration:
+ * - Used by useVideoComment hook for comment submission
+ * - Connects to video and comment database models
+ * - Provides data for comment display components
+ * - Handles both comment and reply creation in single function
+ * 
+ * @param userId - ID of the user creating the comment
+ * @param comment - The comment text content
+ * @param videoId - ID of the video being commented on
+ * @param commentId - Optional ID of parent comment for replies
+ * @returns Promise with creation status and confirmation message
+ */
 export const createCommentAndReply = async (
   userId: string,
   comment: string,
@@ -230,6 +298,29 @@ export const createCommentAndReply = async (
   }
 }
 
+/**
+ * Retrieves current user's profile information for comment attribution
+ * 
+ * This function fetches essential user profile data needed for comment
+ * creation and display. It provides the user's ID and profile image
+ * for comment attribution in the UI.
+ * 
+ * Purpose: Get user profile data for comment system integration
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries database for user's ID and profile image
+ * 3. Returns profile data for comment creation
+ * 4. Handles authentication errors gracefully
+ * 
+ * Integration:
+ * - Used by useVideoComment hook for comment attribution
+ * - Provides data for comment display components
+ * - Connects to user profile system
+ * - Essential for comment creation flow
+ * 
+ * @returns Promise with user profile data (ID and image) or error status
+ */
 export const getUserProfile = async () => {
   try {
     const user = await currentUser()
@@ -251,6 +342,36 @@ export const getUserProfile = async () => {
   }
 }
 
+/**
+ * Retrieves all comments and replies for a specific video
+ * 
+ * This function fetches the complete comment thread for a video, including
+ * all top-level comments and their nested replies. It provides the data
+ * structure needed for displaying hierarchical comment conversations.
+ * 
+ * Purpose: Get complete comment thread for video display
+ * 
+ * How it works:
+ * 1. Queries database for comments associated with the video
+ * 2. Includes nested replies using Prisma's include functionality
+ * 3. Filters for top-level comments (commentId is null)
+ * 4. Includes user information for comment attribution
+ * 5. Returns hierarchical comment structure for UI rendering
+ * 
+ * Data Structure:
+ * - Top-level comments with nested replies
+ * - User information for each comment and reply
+ * - Proper ordering for conversation flow
+ * 
+ * Integration:
+ * - Used by video preview and comment display components
+ * - Provides data for comment thread rendering
+ * - Connects to comment and user database models
+ * - Essential for video commenting system
+ * 
+ * @param Id - The video ID to fetch comments for
+ * @returns Promise with complete comment thread data
+ */
 export const getVideoComments = async (Id: string) => {
   try {
     const comments = await client.comment.findMany({
@@ -275,6 +396,29 @@ export const getVideoComments = async (Id: string) => {
   }
 }
 
+/**
+ * Retrieves current user's subscription and payment information
+ * 
+ * This function fetches the user's subscription plan details for
+ * determining access levels and feature availability throughout
+ * the application.
+ * 
+ * Purpose: Get user subscription data for access control and UI display
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries database for user's subscription plan
+ * 3. Returns subscription data for access control
+ * 4. Handles authentication errors gracefully
+ * 
+ * Integration:
+ * - Used by subscription management components
+ * - Provides data for access control throughout the app
+ * - Connects to billing and payment systems
+ * - Essential for feature gating based on subscription plan
+ * 
+ * @returns Promise with user's subscription plan information
+ */
 export const getPaymentInfo = async () => {
   try {
     const user = await currentUser()
@@ -299,6 +443,30 @@ export const getPaymentInfo = async () => {
   }
 }
 
+/**
+ * Updates user's first view notification preference
+ * 
+ * This function allows users to enable or disable email notifications
+ * when their videos receive their first view. It updates the user's
+ * preference in the database for future video view tracking.
+ * 
+ * Purpose: Manage user notification preferences for video views
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Updates user's firstView setting in the database
+ * 3. Returns success status with confirmation message
+ * 4. Handles authentication and database errors gracefully
+ * 
+ * Integration:
+ * - Used by user settings and notification preference components
+ * - Connects to email notification system
+ * - Affects first view email sending behavior
+ * - Part of user preference management system
+ * 
+ * @param state - Boolean value to enable (true) or disable (false) first view notifications
+ * @returns Promise with update status and confirmation message
+ */
 export const enableFirstView = async (state: boolean) => {
   try {
     const user = await currentUser()
@@ -323,6 +491,29 @@ export const enableFirstView = async (state: boolean) => {
   }
 }
 
+/**
+ * Retrieves user's first view notification preference setting
+ * 
+ * This function fetches the current user's preference for receiving
+ * email notifications when their videos get their first view. It's
+ * used to determine whether to send first view notifications.
+ * 
+ * Purpose: Get user's first view notification preference
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries database for user's firstView setting
+ * 3. Returns the current preference value
+ * 4. Handles authentication errors gracefully
+ * 
+ * Integration:
+ * - Used by notification system to check user preferences
+ * - Connects to first view email sending logic
+ * - Part of user preference management system
+ * - Essential for conditional notification sending
+ * 
+ * @returns Promise with user's first view notification preference (boolean)
+ */
 export const getFirstView = async () => {
   try {
     const user = await currentUser()
@@ -345,6 +536,42 @@ export const getFirstView = async () => {
   }
 }
 
+/**
+ * Sends workspace invitation to another user via email
+ * 
+ * This function handles the complete workspace invitation flow, including
+ * creating invitation records, sending email notifications, and updating
+ * user notifications. It enables workspace owners to invite other users
+ * to collaborate on their workspaces.
+ * 
+ * Purpose: Enable workspace collaboration through user invitations
+ * 
+ * How it works:
+ * 1. Gets current authenticated user (inviter) from Clerk
+ * 2. Fetches inviter's profile information for email content
+ * 3. Retrieves workspace details for invitation context
+ * 4. Creates invitation record in the database
+ * 5. Sends email notification to the invited user
+ * 6. Creates notification for the inviter
+ * 7. Returns success status with confirmation message
+ * 
+ * Email Integration:
+ * - Sends HTML email with invitation link
+ * - Includes workspace name and inviter information
+ * - Provides direct link to accept invitation
+ * - Uses configured SMTP settings for delivery
+ * 
+ * Integration:
+ * - Used by workspace management components
+ * - Connects to email notification system
+ * - Creates database records for invitation tracking
+ * - Part of workspace collaboration system
+ * 
+ * @param workspaceId - ID of the workspace to invite user to
+ * @param receiverId - ID of the user being invited
+ * @param email - Email address of the user being invited
+ * @returns Promise with invitation status and confirmation message
+ */
 export const inviteMembers = async (
   workspaceId: string,
   receiverId: string,
@@ -425,6 +652,39 @@ export const inviteMembers = async (
   }
 }
 
+/**
+ * Accepts a workspace invitation and adds user to the workspace
+ * 
+ * This function handles the invitation acceptance flow, including
+ * verifying the invitation belongs to the current user, updating
+ * the invitation status, and adding the user as a workspace member.
+ * It uses database transactions to ensure data consistency.
+ * 
+ * Purpose: Complete the workspace invitation acceptance process
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies the invitation belongs to the current user
+ * 3. Updates invitation status to accepted
+ * 4. Adds user as a member of the workspace
+ * 5. Uses database transaction for atomic operations
+ * 6. Returns success status upon completion
+ * 
+ * Security Features:
+ * - Verifies invitation ownership before processing
+ * - Uses database transactions for data consistency
+ * - Prevents unauthorized invitation acceptance
+ * - Handles authentication errors gracefully
+ * 
+ * Integration:
+ * - Used by invitation acceptance pages
+ * - Connects to workspace membership system
+ * - Part of workspace collaboration flow
+ * - Essential for invitation system completion
+ * 
+ * @param inviteId - ID of the invitation to accept
+ * @returns Promise with acceptance status
+ */
 export const acceptInvite = async (inviteId: string) => {
   try {
     const user = await currentUser()
@@ -484,6 +744,37 @@ export const acceptInvite = async (inviteId: string) => {
   }
 }
 
+/**
+ * Completes subscription upgrade after successful Stripe payment
+ * 
+ * This function handles the post-payment subscription completion flow,
+ * including retrieving the Stripe session, updating the user's subscription
+ * plan to PRO, and storing the customer ID for future billing operations.
+ * 
+ * Purpose: Complete subscription upgrade after successful payment processing
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Retrieves Stripe checkout session using session ID
+ * 3. Updates user's subscription plan to PRO
+ * 4. Stores Stripe customer ID for future billing
+ * 5. Returns success status upon completion
+ * 
+ * Stripe Integration:
+ * - Retrieves checkout session details from Stripe
+ * - Extracts customer ID for future billing operations
+ * - Updates subscription plan based on successful payment
+ * - Handles Stripe API errors gracefully
+ * 
+ * Integration:
+ * - Used by payment completion callbacks
+ * - Connects to Stripe billing system
+ * - Updates user subscription status
+ * - Essential for subscription upgrade flow
+ * 
+ * @param session_id - Stripe checkout session ID from successful payment
+ * @returns Promise with subscription completion status
+ */
 export const completeSubscription = async (session_id: string) => {
   try {
     const user = await currentUser()
