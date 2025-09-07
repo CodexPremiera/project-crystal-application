@@ -8,11 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:health": "node -e \"import('./src/lib/db-health.ts').then(m => m.checkDatabaseHealth()).then(console.log).catch(console.error)\"",
-    "db:reset": "node -e \"import('./src/lib/db-health.ts').then(m => m.resetConnectionPool()).then(console.log).catch(console.error)\""
+    "db:health": "node -e \"import('src/lib/db-health.ts').then(m => m.checkDatabaseHealth()).then(console.log).catch(console.error)\"",
+    "db:reset": "node -e \"import('src/lib/db-health.ts').then(m => m.resetConnectionPool()).then(console.log).catch(console.error)\""
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.31.3",
+    "@clerk/nextjs": "^6.31.9",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "^6.14.0",
