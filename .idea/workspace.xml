@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add widget with sign up and login in app window">
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/media-configuration.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/hooks/useMediaSources.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="setup getting media sources in the widget">
+      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/app/api/auth/[id]/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +90,7 @@
     "git-widget-placeholder": "desktop",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/hooks",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/api",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -105,11 +103,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\hooks" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global\widget" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\public" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
@@ -175,15 +173,7 @@
       <workItem from="1757237656138" duration="5657000" />
       <workItem from="1757255660056" duration="6121000" />
       <workItem from="1757262257018" duration="7406000" />
-      <workItem from="1757327135221" duration="2599000" />
-    </task>
-    <task id="LOCAL-00010" summary="add workspace layout and access verification for dashboard">
-      <option name="closed" value="true" />
-      <created>1755684926196</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1755684926196</updated>
+      <workItem from="1757327135221" duration="3673000" />
     </task>
     <task id="LOCAL-00011" summary="add prefetch server action for workspace data in personalized workspace layout">
       <option name="closed" value="true" />
@@ -569,7 +559,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757340116467</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="setup getting media sources in the widget">
+      <option name="closed" value="true" />
+      <created>1757340693901</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1757340693901</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -606,7 +604,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update todo in folder" />
     <MESSAGE value="add videos props" />
     <MESSAGE value="fix some problems" />
     <MESSAGE value="complete billing page" />
@@ -631,6 +628,7 @@
     <MESSAGE value="establish initial general layout of window app" />
     <MESSAGE value="setup clerk authentication" />
     <MESSAGE value="add widget with sign up and login in app window" />
-    <option name="LAST_COMMIT_MESSAGE" value="add widget with sign up and login in app window" />
+    <MESSAGE value="setup getting media sources in the widget" />
+    <option name="LAST_COMMIT_MESSAGE" value="setup getting media sources in the widget" />
   </component>
 </project>
