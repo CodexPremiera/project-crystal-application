@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="setup clerk authentication">
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/loader-spinner.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/App.tsx" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add widget with sign up and login in app window">
+      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/media-configuration.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/hooks/useMediaSources.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/.idea/opal-application.iml" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/.idea/opal-application.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,33 +83,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;desktop&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/components/global&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "desktop",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/hooks",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\hooks" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global\widget" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\public" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
@@ -177,15 +175,7 @@
       <workItem from="1757237656138" duration="5657000" />
       <workItem from="1757255660056" duration="6121000" />
       <workItem from="1757262257018" duration="7406000" />
-      <workItem from="1757327135221" duration="2164000" />
-    </task>
-    <task id="LOCAL-00009" summary="fix redirect to dashboard after sign in">
-      <option name="closed" value="true" />
-      <created>1755675223562</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1755675223562</updated>
+      <workItem from="1757327135221" duration="2599000" />
     </task>
     <task id="LOCAL-00010" summary="add workspace layout and access verification for dashboard">
       <option name="closed" value="true" />
@@ -571,7 +561,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757269984965</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="add widget with sign up and login in app window">
+      <option name="closed" value="true" />
+      <created>1757340116467</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1757340116467</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,7 +606,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add video activity and ai tools feature" />
     <MESSAGE value="update todo in folder" />
     <MESSAGE value="add videos props" />
     <MESSAGE value="fix some problems" />
@@ -633,6 +630,7 @@
     <MESSAGE value="add clerk js" />
     <MESSAGE value="establish initial general layout of window app" />
     <MESSAGE value="setup clerk authentication" />
-    <option name="LAST_COMMIT_MESSAGE" value="setup clerk authentication" />
+    <MESSAGE value="add widget with sign up and login in app window" />
+    <option name="LAST_COMMIT_MESSAGE" value="add widget with sign up and login in app window" />
   </component>
 </project>

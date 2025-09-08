@@ -21,3 +21,14 @@ export const fetchUserProfile = async (clerkId: string) => {
 };
 
 export const onCloseApp = () => window.ipcRenderer.send("closeApp");
+
+export const getMediaSources = async () => {
+  const displays = await window.ipcRenderer.invoke("getSources");
+  const enumerateDevices =
+    await window.navigator.mediaDevices.enumerateDevices();
+  const audioInputs = enumerateDevices.filter(
+    (device) => device.kind == "audioinput"
+  );
+  console.log("getting sources");
+  return { displays, audio: audioInputs };
+};

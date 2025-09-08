@@ -1,10 +1,13 @@
+import { useMediaSources } from "@/hooks/useMediaSources";
 import { fetchUserProfile } from "@/lib/utils";
 import { ClerkLoading, SignedIn, useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
+import { MediaConfiguration } from "./media-configuration";
 import {Spinner} from "@/components/global/loader-spinner.tsx";
 
 export const Widget = () => {
   const { user } = useUser();
+  const { state, fetchMediaResources } = useMediaSources();
   
   const [profile, setProfile] = useState<{
     status: number;
@@ -37,6 +40,7 @@ export const Widget = () => {
     console.log("fetching");
     if (user && user.id) {
       fetchUserProfile(user.id).then((p) => setProfile(p));
+      fetchMediaResources();
     }
   }, [user]);
   
@@ -49,7 +53,7 @@ export const Widget = () => {
       </ClerkLoading>
       <SignedIn>
         {profile ? (
-          <>Hello</>
+          <MediaConfiguration state={state} user={profile?.user} />
         ) : (
           <div className="w-full h-full flex justify-center items-center">
             <Spinner color="#fff" />
