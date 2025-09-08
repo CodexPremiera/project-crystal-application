@@ -3,6 +3,7 @@ import './App.css'
 import {Toaster} from "sonner";
 import {ControlLayout} from "@/layouts/control-layout.tsx";
 import {AuthButton} from "@/components/global/auth-button.tsx";
+import {Widget} from "@/components/global/widget/widget.tsx";
 
 const client = new QueryClient();
 
@@ -11,8 +12,7 @@ function App() {
     <QueryClientProvider client={client}>
       <ControlLayout>
         <AuthButton />
-        {/*
-        <Widget />*/}
+        <Widget />
       </ControlLayout>
       <Toaster />
     </QueryClientProvider>
