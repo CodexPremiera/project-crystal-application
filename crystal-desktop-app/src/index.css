@@ -115,7 +115,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground overflow-hidden;
+    @apply bg-transparent text-foreground overflow-hidden;
   }
 }
 
