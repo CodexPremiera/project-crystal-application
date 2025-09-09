@@ -34,6 +34,8 @@ export const MediaConfiguration = ({
   user,
   state,
 }: MediaConfigurationProps) => {
+  
+  // find active screen and audio from user settings
   const activeScreen = state.displays?.find(
     (screen) => screen.id === user?.studio?.screen
   );

@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add auth api route for the desktop app authentication">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="update middleware">
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/hooks/useStudioSettings.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/hooks/useZodForm.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/schemas/studio-settings.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/hooks/useZodForm.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/hooks/useZodForm.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,33 +85,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;desktop&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/hooks&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "desktop",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\hooks" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global\widget" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
@@ -178,15 +179,7 @@
       <workItem from="1757262257018" duration="7406000" />
       <workItem from="1757327135221" duration="3673000" />
       <workItem from="1757344844526" duration="2963000" />
-      <workItem from="1757394675408" duration="1383000" />
-    </task>
-    <task id="LOCAL-00012" summary="add Sidebar component and integrate React Query provider in personalized workspace layout">
-      <option name="closed" value="true" />
-      <created>1755688141778</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1755688141778</updated>
+      <workItem from="1757394675408" duration="2699000" />
     </task>
     <task id="LOCAL-00013" summary="fix manrope not found problem">
       <option name="closed" value="true" />
@@ -572,7 +565,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757345755303</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="update middleware">
+      <option name="closed" value="true" />
+      <created>1757404872973</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1757404872973</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -609,7 +610,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix some problems" />
     <MESSAGE value="complete billing page" />
     <MESSAGE value="create notifications page" />
     <MESSAGE value="create settings page" />
@@ -634,6 +634,7 @@
     <MESSAGE value="add widget with sign up and login in app window" />
     <MESSAGE value="setup getting media sources in the widget" />
     <MESSAGE value="add auth api route for the desktop app authentication" />
-    <option name="LAST_COMMIT_MESSAGE" value="add auth api route for the desktop app authentication" />
+    <MESSAGE value="update middleware" />
+    <option name="LAST_COMMIT_MESSAGE" value="update middleware" />
   </component>
 </project>
