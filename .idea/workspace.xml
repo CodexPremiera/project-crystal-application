@@ -4,17 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="establish media configurations">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="prepare the electron app for the three windows it will have">
+      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/studio.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/webcam.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/studio_app.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/studio_main.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_app.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/studio.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/crystal-desktop-app/webcam.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/layouts/control-layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/layouts/control-layout.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +96,7 @@
     "git-widget-placeholder": "desktop",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/components/global",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -111,11 +109,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\hooks" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global\widget" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
@@ -183,15 +181,7 @@
       <workItem from="1757262257018" duration="7406000" />
       <workItem from="1757327135221" duration="3673000" />
       <workItem from="1757344844526" duration="2963000" />
-      <workItem from="1757394675408" duration="3693000" />
-    </task>
-    <task id="LOCAL-00014" summary="last stable version">
-      <option name="closed" value="true" />
-      <created>1755697055574</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1755697055574</updated>
+      <workItem from="1757394675408" duration="3995000" />
     </task>
     <task id="LOCAL-00015" summary="add all icons">
       <option name="closed" value="true" />
@@ -577,7 +567,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757406473108</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="prepare the electron app for the three windows it will have">
+      <option name="closed" value="true" />
+      <created>1757407340060</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1757407340061</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +612,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="create notifications page" />
     <MESSAGE value="create settings page" />
     <MESSAGE value="remove unused variables" />
     <MESSAGE value="workspace owner can search for other users" />
@@ -639,6 +636,7 @@
     <MESSAGE value="add auth api route for the desktop app authentication" />
     <MESSAGE value="update middleware" />
     <MESSAGE value="establish media configurations" />
-    <option name="LAST_COMMIT_MESSAGE" value="establish media configurations" />
+    <MESSAGE value="prepare the electron app for the three windows it will have" />
+    <option name="LAST_COMMIT_MESSAGE" value="prepare the electron app for the three windows it will have" />
   </component>
 </project>

@@ -150,7 +150,7 @@ ipcMain.handle("getSources", async () => {
 
 ipcMain.on("media-sources", (event, payload) => {
   console.log(event);
-  studio?.webContents.send("profile-recieved", payload);
+  studio?.webContents.send("profile-received", payload);
 });
 
 ipcMain.on("resize-studio", (event, payload) => {
