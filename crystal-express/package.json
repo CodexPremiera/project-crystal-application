@@ -1,0 +1,26 @@
+{
+  "name": "crystal-express",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.884.0",
+    "@aws-sdk/lib-storage": "^3.884.0",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "fix-webm-duration": "^1.0.6",
+    "hound": "^1.0.5",
+    "nodemon": "^3.1.10",
+    "openai": "^5.20.0",
+    "socket.io": "^4.8.1",
+    "zod": "^3.25.76"
+  }
+}
