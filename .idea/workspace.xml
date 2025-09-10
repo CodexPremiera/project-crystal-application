@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="complete the studio widget feature">
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/webcam.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_app.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-desktop-app/webcam.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="document the desktop app" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,10 +84,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "desktop",
+    "git-widget-placeholder": "express",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-desktop-app/src/lib",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/api",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -108,11 +100,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\lib" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\components\global" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app\src\hooks" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
@@ -181,38 +173,7 @@
       <workItem from="1757327135221" duration="3673000" />
       <workItem from="1757344844526" duration="2963000" />
       <workItem from="1757394675408" duration="6644000" />
-    </task>
-    <task id="LOCAL-00016" summary="implement optimistic UI for folder rendering and enhance data fetching for workspace folders">
-      <option name="closed" value="true" />
-      <created>1756295126752</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1756295126752</updated>
-    </task>
-    <task id="LOCAL-00017" summary="create the hooks and server actions for creating folder in workspace">
-      <option name="closed" value="true" />
-      <created>1756296321375</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1756296321375</updated>
-    </task>
-    <task id="LOCAL-00018" summary="fix flicker bug; use the latest variables on folder rename">
-      <option name="closed" value="true" />
-      <created>1756297023825</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1756297023825</updated>
-    </task>
-    <task id="LOCAL-00019" summary="create dynamic route for workspace folders">
-      <option name="closed" value="true" />
-      <created>1756298773421</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1756298773421</updated>
+      <workItem from="1757463590714" duration="9226000" />
     </task>
     <task id="LOCAL-00020" summary="add redux state management">
       <option name="closed" value="true" />
@@ -574,7 +535,39 @@
       <option name="project" value="LOCAL" />
       <updated>1757407833858</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="add webcam widget with default cam showing">
+      <option name="closed" value="true" />
+      <created>1757468149619</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1757468149619</updated>
+    </task>
+    <task id="LOCAL-00066" summary="fix errors where media configuration is not loading the media forms">
+      <option name="closed" value="true" />
+      <created>1757468195698</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1757468195698</updated>
+    </task>
+    <task id="LOCAL-00067" summary="add route for the studio tray">
+      <option name="closed" value="true" />
+      <created>1757470179143</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1757470179143</updated>
+    </task>
+    <task id="LOCAL-00068" summary="document the desktop app">
+      <option name="closed" value="true" />
+      <created>1757470771340</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1757470771340</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -598,7 +591,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="desktop" />
+                        <option value="express" />
                       </list>
                     </value>
                   </entry>
@@ -611,10 +604,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove unused variables" />
-    <MESSAGE value="workspace owner can search for other users" />
-    <MESSAGE value="workspace owner can now send email invites to their workspace" />
-    <MESSAGE value="users can accept invitations to the workspace" />
     <MESSAGE value="add stripe payment" />
     <MESSAGE value="add stripe subscription" />
     <MESSAGE value="add comprehensive documentation on each component and page" />
@@ -636,6 +625,10 @@
     <MESSAGE value="establish media configurations" />
     <MESSAGE value="prepare the electron app for the three windows it will have" />
     <MESSAGE value="complete the studio widget feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="complete the studio widget feature" />
+    <MESSAGE value="add webcam widget with default cam showing" />
+    <MESSAGE value="fix errors where media configuration is not loading the media forms" />
+    <MESSAGE value="add route for the studio tray" />
+    <MESSAGE value="document the desktop app" />
+    <option name="LAST_COMMIT_MESSAGE" value="document the desktop app" />
   </component>
 </project>
