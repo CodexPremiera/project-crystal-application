@@ -31,11 +31,11 @@ export const ControlLayout = ({ children, className }: ControlLayoutProps) => {
           onClick={onCloseApp}
         />
       </div>
-      <div className="flex-1 h-0 overflow-auto">{children}</div>
+      <div className="flex-1 overflow-auto">{children}</div>
       <div className="p-5 flex w-full">
         <div className="flex items-center gap-x-2">
           <img src="/opal-logo.svg"  alt="Crystal Logo"/>
-          <p className="text-white text-2xl">Opal</p>
+          <p className="text-white text-2xl">Crystal</p>
         </div>
       </div>
     </div>

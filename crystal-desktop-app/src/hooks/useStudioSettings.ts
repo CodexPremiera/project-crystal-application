@@ -12,14 +12,17 @@ export const useStudioSettings = (
   preset?: "HD" | "SD",
   plan?: "PRO" | "FREE"
 ) => {
-  const { register, watch } = useZodForm(updateStudioSettingsSchema, {
-    screen: screen!,
-    audio: audio!,
-    preset: preset!,
-  });
+  // Only initialize form when we have valid default values
+  const defaultValues = screen && audio && preset ? {
+    screen,
+    audio,
+    preset,
+  } : undefined;
+
+  const { register, watch } = useZodForm(updateStudioSettingsSchema, defaultValues);
 
   const [onPreset, setPreset] = useState<"HD" | "SD" | undefined>();
-
+  
   const { mutate, isPending } = useMutation({
     mutationKey: ["update-studio"],
     mutationFn: (data: {

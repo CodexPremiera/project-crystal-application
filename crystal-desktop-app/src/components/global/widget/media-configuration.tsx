@@ -47,11 +47,20 @@ export const MediaConfiguration = ({
   //check if user has set a source if not use the first source in the array
   const { register, isPending, onPreset } = useStudioSettings(
     user!.id,
-    user?.studio?.screen || state.displays?.[0].id,
-    user?.studio?.mic || state.audioInputs?.[0].deviceId,
-    user?.studio?.preset,
+    user?.studio?.screen || state.displays?.[0]?.id,
+    user?.studio?.mic || state.audioInputs?.[0]?.deviceId,
+    user?.studio?.preset || "SD",
     user?.subscription?.plan
   );
+  
+  // Show loading if we don't have the required data yet
+  if (!user || !state.displays?.length || !state.audioInputs?.length) {
+    return (
+      <div className="flex h-full justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <form className="flex h-full relative w-full flex-col gap-y-5">
