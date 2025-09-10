@@ -2,7 +2,6 @@ import { app, BrowserWindow, desktopCapturer, ipcMain } from "electron";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The built directory structure
@@ -25,10 +24,25 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
 
-let win: BrowserWindow | null;
-let studio: BrowserWindow | null;
-let floatingWebCam: BrowserWindow | null;
+// Global window references for the three main windows
+let win: BrowserWindow | null;           // Main control window
+let studio: BrowserWindow | null;        // Studio tray window
+let floatingWebCam: BrowserWindow | null; // Webcam window
 
+/**
+ * Creates and configures all three application windows.
+ * 
+ * This function sets up the main Electron windows for the Crystal Desktop App:
+ * 1. Main Control Window (600x600px) - Primary configuration interface
+ * 2. Studio Tray Window (400x50px) - Recording controls and preview
+ * 3. Webcam Window (400x200px) - Optional camera feed
+ * 
+ * All windows are configured as:
+ * - Frameless and transparent for modern appearance
+ * - Always on top for easy access during recording
+ * - Non-focusable to avoid interfering with user workflow
+ * - Set to be visible on all workspaces including fullscreen apps
+ */
 function createWindow() {
   win = new BrowserWindow({
     width: 600,
@@ -130,6 +144,10 @@ app.on("window-all-closed", () => {
   }
 });
 
+/**
+ * IPC handler for closing the application.
+ * Only works on Windows - macOS handles this automatically.
+ */
 ipcMain.on("closeApp", () => {
   //only works on windows, mac does not need this
   if (process.platform !== "darwin") {
@@ -140,6 +158,14 @@ ipcMain.on("closeApp", () => {
   }
 });
 
+/**
+ * IPC handler for retrieving available media sources.
+ * 
+ * This handler uses Electron's desktopCapturer API to get available
+ * display sources (screens and windows) for screen recording.
+ * 
+ * @returns Promise resolving to array of available sources
+ */
 ipcMain.handle("getSources", async () => {
   return await desktopCapturer.getSources({
     thumbnailSize: { height: 100, width: 150 },
@@ -148,11 +174,29 @@ ipcMain.handle("getSources", async () => {
   });
 });
 
+/**
+ * IPC handler for syncing media source configuration between windows.
+ * 
+ * This handler forwards media source configuration from the main control
+ * window to the studio tray window to keep them synchronized.
+ * 
+ * @param event - IPC event object
+ * @param payload - Media source configuration object
+ */
 ipcMain.on("media-sources", (event, payload) => {
   console.log(event);
   studio?.webContents.send("profile-received", payload);
 });
 
+/**
+ * IPC handler for resizing the studio window.
+ * 
+ * This handler adjusts the studio window size based on whether the
+ * preview is being shown or hidden.
+ * 
+ * @param event - IPC event object
+ * @param payload - Object containing shrink boolean
+ */
 ipcMain.on("resize-studio", (event, payload) => {
   console.log(event);
   if (payload.shrink) {
@@ -163,6 +207,15 @@ ipcMain.on("resize-studio", (event, payload) => {
   }
 });
 
+/**
+ * IPC handler for controlling plugin window visibility.
+ * 
+ * This handler hides or shows the main control window during recording
+ * to prevent it from appearing in the recorded video.
+ * 
+ * @param event - IPC event object
+ * @param payload - Object containing state boolean
+ */
 ipcMain.on("hide-plugin", (event, payload) => {
   console.log(event);
   win?.webContents.send("hide-plugin", payload);

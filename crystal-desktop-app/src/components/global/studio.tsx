@@ -6,8 +6,27 @@ import { cn, resizeWindow, videoRecordingTime } from "@/lib/utils";
 import { Cast, Pause, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * StudioTray component - The main recording control interface.
+ * 
+ * This component provides the recording controls and preview functionality for the Crystal Desktop App.
+ * It manages the recording state, timer, and media source selection for screen recording.
+ * 
+ * Key Features:
+ * - Real-time recording timer with automatic stop for FREE plan (5 minutes)
+ * - Recording start/stop controls with visual feedback
+ * - Live preview of the recording area
+ * - Preview toggle to show/hide the recording preview
+ * - Automatic media source selection and stream management
+ * - Window resizing based on preview state
+ * 
+ * The component receives media source configuration through IPC communication
+ * from the main control window and manages the recording workflow.
+ */
 export const StudioTray = () => {
   let initialTime = new Date();
+  
+  // Media source configuration received from main control window
   const [onSources, setOnSources] = useState<
     | {
         screen: string;
@@ -18,24 +37,37 @@ export const StudioTray = () => {
       }
     | undefined
   >(undefined);
+  
+  // Recording state management
   const [recording, setRecording] = useState<boolean>(false);
   const [onTimer, setOnTimer] = useState<string>("00:00:00");
   const [count, setCount] = useState<number>(0);
 
+  /**
+   * Resets the recording timer to initial state.
+   * Called when recording stops or when resetting the timer.
+   */
   const clearTime = () => {
     setOnTimer("00:00:00");
     setCount(0);
   };
 
+  // Listen for media source configuration from main control window
   window.ipcRenderer.on("profile-received", (event, payload) => {
     console.log(event);
     setOnSources(payload);
   });
 
+  // Preview state for showing/hiding the recording preview
   const [preview, setPreview] = useState<boolean>(false);
 
+  // Video element reference for displaying the recording preview
   const videoElement = useRef<HTMLVideoElement | null>(null);
 
+  /**
+   * Effect to handle media source selection and stream setup.
+   * Automatically selects the configured sources when they change.
+   */
   useEffect(() => {
     if (onSources && onSources.screen) selectSources(onSources, videoElement);
     return () => {
@@ -43,22 +75,34 @@ export const StudioTray = () => {
     };
   }, [onSources]);
 
+  /**
+   * Effect to handle window resizing based on preview state.
+   * Resizes the studio window when preview is toggled.
+   */
   useEffect(() => {
     resizeWindow(preview);
     return () => resizeWindow(preview);
   }, [preview]);
 
+  /**
+   * Effect to handle recording timer and automatic stop for FREE plan.
+   * Updates the timer every millisecond and automatically stops recording
+   * after 5 minutes for FREE plan users.
+   */
   useEffect(() => {
     if (!recording) return;
     const recordTimeInterval = setInterval(() => {
       let time = count + (new Date().getTime() - initialTime.getTime());
       setCount(time);
       const recordingTime = videoRecordingTime(time);
+      
+      // Auto-stop recording for FREE plan after 5 minutes
       if (onSources?.plan === "FREE" && recordingTime.minute == "05") {
         setRecording(false);
         clearTime();
         onStopRecording();
       }
+      
       setOnTimer(recordingTime.length);
       if (time <= 0) {
         setOnTimer("00:00:00");

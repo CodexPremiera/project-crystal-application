@@ -3,7 +3,6 @@ import { useStudioSettings } from "@/hooks/useStudioSettings";
 import { Headphones, Monitor, Settings } from "lucide-react";
 import {Spinner} from "@/components/global/loader-spinner.tsx";
 
-
 type MediaConfigurationProps = {
   state: SourceDeviceStateProps;
   user:
@@ -30,12 +29,31 @@ type MediaConfigurationProps = {
     | null;
 };
 
+/**
+ * MediaConfiguration component - Media source selection and settings interface.
+ * 
+ * This component provides the main configuration interface for users to select
+ * their recording sources and quality settings. It manages the selection of
+ * display sources, audio inputs, and recording presets, with real-time updates
+ * to the studio tray window.
+ * 
+ * Key Features:
+ * - Display source selection with live preview
+ * - Audio input device selection
+ * - Recording quality preset selection (HD/SD)
+ * - Real-time settings synchronization with studio tray
+ * - Subscription-based feature restrictions
+ * - Form validation and error handling
+ * 
+ * The component integrates with the useStudioSettings hook to manage form state
+ * and automatically syncs changes with the recording interface through IPC.
+ */
 export const MediaConfiguration = ({
   user,
   state,
 }: MediaConfigurationProps) => {
   
-  // find active screen and audio from user settings
+  // Find currently active screen and audio sources from user settings
   const activeScreen = state.displays?.find(
     (screen) => screen.id === user?.studio?.screen
   );
@@ -44,7 +62,7 @@ export const MediaConfiguration = ({
     (device) => device.deviceId === user?.studio?.mic
   );
 
-  //check if user has set a source if not use the first source in the array
+  // Initialize studio settings with user preferences or defaults
   const { register, isPending, onPreset } = useStudioSettings(
     user!.id,
     user?.studio?.screen || state.displays?.[0]?.id,
