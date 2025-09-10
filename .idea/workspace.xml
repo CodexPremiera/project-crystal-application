@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="document the desktop app" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="remove redundant files in git tracking">
+      <change beforePath="$PROJECT_DIR$/crystal-express/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/server.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +18,7 @@
       <list>
         <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -78,26 +82,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "express",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/api",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;express&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
@@ -107,11 +111,11 @@
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\src\app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\src\components\global\tools" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\src\app\dashboard\[workspaceId]" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -174,22 +178,7 @@
       <workItem from="1757344844526" duration="2963000" />
       <workItem from="1757394675408" duration="6644000" />
       <workItem from="1757463590714" duration="9226000" />
-    </task>
-    <task id="LOCAL-00020" summary="add redux state management">
-      <option name="closed" value="true" />
-      <created>1756647697273</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1756647697273</updated>
-    </task>
-    <task id="LOCAL-00021" summary="establish video section in dashboard folder">
-      <option name="closed" value="true" />
-      <created>1756652222021</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1756652222021</updated>
+      <workItem from="1757473059109" duration="2262000" />
     </task>
     <task id="LOCAL-00022" summary="add video card component">
       <option name="closed" value="true" />
@@ -567,7 +556,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757470771340</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="remove redundant files in the ui components">
+      <option name="closed" value="true" />
+      <created>1757473631178</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1757473631178</updated>
+    </task>
+    <task id="LOCAL-00070" summary="remove redundant files in git tracking">
+      <option name="closed" value="true" />
+      <created>1757474712238</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1757474712238</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -604,8 +609,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add stripe payment" />
-    <MESSAGE value="add stripe subscription" />
     <MESSAGE value="add comprehensive documentation on each component and page" />
     <MESSAGE value="update readme with the complete web application" />
     <MESSAGE value="update package" />
@@ -629,6 +632,8 @@
     <MESSAGE value="fix errors where media configuration is not loading the media forms" />
     <MESSAGE value="add route for the studio tray" />
     <MESSAGE value="document the desktop app" />
-    <option name="LAST_COMMIT_MESSAGE" value="document the desktop app" />
+    <MESSAGE value="remove redundant files in the ui components" />
+    <MESSAGE value="remove redundant files in git tracking" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove redundant files in git tracking" />
   </component>
 </project>
