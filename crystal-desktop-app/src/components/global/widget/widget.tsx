@@ -2,8 +2,8 @@ import { useMediaSources } from "@/hooks/useMediaSources";
 import { fetchUserProfile } from "@/lib/utils";
 import { ClerkLoading, SignedIn, useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
-import { MediaConfiguration } from "./media-configuration";
 import {Spinner} from "@/components/global/loader-spinner.tsx";
+import { MediaConfiguration } from "./media-configuration";
 
 export const Widget = () => {
   const { user } = useUser();
