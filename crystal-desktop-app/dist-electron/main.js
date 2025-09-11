@@ -129,6 +129,9 @@ ipcMain.on("hide-plugin", (event, payload) => {
   console.log(event);
   win == null ? void 0 : win.webContents.send("hide-plugin", payload);
 });
+ipcMain.on("open-devtools", (event) => {
+  win == null ? void 0 : win.webContents.openDevTools();
+});
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
