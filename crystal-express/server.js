@@ -59,8 +59,7 @@ io.on('connection', (socket) => {
     })
   })
 
-  socket.on('process-video', async (data) => {
-    console.log("🔵 Processing video... ", data)
+  socket.on('process-video', (data) => {
     recordedChunks = []
     fs.readFile('temp_upload/'+ data.filename, async (err, file) => {
 
@@ -68,8 +67,7 @@ io.on('connection', (socket) => {
         filename: data.filename,
       })
 
-      if(processing.data.status !== 200)
-        return console.log("🔴 Error! Something went wrong with creating the processing file.")
+      if(processing.data.status !== 200) return console.log("Oops! something went wrong")
 
       const Key = data.filename
       const Bucket = process.env.BUCKET_NAME
@@ -82,41 +80,62 @@ io.on('connection', (socket) => {
       })
       const fileStatus = await s3.send(command)
 
-      //start transcription for pro plan
-      //check plan serverside to stop fake client side authorization
-      if (processing.data.plan === "PRO") {
-        fs.stat('temp_upload/' + data.filename, async (err, stat) => {
-          if(!err) {
-            //whisper is restricted to 25mb uploads to avoid errors
-            //add a check for file size before transcribing
-            if(stat.size < 25000000) {
-              const transcription = await openai.audio.transcriptions.create({
-                file: fs.createReadStream(`temp_upload/${data.filename}`),
-                model: "whisper-1",
-                response_format: "text"
-              })
+      if(fileStatus['$metadata'].httpStatusCode === 200) {
+        console.log("video uploaded to aws")
 
-              if(transcription) {
-                const completion = await openai.chat.completions.create({
-                  model: 'gpt-3.5-turbo',
-                  response_format: { type: "json_object" },
-                  messages: [
-                    {role: 'system',
-                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summery": <the summary you created>}`}
-                  ]
+        // start transcription for pro plan
+        // check plan serverside to stop fake client side authorization
+        if(processing.data.plan === "PRO") {
+          fs.stat('temp_upload/' + data.filename, async (err, stat) => {
+            if(!err) {
+              // whisper is restricted to 25mb uploads to avoid errors
+              // add a check for file size before transcribing
+              if(stat.size < 25000000) {
+                const transcription = await openai.audio.transcriptions.create({
+                  file: fs.createReadStream(`temp_upload/${data.filename}`),
+                  model: "whisper-1",
+                  response_format: "text"
                 })
 
-                const titleAndSummeryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/transcribe`, {
-                  filename: data.filename,
-                  content: completion.choices[0].message.content,
-                  transcript: transcription
-                })
+                if(transcription) {
+                  const completion = await openai.chat.completions.create({
+                    model: 'gpt-3.5-turbo',
+                    response_format: { type: "json_object" },
+                    messages: [
+                      {
+                        role: 'system',
+                        content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
+                      }
+                    ]
+                  })
 
-                if(titleAndSummeryGenerated.data.status !== 200) console.log("Oops! something went wrong")
+                  const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/transcribe`, {
+                    filename: data.filename,
+                    content: completion.choices[0].message.content,
+                    transcript: transcription
+                  })
+
+                  if(titleAndSummaryGenerated.data.status !== 200) console.log("🔴 Error: Something went wrong when generating title and summary")
+                }
               }
             }
-          }
+          })
+        }
+
+        const stopProcessing = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/complete`, {
+          filename: data.filename,
         })
+
+        if(stopProcessing.data.status !== 200) return console.log("🔴 Error: Something went wrong when stopping the process and trying to complete processing stage")
+
+        if(stopProcessing.status === 200) {
+          fs.unlink('temp_upload/' + data.filename, (err) => {
+            if(!err) console.log(`🟢 ${data.filename} deleted successfully!`)
+          })
+        }
+      }
+      else {
+        console.log("Upload failed! process aborted")
       }
     })
   })
