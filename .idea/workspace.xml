@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="establish socket connection">
-      <change afterPath="$PROJECT_DIR$/crystal-express/temp_upload/README.txt" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="handle saving chucks on temporary file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-express/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -187,15 +187,7 @@
       <workItem from="1757525990535" duration="461000" />
       <workItem from="1757586140353" duration="189000" />
       <workItem from="1757662820707" duration="30000" />
-      <workItem from="1757908130890" duration="3192000" />
-    </task>
-    <task id="LOCAL-00024" summary="clean-up video card layout">
-      <option name="closed" value="true" />
-      <created>1756658202408</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1756658202408</updated>
+      <workItem from="1757908130890" duration="4966000" />
     </task>
     <task id="LOCAL-00025" summary="refine move video 730">
       <option name="closed" value="true" />
@@ -581,7 +573,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757916267440</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="handle saving chucks on temporary file">
+      <option name="closed" value="true" />
+      <created>1757918312479</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1757918312479</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -618,7 +618,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update package" />
     <MESSAGE value="move web application to its subdirectory" />
     <MESSAGE value="fix some warnings" />
     <MESSAGE value="fix workspace id error" />
@@ -643,6 +642,7 @@
     <MESSAGE value="remove redundant files in git tracking" />
     <MESSAGE value="establish express server listening" />
     <MESSAGE value="establish socket connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="establish socket connection" />
+    <MESSAGE value="handle saving chucks on temporary file" />
+    <option name="LAST_COMMIT_MESSAGE" value="handle saving chucks on temporary file" />
   </component>
 </project>

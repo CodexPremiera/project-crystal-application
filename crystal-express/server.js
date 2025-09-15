@@ -4,16 +4,30 @@ const cors = require('cors')
 const http = require('http');
 const app = express()
 const fs = require('fs');
+const axios = require('axios')
 
 const { Readable } = require('stream');
+const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
 
 const server = http.createServer(app);
+const OpenAI = require("openai")
 const dotenv = require('dotenv')
 
 dotenv.config()
 
 app.use(cors());
 
+const openai = new OpenAI({
+  apiKey: process.env.OPEN_AI_KEY,
+});
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_KEY
+  },
+  region: process.env.BUCKET_REGION
+})
 
 const io = new Server(server, {
   cors: {
@@ -47,6 +61,64 @@ io.on('connection', (socket) => {
 
   socket.on('process-video', async (data) => {
     console.log("🔵 Processing video... ", data)
+    recordedChunks = []
+    fs.readFile('temp_upload/'+ data.filename, async (err, file) => {
+
+      const processing = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/processing`, {
+        filename: data.filename,
+      })
+
+      if(processing.data.status !== 200)
+        return console.log("🔴 Error! Something went wrong with creating the processing file.")
+
+      const Key = data.filename
+      const Bucket = process.env.BUCKET_NAME
+      const ContentType = 'video/webm'
+      const command = new PutObjectCommand({
+        Key,
+        Bucket,
+        ContentType,
+        Body: file
+      })
+      const fileStatus = await s3.send(command)
+
+      //start transcription for pro plan
+      //check plan serverside to stop fake client side authorization
+      if (processing.data.plan === "PRO") {
+        fs.stat('temp_upload/' + data.filename, async (err, stat) => {
+          if(!err) {
+            //whisper is restricted to 25mb uploads to avoid errors
+            //add a check for file size before transcribing
+            if(stat.size < 25000000) {
+              const transcription = await openai.audio.transcriptions.create({
+                file: fs.createReadStream(`temp_upload/${data.filename}`),
+                model: "whisper-1",
+                response_format: "text"
+              })
+
+              if(transcription) {
+                const completion = await openai.chat.completions.create({
+                  model: 'gpt-3.5-turbo',
+                  response_format: { type: "json_object" },
+                  messages: [
+                    {role: 'system',
+                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summery": <the summary you created>}`}
+                  ]
+                })
+
+                const titleAndSummeryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/transcribe`, {
+                  filename: data.filename,
+                  content: completion.choices[0].message.content,
+                  transcript: transcription
+                })
+
+                if(titleAndSummeryGenerated.data.status !== 200) console.log("Oops! something went wrong")
+              }
+            }
+          }
+        })
+      }
+    })
   })
 
   socket.on("disconnect", () => {
