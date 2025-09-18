@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import Loader from '../loader/loader';
 import CardMenu from "@/components/global/videos/video-card-menu";
@@ -18,7 +20,7 @@ type Props = {
     id: string
     name: string
   } | null
-  createdAt: Date
+  createdAt: Date | undefined | null
   title: string | null
   source: string
   processing: boolean
@@ -67,7 +69,7 @@ type Props = {
  */
 function VideoCard(props: Props) {
   const daysAgo = Math.floor(
-    (new Date().getTime() - props.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+    (new Date().getTime() - props.createdAt!.getTime()) / (24 * 60 * 60 * 1000)
   )
   
   return (
