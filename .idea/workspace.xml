@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="display videos in home page via wix cms">
-      <change afterPath="$PROJECT_DIR$/Crystal-How-To-Guide.md" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="display developer notes in home page from cloudways">
+      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/voice-flow-agent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/lib/voiceflow.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/lib/voiceflow.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,17 +112,17 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\lib" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\src\app" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\src\components\global\tools" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -197,14 +199,7 @@
       <workItem from="1758424044251" duration="1632000" />
       <workItem from="1758591624060" duration="5167000" />
       <workItem from="1758869916928" duration="1430000" />
-    </task>
-    <task id="LOCAL-00028" summary="show videos in the dashboard page">
-      <option name="closed" value="true" />
-      <created>1756666590422</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1756666590422</updated>
+      <workItem from="1759038651316" duration="2924000" />
     </task>
     <task id="LOCAL-00029" summary="add video preview feature">
       <option name="closed" value="true" />
@@ -590,7 +585,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758222807996</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="display developer notes in home page from cloudways">
+      <option name="closed" value="true" />
+      <created>1759039000709</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1759039000709</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -627,7 +630,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add readme to root directory" />
     <MESSAGE value="install electron react app" />
     <MESSAGE value="setup tailwind and shadcn ui" />
     <MESSAGE value="add clerk js" />
@@ -652,6 +654,7 @@
     <MESSAGE value="handle processing chucks to database" />
     <MESSAGE value="establish aws and express server routes" />
     <MESSAGE value="display videos in home page via wix cms" />
-    <option name="LAST_COMMIT_MESSAGE" value="display videos in home page via wix cms" />
+    <MESSAGE value="display developer notes in home page from cloudways" />
+    <option name="LAST_COMMIT_MESSAGE" value="display developer notes in home page from cloudways" />
   </component>
 </project>

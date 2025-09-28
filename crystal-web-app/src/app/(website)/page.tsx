@@ -1,3 +1,5 @@
+import VoiceFlowAgent from "@/components/global/voice-flow-agent";
+
 /**
  * Website Landing Page
  * 
@@ -34,6 +36,6 @@
  */
 export default function Home() {
   return <main>
-    page
+    <VoiceFlowAgent />
   </main>;
 }

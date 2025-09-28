@@ -7,6 +7,9 @@ export const LoadVoiceFlowAgent = () => {
         verify: { projectID: process.env.NEXT_PUBLIC_VOICE_FLOW_KEY },
         url: 'https://general-runtime.voiceflow.com',
         versionID: 'production',
+        voice: {
+          url: "https://runtime-api.voiceflow.com"
+        }
       })
     }
     v.src = 'https://cdn.voiceflow.com/widget/bundle.mjs'
