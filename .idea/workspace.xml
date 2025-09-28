@@ -4,21 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="establish aws and express server routes">
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/home/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/how-to-post.tsx" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="display videos in home page via wix cms">
+      <change afterPath="$PROJECT_DIR$/Crystal-How-To-Guide.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/layouts/control-layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/layouts/control-layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/vite.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-express/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-express/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/forms/edit-video/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/forms/edit-video/schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/constants/constants.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/constants/constants.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,8 +116,8 @@
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\src\app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\src\components\global\tools" />
@@ -204,15 +192,11 @@
       <workItem from="1757941719605" duration="7037000" />
       <workItem from="1757988928988" duration="1591000" />
       <workItem from="1758207969859" duration="5854000" />
-      <workItem from="1758222158375" duration="410000" />
-    </task>
-    <task id="LOCAL-00027" summary="show workspace in move video">
-      <option name="closed" value="true" />
-      <created>1756666396908</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1756666396908</updated>
+      <workItem from="1758222158375" duration="1552000" />
+      <workItem from="1758264753141" duration="181000" />
+      <workItem from="1758424044251" duration="1632000" />
+      <workItem from="1758591624060" duration="5167000" />
+      <workItem from="1758869916928" duration="1430000" />
     </task>
     <task id="LOCAL-00028" summary="show videos in the dashboard page">
       <option name="closed" value="true" />
@@ -598,7 +582,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757947111117</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="display videos in home page via wix cms">
+      <option name="closed" value="true" />
+      <created>1758222807996</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1758222807996</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -635,7 +627,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix workspace id error" />
     <MESSAGE value="add readme to root directory" />
     <MESSAGE value="install electron react app" />
     <MESSAGE value="setup tailwind and shadcn ui" />
@@ -660,6 +651,7 @@
     <MESSAGE value="handle saving chucks on temporary file" />
     <MESSAGE value="handle processing chucks to database" />
     <MESSAGE value="establish aws and express server routes" />
-    <option name="LAST_COMMIT_MESSAGE" value="establish aws and express server routes" />
+    <MESSAGE value="display videos in home page via wix cms" />
+    <option name="LAST_COMMIT_MESSAGE" value="display videos in home page via wix cms" />
   </component>
 </project>
