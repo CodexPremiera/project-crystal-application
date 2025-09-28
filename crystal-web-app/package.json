@@ -12,6 +12,7 @@
     "db:reset": "node -e \"import('src/lib/db-health.ts').then(m => m.resetConnectionPool()).then(console.log).catch(console.error)\""
   },
   "dependencies": {
+    "axios": "^1.11.0",
     "@clerk/nextjs": "^6.31.9",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.1",
@@ -70,6 +71,7 @@
     "stripe": "^18.5.0",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
+    "vite-tsconfig-paths": "^5.1.4",
     "zod": "^4.0.17"
   },
   "devDependencies": {
