@@ -9,21 +9,48 @@ import FolderPlusDuotine from "@/components/icons/folder-plus-duotone";
 import WorkspaceForm from "@/components/forms/workspace-form";
 
 /**
- * CreateWorkspace Component
- *
- * This component provides the entry point for workspace creation in the application.
- * It renders a button that opens a modal containing the workspace creation form.
- *
- * Key Features:
- * - Fetches user's subscription plan to check workspace creation permissions
- * - Only PRO users can create additional workspaces (beyond their default personal workspace)
- * - Opens a modal with descriptive text about workspace functionality
- * - Renders the WorkspaceForm component inside the modal
- *
- * Usage: Typically placed in dashboard pages where users can create new workspaces
+ * Create Workspace Component
+ * 
+ * Button that opens a modal for creating new workspaces, but only for PRO users.
+ * Shows as a button with workspace icon that opens a modal with creation form.
+ * 
+ * Appearance:
+ * - Dark button with folder-plus icon
+ * - Text: "Create Workspace"
+ * - Opens modal with workspace creation form
+ * - Modal has title, description, and form fields
+ * 
+ * Special Behavior:
+ * - Only visible to PRO subscription users
+ * - FREE users see nothing (component doesn't render)
+ * - Modal closes automatically after successful creation
+ * - Shows loading state during creation
+ * 
+ * Used in:
+ * - Dashboard sidebar
+ * - Workspace management pages
  */
 function CreateWorkspace() {
-  // Fetch user's workspace data to check subscription plan
+  /**
+   * Conditional Rendering with React Query (useQuery)
+   * 
+   * This component demonstrates how to use React Query for conditional rendering
+   * based on user data. It fetches user workspace data to determine if the user
+   * has permission to create additional workspaces.
+   * 
+   * How it works:
+   * 1. Fetches user's workspace data using getWorkSpaces server action
+   * 2. Caches the data with 'user-workspaces' query key
+   * 3. Extracts subscription plan from the fetched data
+   * 4. Conditionally renders workspace creation UI based on plan
+   * 5. Only PRO users can create additional workspaces
+   * 
+   * Query Benefits:
+   * - Automatic caching of user data
+   * - Shared data across components using the same query key
+   * - Efficient data management and loading states
+   * - Real-time updates when user data changes
+   */
   const { data } = useQueryData(['user-workspaces'], getWorkSpaces)
   
   // Extract subscription plan from the fetched data

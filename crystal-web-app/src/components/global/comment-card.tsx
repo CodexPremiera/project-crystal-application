@@ -9,6 +9,31 @@ import { CommentRepliesProps } from '@/types/index.type'
 import { DotIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
+/**
+ * Comment Card Component
+ * 
+ * Displays individual comments with author information, timestamp, and reply functionality.
+ * Shows as a card with author avatar, name, comment text, and time since posting.
+ * Includes a reply button that toggles a comment form for nested replies.
+ * 
+ * Appearance:
+ * - Card layout with author avatar and name at top
+ * - Comment text in main content area
+ * - Time indicator (e.g., "2d ago", "Today")
+ * - Reply button in bottom right
+ * - Nested replies shown with indentation and border
+ * 
+ * Special Behavior:
+ * - Reply button only shows for top-level comments (not replies)
+ * - Nested replies have different styling (indented, no border)
+ * - Reply form appears inline when "Reply" is clicked
+ * - Shows optimistic updates during reply submission
+ * 
+ * Used in:
+ * - Video preview pages (Activity tab)
+ * - Comment sections throughout the app
+ */
+
 type Props = {
   comment: string
   author: { image: string; firstname: string; lastname: string }

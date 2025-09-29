@@ -1,6 +1,6 @@
 import { cn, onCloseApp } from "@/lib/utils";
 import { UserButton } from "@clerk/clerk-react";
-import { X } from "lucide-react";
+import { X, Bug } from "lucide-react";
 import React, { useState } from "react";
 
 type ControlLayoutProps = {
@@ -25,16 +25,24 @@ export const ControlLayout = ({ children, className }: ControlLayoutProps) => {
         <span className="non-draggable">
           <UserButton />
         </span>
-        <X
-          size={20}
-          className="text-gray-400 non-draggable hover:text-white cursor-pointer"
-          onClick={onCloseApp}
-        />
+        <div className="flex items-center gap-2 non-draggable">
+          <Bug
+            size={20}
+            className="text-gray-400 hover:text-white cursor-pointer"
+            onClick={() => window.ipcRenderer.send("open-devtools")}
+            title="Open DevTools (Debug Console)"
+          />
+          <X
+            size={20}
+            className="text-gray-400 hover:text-white cursor-pointer"
+            onClick={onCloseApp}
+          />
+        </div>
       </div>
       <div className="flex-1 overflow-auto">{children}</div>
       <div className="p-5 flex w-full">
         <div className="flex items-center gap-x-2">
-          <img src="/opal-logo.svg"  alt="Crystal Logo"/>
+          <img src="/crystal-logo.svg" alt="Crystal Logo"/>
           <p className="text-white text-2xl">Crystal</p>
         </div>
       </div>

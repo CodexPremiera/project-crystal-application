@@ -221,6 +221,18 @@ ipcMain.on("hide-plugin", (event, payload) => {
   win?.webContents.send("hide-plugin", payload);
 });
 
+/**
+ * IPC handler for opening DevTools for debugging.
+ * 
+ * This handler opens the DevTools window when the debug button is clicked,
+ * allowing developers to view console logs and debug the application.
+ * 
+ * @param event - IPC event object
+ */
+ipcMain.on("open-devtools", (event) => {
+  win?.webContents.openDevTools();
+});
+
 app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

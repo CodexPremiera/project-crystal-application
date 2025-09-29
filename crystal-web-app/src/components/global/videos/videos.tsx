@@ -15,6 +15,24 @@ type Props = {
 }
 
 function Videos({ folderId, videosKey, workspaceId }: Props) {
+  /**
+   * Data Fetching with React Query (useQuery)
+   * 
+   * This component demonstrates how to fetch and cache video data using React Query.
+   * The videos are automatically cached and shared across components that use the
+   * same query key, providing efficient data management.
+   * 
+   * How it works:
+   * 1. Fetches videos using the getAllUserVideos server action
+   * 2. Caches data with the provided videosKey for component-specific caching
+   * 3. Automatically refetches when folderId or videosKey changes
+   * 4. Provides loading states and error handling
+   * 
+   * Query Key Strategy:
+   * - Uses dynamic videosKey for component-specific caching
+   * - Different keys allow separate caching for different video contexts
+   * - Enables efficient cache management across the application
+   */
   const { data: videoData } = useQueryData([videosKey], () =>
     getAllUserVideos(folderId)
   )

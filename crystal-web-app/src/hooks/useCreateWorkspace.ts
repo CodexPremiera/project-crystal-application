@@ -37,10 +37,29 @@ import { workspaceSchema } from '@/components/forms/workspace-form/schema'
  * @returns Object containing form functions, validation errors, and loading state
  */
 export const useCreateWorkspace = () => {
+  /**
+   * Mutation with Cache Invalidation Pattern
+   * 
+   * This demonstrates how to use React Query mutations with automatic cache
+   * invalidation to refresh related data after successful operations.
+   * 
+   * How it works:
+   * 1. Executes createWorkspace server action with workspace name
+   * 2. Automatically invalidates 'user-workspaces' cache
+   * 3. Triggers refetch of workspace list to show new workspace
+   * 4. Provides loading states and error handling
+   * 5. Enables optimistic updates for immediate UI feedback
+   * 
+   * Cache Management:
+   * - Invalidates 'user-workspaces' query after successful creation
+   * - Triggers automatic refetch of workspace list
+   * - Ensures UI reflects the latest server state
+   * - Prevents stale data from being displayed
+   */
   const { mutate, isPending } = useMutationData(
     ['create-workspace'],
     (data: { name: string }) => createWorkspace(data.name),
-    'user-workspaces'
+    'user-workspaces' // Query key to invalidate after successful creation
   )
 
   const { errors, onFormSubmit, register } = useZodForm(workspaceSchema, mutate)

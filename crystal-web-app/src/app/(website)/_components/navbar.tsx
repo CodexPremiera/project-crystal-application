@@ -16,7 +16,7 @@ const LandingPageNavBar = () => {
           width={32}
           height={32}
         />
-        Opal
+        Crystal
       </div>
       <div className="hidden gap-x-10 items-center lg:flex">
         <Link

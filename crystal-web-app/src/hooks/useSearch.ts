@@ -51,7 +51,25 @@ export const useSearch = (key: string, type: 'USERS') => {
     return () => clearTimeout(delayInputTimeoutId);
   }, [query])
   
-  // React Query integration for data fetching
+  /**
+   * React Query Integration for Search Data Fetching
+   * 
+   * This demonstrates how to use React Query with debounced search functionality.
+   * The query is disabled by default and only executes when triggered manually,
+   * providing efficient search with debouncing to prevent excessive API calls.
+   * 
+   * How it works:
+   * 1. Query is disabled by default (enabled: false)
+   * 2. Only executes when manually triggered via refetch()
+   * 3. Uses debounced query as part of the query key for cache management
+   * 4. Automatically caches search results for performance
+   * 5. Provides loading states during search execution
+   * 
+   * Query Key Strategy:
+   * - Uses [key, debounce] for unique cache entries per search term
+   * - Different search terms get separate cache entries
+   * - Enables efficient cache management for search results
+   */
   const { refetch, isFetching } = useQueryData(
     [key, debounce],
     async ({ queryKey }) => {
@@ -61,7 +79,7 @@ export const useSearch = (key: string, type: 'USERS') => {
         if (users.status === 200) setOnUsers(users.data)
       }
     },
-    false
+    false // Disabled by default - only executes when manually triggered
   )
   
   // Trigger search when debounced query changes

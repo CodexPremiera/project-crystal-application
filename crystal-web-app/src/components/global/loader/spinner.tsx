@@ -1,3 +1,28 @@
+/**
+ * Spinner Component
+ * 
+ * Animated loading spinner with customizable color.
+ * Shows as a rotating circular spinner for loading states.
+ * 
+ * Appearance:
+ * - Circular spinner with rotating animation
+ * - Customizable color (defaults to white)
+ * - Smooth rotation animation
+ * - Accessible with proper ARIA attributes
+ * 
+ * Special Behavior:
+ * - Continuous rotation animation
+ * - Color can be customized via props
+ * - Includes accessibility attributes
+ * - Lightweight and performant
+ * 
+ * Used in:
+ * - Loading states throughout the app
+ * - Button loading indicators
+ * - Data fetching operations
+ * - Form submission states
+ */
+
 type Props = {
   color?: string
 }

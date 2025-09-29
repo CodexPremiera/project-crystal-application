@@ -1,6 +1,30 @@
 import { TabsContent } from '@/components/ui/tabs'
 import React from 'react'
 
+/**
+ * Video Transcript Component
+ * 
+ * Tab content for displaying video transcript text.
+ * Shows transcript content in a readable format.
+ * 
+ * Appearance:
+ * - Transcript text display
+ * - Rounded container with proper spacing
+ * - Gray text color for readability
+ * - Scrollable content area
+ * 
+ * Special Behavior:
+ * - Displays video transcript text
+ * - Handles empty transcript gracefully
+ * - Scrollable for long transcripts
+ * - Responsive text formatting
+ * 
+ * Used in:
+ * - Video preview pages (Transcript tab)
+ * - Video transcript displays
+ * - Content analysis interfaces
+ */
+
 type Props = {
   transcript: string
 }

@@ -23,7 +23,26 @@ import { useMutationData } from './useMutationData'
  * @returns Object containing onCreateNewFolder function to trigger folder creation
  */
 export const useCreateFolders = (workspaceId: string) => {
-  // Set up mutation with automatic cache invalidation
+  /**
+   * Simple Mutation Pattern with React Query
+   * 
+   * This demonstrates the simplest useMutation pattern for creating new data.
+   * The mutation automatically handles cache invalidation to refresh the
+   * folder list after successful creation.
+   * 
+   * How it works:
+   * 1. Executes createFolder server action with workspaceId
+   * 2. Automatically invalidates 'workspace-folders' cache
+   * 3. Triggers refetch of folder list to show new folder
+   * 4. Provides loading states and error handling
+   * 5. Enables optimistic updates for immediate UI feedback
+   * 
+   * Cache Invalidation:
+   * - Invalidates 'workspace-folders' query after successful creation
+   * - Triggers automatic refetch of folder list
+   * - Ensures UI reflects the latest server state
+   * - Prevents stale data from being displayed
+   */
   const { mutate } = useMutationData(
     ['create-folder'], // Unique mutation key for tracking
     () => createFolder(workspaceId), // Server action to execute

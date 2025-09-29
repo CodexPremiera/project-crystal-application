@@ -45,7 +45,25 @@ export const useEditVideo = (
   title: string,
   description: string
 ) => {
-  // Set up mutation for video editing with cache invalidation
+  /**
+   * Mutation with Specific Cache Invalidation
+   * 
+   * This demonstrates how to use React Query mutations with targeted cache
+   * invalidation for specific data that needs to be refreshed after updates.
+   * 
+   * How it works:
+   * 1. Executes editVideoInfo server action with updated video data
+   * 2. Automatically invalidates 'preview-video' cache
+   * 3. Triggers refetch of video preview data to show updates
+   * 4. Provides loading states and error handling
+   * 5. Enables optimistic updates for immediate UI feedback
+   * 
+   * Targeted Cache Management:
+   * - Invalidates 'preview-video' query after successful update
+   * - Triggers automatic refetch of video preview data
+   * - Ensures video preview reflects the latest changes
+   * - Prevents stale video data from being displayed
+   */
   const { mutate, isPending } = useMutationData(
     ['edit-video'],
     (data: { title: string; description: string }) =>

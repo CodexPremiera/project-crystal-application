@@ -1,3 +1,27 @@
+/**
+ * Bell Icon Component
+ * 
+ * Notification bell icon with customizable styling.
+ * Shows as a bell icon with notification dot.
+ * 
+ * Appearance:
+ * - Bell icon with notification dot
+ * - Dark gray colors
+ * - Scalable SVG icon
+ * - Customizable props
+ * 
+ * Special Behavior:
+ * - Static SVG icon
+ * - No interactive functionality
+ * - Represents notification state
+ * - Used for notification indicators
+ * 
+ * Used in:
+ * - Notification components
+ * - Header navigation
+ * - Alert indicators
+ */
+
 export const Bell = ({ ...props }) => {
   return (
     <svg

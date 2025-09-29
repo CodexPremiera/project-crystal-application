@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket Test</title>
+</head>
+<body>
+    <h1>Socket.IO Test Client</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:5000');
+        
+        socket.on('connect', () => {
+            document.getElementById('status').innerHTML = '✅ Connected!';
+            document.getElementById('status').style.color = 'green';
+        });
+        
+        socket.on('disconnect', () => {
+            document.getElementById('status').innerHTML = '❌ Disconnected';
+            document.getElementById('status').style.color = 'red';
+        });
+    </script>
+</body>
+</html>
+
