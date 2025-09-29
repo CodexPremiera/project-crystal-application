@@ -7,22 +7,47 @@ import {
 import { toast } from 'sonner'
 
 /**
- * Custom hook for handling data mutations (WRITE operations)
+ * Custom React Query Hook for Data Mutations (WRITE operations)
  * 
- * This hook wraps React Query's useMutation to provide:
- * 1. Automatic toast notifications on success/error
- * 2. Query cache invalidation after mutations (keeps cache in sync)
- * 3. Loading states for UI feedback
- * 4. Optional success callback execution
+ * This hook provides a comprehensive interface for handling data mutations with
+ * automatic cache management, optimistic updates, and user feedback. It wraps
+ * React Query's useMutation to provide enhanced functionality for write operations.
  * 
- * Purpose: Modify data on the server (POST/PUT/DELETE requests) and automatically
- * refresh related cached data to maintain consistency.
+ * Purpose: Modify data on the server (POST/PUT/DELETE requests) with automatic
+ * cache invalidation and user feedback to maintain data consistency.
  * 
- * @param mutationKey - Unique identifier for the mutation
- * @param mutationFn - Function that performs the mutation (API call)
- * @param queryKey - Optional query key to invalidate after successful mutation
+ * Key Features:
+ * 1. Optimistic Updates: UI updates immediately before server confirmation
+ * 2. Cache Invalidation: Automatically refreshes related cached data
+ * 3. Toast Notifications: User feedback for success/error states
+ * 4. Loading States: UI indicators during mutation execution
+ * 5. Error Handling: Consistent error management across the application
+ * 
+ * How it works:
+ * 1. Executes mutation function with provided data
+ * 2. Shows optimistic UI updates immediately
+ * 3. Sends request to server via server action
+ * 4. Displays toast notification based on response
+ * 5. Invalidates specified query keys to refresh cache
+ * 6. Replaces optimistic data with server response
+ * 
+ * Cache Management:
+ * - Automatically invalidates related queries after successful mutations
+ * - Ensures UI reflects the latest server state
+ * - Prevents stale data from being displayed
+ * - Triggers background refetching of invalidated queries
+ * 
+ * Integration:
+ * - Used by all mutation operations in the application
+ * - Connects to server actions for data persistence
+ * - Provides consistent error handling and user feedback
+ * - Essential for optimistic updates and cache management
+ * 
+ * @param mutationKey - Unique identifier for tracking this mutation
+ * @param mutationFn - Server action function that performs the mutation
+ * @param queryKey - Query key to invalidate after successful mutation
  * @param onSuccess - Optional callback to execute on successful mutation
- * @returns Object containing mutation function and loading state
+ * @returns Object containing mutate function and loading state
  */
 export const useMutationData = (
   mutationKey: MutationKey,
@@ -55,13 +80,39 @@ export const useMutationData = (
 
 
 /**
- * Hook to access mutation state and variables
+ * Hook for Accessing Optimistic Mutation Data (useMutationState)
  * 
- * This hook provides access to the current state of mutations,
- * useful for tracking mutation progress or accessing the latest
- * mutation variables across components.
+ * This hook provides access to optimistic data from mutations in real-time,
+ * allowing components to display temporary data before server confirmation.
+ * It's essential for implementing optimistic UI updates across the application.
  * 
- * @param mutationKey - The mutation key to track
+ * Purpose: Access optimistic data from mutations for immediate UI updates
+ * 
+ * Key Features:
+ * 1. Real-time Data Access: Get optimistic data instantly across components
+ * 2. Mutation Tracking: Monitor mutation status and progress
+ * 3. Optimistic Updates: Display temporary data before server confirmation
+ * 4. Cross-Component State: Share mutation data between components
+ * 
+ * How it works:
+ * 1. Tracks mutations by their unique mutation key
+ * 2. Provides access to mutation variables and status
+ * 3. Returns the latest mutation data for immediate UI updates
+ * 4. Enables optimistic UI rendering before server response
+ * 
+ * Use Cases:
+ * - Display new items immediately after creation
+ * - Show loading states during mutations
+ * - Access temporary data for UI updates
+ * - Track mutation progress across components
+ * 
+ * Integration:
+ * - Used with useMutation for complete mutation management
+ * - Enables optimistic updates in UI components
+ * - Provides real-time data access for immediate feedback
+ * - Essential for responsive user experience
+ * 
+ * @param mutationKey - The mutation key to track and access data for
  * @returns Object containing the latest mutation variables and status
  */
 export const useMutationDataState = (mutationKey: MutationKey) => {

@@ -65,7 +65,26 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
     | undefined
   >(undefined)
   
-  // use mutation data optimistic
+  /**
+   * Data Mutation with React Query (useMutation)
+   * 
+   * This demonstrates how to use React Query mutations for complex operations
+   * like moving videos between workspaces and folders. The mutation provides
+   * optimistic updates and automatic cache invalidation.
+   * 
+   * How it works:
+   * 1. Executes moveVideoLocation server action with form data
+   * 2. Provides optimistic updates for immediate UI feedback
+   * 3. Automatically invalidates related queries after successful mutation
+   * 4. Handles loading states and error notifications
+   * 5. Integrates with form validation for data integrity
+   * 
+   * Mutation Features:
+   * - Optimistic updates for responsive UI
+   * - Automatic cache invalidation
+   * - Error handling and user feedback
+   * - Loading state management
+   */
   const { mutate, isPending } = useMutationData(
     ['change-video-location'],
     (data: { folder_id?: string; workspace_id: string }) =>

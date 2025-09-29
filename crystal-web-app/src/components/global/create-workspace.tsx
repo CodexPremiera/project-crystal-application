@@ -23,7 +23,26 @@ import WorkspaceForm from "@/components/forms/workspace-form";
  * Usage: Typically placed in dashboard pages where users can create new workspaces
  */
 function CreateWorkspace() {
-  // Fetch user's workspace data to check subscription plan
+  /**
+   * Conditional Rendering with React Query (useQuery)
+   * 
+   * This component demonstrates how to use React Query for conditional rendering
+   * based on user data. It fetches user workspace data to determine if the user
+   * has permission to create additional workspaces.
+   * 
+   * How it works:
+   * 1. Fetches user's workspace data using getWorkSpaces server action
+   * 2. Caches the data with 'user-workspaces' query key
+   * 3. Extracts subscription plan from the fetched data
+   * 4. Conditionally renders workspace creation UI based on plan
+   * 5. Only PRO users can create additional workspaces
+   * 
+   * Query Benefits:
+   * - Automatic caching of user data
+   * - Shared data across components using the same query key
+   * - Efficient data management and loading states
+   * - Real-time updates when user data changes
+   */
   const { data } = useQueryData(['user-workspaces'], getWorkSpaces)
   
   // Extract subscription plan from the fetched data

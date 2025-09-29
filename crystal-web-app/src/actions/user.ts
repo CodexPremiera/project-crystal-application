@@ -72,15 +72,26 @@ export const sendEmail = async (
 /**
  * Authenticates user and manages their database record
  *
- * This function handles the complete user authentication flow:
+ * Database Operation: GET + POST (SELECT + CREATE operations)
+ * Tables: User (query + create), WorkSpace (create), Subscription (create), Media (create)
+ * 
+ * What it does:
+ * - Queries existing user by clerkId
+ * - Creates new user with complete profile if not exists
+ * - Creates default subscription (FREE plan)
+ * - Creates personal workspace for the user
+ * - Creates default studio settings
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Checks if user already exists in our database
+ * 2. Queries User table by clerkId to check if user exists
  * 3. If user exists, returns their data with workspaces
- * 4. If user doesn't exist, creates new user record with:
+ * 4. If user doesn't exist, creates new user with nested relations:
  *    - Basic profile information from Clerk
- *    - Default studio settings
- * 5. Creates default subscription (FREE plan)
- * 6. Creates personal workspace for the user
+ *    - Default studio settings (Media)
+ *    - Default subscription (FREE plan)
+ *    - Personal workspace
+ * 5. Returns user data with all related information
  *
  * @returns Promise with status and user data or error information
  */
@@ -131,11 +142,19 @@ export const onAuthenticateUser = async () => {
 /**
  * Retrieves user notifications and notification count
  *
- * This function fetches all notifications for the current user:
+ * Database Operation: GET (SELECT query)
+ * Tables: User (primary), Notification
+ * 
+ * What it retrieves:
+ * - All notifications for the current user
+ * - Notification count for UI display
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries database for user's notifications
- * 3. Includes notification count for UI display
- * 4. Returns notifications array or empty array if none found
+ * 2. Queries User table by clerkId
+ * 3. Includes related notifications via Prisma relations
+ * 4. Uses _count aggregation to get notification count
+ * 5. Returns notifications array or empty array if none found
  *
  * @returns Promise with notifications data or empty array
  */
@@ -164,14 +183,23 @@ export const getNotifications = async () => {
 /**
  * Searches for users in the database based on provided query
  *
- * This function enables user discovery for workspace invitations:
- * 1. Authenticates current user from Clerk
- * 2. Searches database for users matching query in:
- *    - First name (case-insensitive)
- *    - Last name (case-insensitive)
- *    - Email address (case-insensitive)
- * 3. Excludes current user from search results
- * 4. Returns user data with subscription plan for UI display
+ * Database Operation: GET (SELECT query)
+ * Tables: User (primary), Subscription
+ * 
+ * What it retrieves:
+ * - Users matching search query in name or email fields
+ * - User data with subscription plan information
+ * - Excludes current user from results
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries User table with OR condition for:
+ *    - First name (case-insensitive contains)
+ *    - Last name (case-insensitive contains)
+ *    - Email address (case-insensitive contains)
+ * 3. Excludes current user using NOT clause
+ * 4. Includes subscription plan data via Prisma relations
+ * 5. Returns matching users with subscription information
  *
  * @param query - Search string to match against usernames and emails
  * @returns Promise with array of matching users or empty result
@@ -222,15 +250,18 @@ export const searchUsers = async (query: string) => {
 /**
  * Creates new comments or replies to existing comments on videos
  * 
- * This function handles the complete comment creation flow for the video
- * commenting system. It supports both top-level comments and nested replies,
- * maintaining proper relationships in the database.
+ * Database Operation: POST (CREATE operation)
+ * Tables: Comment (create), Video (update)
  * 
- * Purpose: Enable users to comment on videos and reply to existing comments
+ * What it creates:
+ * - New top-level comments on videos
+ * - Nested replies to existing comments
  * 
  * How it works:
- * 1. If commentId is provided, creates a reply to an existing comment
- * 2. If no commentId, creates a new top-level comment on the video
+ * 1. If commentId is provided, creates a reply to existing comment:
+ *    - Updates Comment table with nested reply creation
+ * 2. If no commentId, creates new top-level comment:
+ *    - Updates Video table with nested comment creation
  * 3. Uses Prisma's nested create operations for efficient database updates
  * 4. Returns success status with confirmation message
  * 5. Handles database errors gracefully
@@ -238,12 +269,6 @@ export const searchUsers = async (query: string) => {
  * Comment Types:
  * - Top-level comments: Direct comments on videos (commentId is undefined)
  * - Replies: Responses to existing comments (commentId is provided)
- * 
- * Integration:
- * - Used by useVideoComment hook for comment submission
- * - Connects to video and comment database models
- * - Provides data for comment display components
- * - Handles both comment and reply creation in single function
  * 
  * @param userId - ID of the user creating the comment
  * @param comment - The comment text content
@@ -301,23 +326,18 @@ export const createCommentAndReply = async (
 /**
  * Retrieves current user's profile information for comment attribution
  * 
- * This function fetches essential user profile data needed for comment
- * creation and display. It provides the user's ID and profile image
- * for comment attribution in the UI.
+ * Database Operation: GET (SELECT query)
+ * Table: User
  * 
- * Purpose: Get user profile data for comment system integration
+ * What it retrieves:
+ * - User ID and profile image for comment attribution
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries database for user's ID and profile image
- * 3. Returns profile data for comment creation
- * 4. Handles authentication errors gracefully
- * 
- * Integration:
- * - Used by useVideoComment hook for comment attribution
- * - Provides data for comment display components
- * - Connects to user profile system
- * - Essential for comment creation flow
+ * 2. Queries User table by clerkId
+ * 3. Selects only id and image fields for efficiency
+ * 4. Returns profile data for comment creation
+ * 5. Handles authentication errors gracefully
  * 
  * @returns Promise with user profile data (ID and image) or error status
  */
@@ -345,29 +365,22 @@ export const getUserProfile = async () => {
 /**
  * Retrieves all comments and replies for a specific video
  * 
- * This function fetches the complete comment thread for a video, including
- * all top-level comments and their nested replies. It provides the data
- * structure needed for displaying hierarchical comment conversations.
+ * Database Operation: GET (SELECT query)
+ * Tables: Comment (primary), User
  * 
- * Purpose: Get complete comment thread for video display
+ * What it retrieves:
+ * - All top-level comments for the video
+ * - Nested replies for each comment
+ * - User information for comment attribution
  * 
  * How it works:
- * 1. Queries database for comments associated with the video
- * 2. Includes nested replies using Prisma's include functionality
- * 3. Filters for top-level comments (commentId is null)
- * 4. Includes user information for comment attribution
+ * 1. Queries Comment table with OR condition:
+ *    - Comments directly on video (videoId = videoId)
+ *    - Comments on comments (commentId = videoId)
+ * 2. Filters for top-level comments (commentId is null)
+ * 3. Includes nested replies using Prisma's include functionality
+ * 4. Includes user information for each comment and reply
  * 5. Returns hierarchical comment structure for UI rendering
- * 
- * Data Structure:
- * - Top-level comments with nested replies
- * - User information for each comment and reply
- * - Proper ordering for conversation flow
- * 
- * Integration:
- * - Used by video preview and comment display components
- * - Provides data for comment thread rendering
- * - Connects to comment and user database models
- * - Essential for video commenting system
  * 
  * @param Id - The video ID to fetch comments for
  * @returns Promise with complete comment thread data
@@ -399,23 +412,19 @@ export const getVideoComments = async (Id: string) => {
 /**
  * Retrieves current user's subscription and payment information
  * 
- * This function fetches the user's subscription plan details for
- * determining access levels and feature availability throughout
- * the application.
+ * Database Operation: GET (SELECT query)
+ * Tables: User (primary), Subscription
  * 
- * Purpose: Get user subscription data for access control and UI display
+ * What it retrieves:
+ * - User's subscription plan (PRO/FREE)
+ * - Payment information for access control
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries database for user's subscription plan
- * 3. Returns subscription data for access control
- * 4. Handles authentication errors gracefully
- * 
- * Integration:
- * - Used by subscription management components
- * - Provides data for access control throughout the app
- * - Connects to billing and payment systems
- * - Essential for feature gating based on subscription plan
+ * 2. Queries User table by clerkId
+ * 3. Includes related subscription data via Prisma relations
+ * 4. Returns subscription plan for access control
+ * 5. Handles authentication errors gracefully
  * 
  * @returns Promise with user's subscription plan information
  */
@@ -446,23 +455,18 @@ export const getPaymentInfo = async () => {
 /**
  * Updates user's first view notification preference
  * 
- * This function allows users to enable or disable email notifications
- * when their videos receive their first view. It updates the user's
- * preference in the database for future video view tracking.
+ * Database Operation: PUT (UPDATE operation)
+ * Table: User
  * 
- * Purpose: Manage user notification preferences for video views
+ * What it updates:
+ * - User's firstView notification preference
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Updates user's firstView setting in the database
- * 3. Returns success status with confirmation message
- * 4. Handles authentication and database errors gracefully
- * 
- * Integration:
- * - Used by user settings and notification preference components
- * - Connects to email notification system
- * - Affects first view email sending behavior
- * - Part of user preference management system
+ * 2. Updates User table by clerkId
+ * 3. Sets firstView field to provided boolean value
+ * 4. Returns success status with confirmation message
+ * 5. Handles authentication and database errors gracefully
  * 
  * @param state - Boolean value to enable (true) or disable (false) first view notifications
  * @returns Promise with update status and confirmation message
@@ -494,23 +498,18 @@ export const enableFirstView = async (state: boolean) => {
 /**
  * Retrieves user's first view notification preference setting
  * 
- * This function fetches the current user's preference for receiving
- * email notifications when their videos get their first view. It's
- * used to determine whether to send first view notifications.
+ * Database Operation: GET (SELECT query)
+ * Table: User
  * 
- * Purpose: Get user's first view notification preference
+ * What it retrieves:
+ * - User's firstView notification preference (boolean)
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries database for user's firstView setting
- * 3. Returns the current preference value
- * 4. Handles authentication errors gracefully
- * 
- * Integration:
- * - Used by notification system to check user preferences
- * - Connects to first view email sending logic
- * - Part of user preference management system
- * - Essential for conditional notification sending
+ * 2. Queries User table by clerkId
+ * 3. Selects only firstView field for efficiency
+ * 4. Returns the current preference value
+ * 5. Handles authentication errors gracefully
  * 
  * @returns Promise with user's first view notification preference (boolean)
  */
@@ -539,33 +538,23 @@ export const getFirstView = async () => {
 /**
  * Sends workspace invitation to another user via email
  * 
- * This function handles the complete workspace invitation flow, including
- * creating invitation records, sending email notifications, and updating
- * user notifications. It enables workspace owners to invite other users
- * to collaborate on their workspaces.
+ * Database Operation: POST (CREATE operations)
+ * Tables: Invite (create), User (query + update), WorkSpace (query)
+ * External: Email sending
  * 
- * Purpose: Enable workspace collaboration through user invitations
+ * What it creates:
+ * - Invitation record in the database
+ * - Notification record for the inviter
+ * - Sends email notification to invited user
  * 
  * How it works:
  * 1. Gets current authenticated user (inviter) from Clerk
- * 2. Fetches inviter's profile information for email content
- * 3. Retrieves workspace details for invitation context
- * 4. Creates invitation record in the database
- * 5. Sends email notification to the invited user
- * 6. Creates notification for the inviter
+ * 2. Queries User table for inviter's profile information
+ * 3. Queries WorkSpace table for workspace details
+ * 4. Creates invitation record in Invite table
+ * 5. Updates User table with notification for inviter
+ * 6. Sends email notification to the invited user
  * 7. Returns success status with confirmation message
- * 
- * Email Integration:
- * - Sends HTML email with invitation link
- * - Includes workspace name and inviter information
- * - Provides direct link to accept invitation
- * - Uses configured SMTP settings for delivery
- * 
- * Integration:
- * - Used by workspace management components
- * - Connects to email notification system
- * - Creates database records for invitation tracking
- * - Part of workspace collaboration system
  * 
  * @param workspaceId - ID of the workspace to invite user to
  * @param receiverId - ID of the user being invited
@@ -655,18 +644,18 @@ export const inviteMembers = async (
 /**
  * Accepts a workspace invitation and adds user to the workspace
  * 
- * This function handles the invitation acceptance flow, including
- * verifying the invitation belongs to the current user, updating
- * the invitation status, and adding the user as a workspace member.
- * It uses database transactions to ensure data consistency.
+ * Database Operation: PUT (UPDATE operations)
+ * Tables: Invite (update), User (update)
  * 
- * Purpose: Complete the workspace invitation acceptance process
+ * What it updates:
+ * - Invitation status to accepted
+ * - User's workspace membership
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Verifies the invitation belongs to the current user
- * 3. Updates invitation status to accepted
- * 4. Adds user as a member of the workspace
+ * 2. Queries Invite table to verify invitation ownership
+ * 3. Updates Invite table to set accepted = true
+ * 4. Updates User table to add workspace membership
  * 5. Uses database transaction for atomic operations
  * 6. Returns success status upon completion
  * 
@@ -674,13 +663,6 @@ export const inviteMembers = async (
  * - Verifies invitation ownership before processing
  * - Uses database transactions for data consistency
  * - Prevents unauthorized invitation acceptance
- * - Handles authentication errors gracefully
- * 
- * Integration:
- * - Used by invitation acceptance pages
- * - Connects to workspace membership system
- * - Part of workspace collaboration flow
- * - Essential for invitation system completion
  * 
  * @param inviteId - ID of the invitation to accept
  * @returns Promise with acceptance status
@@ -747,30 +729,25 @@ export const acceptInvite = async (inviteId: string) => {
 /**
  * Completes subscription upgrade after successful Stripe payment
  * 
- * This function handles the post-payment subscription completion flow,
- * including retrieving the Stripe session, updating the user's subscription
- * plan to PRO, and storing the customer ID for future billing operations.
+ * Database Operation: PUT (UPDATE operation)
+ * Tables: User (update), Subscription (update)
+ * External: Stripe API
  * 
- * Purpose: Complete subscription upgrade after successful payment processing
+ * What it updates:
+ * - User's subscription plan to PRO
+ * - Stripe customer ID for future billing
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
  * 2. Retrieves Stripe checkout session using session ID
- * 3. Updates user's subscription plan to PRO
- * 4. Stores Stripe customer ID for future billing
+ * 3. Updates User table with nested subscription update
+ * 4. Sets subscription plan to PRO and stores customer ID
  * 5. Returns success status upon completion
  * 
  * Stripe Integration:
  * - Retrieves checkout session details from Stripe
  * - Extracts customer ID for future billing operations
  * - Updates subscription plan based on successful payment
- * - Handles Stripe API errors gracefully
- * 
- * Integration:
- * - Used by payment completion callbacks
- * - Connects to Stripe billing system
- * - Updates user subscription status
- * - Essential for subscription upgrade flow
  * 
  * @param session_id - Stripe checkout session ID from successful payment
  * @returns Promise with subscription completion status

@@ -19,12 +19,20 @@ import axios from 'axios'
 /**
  * Verifies if the current authenticated user has access to a specific workspace
  * 
- * This function performs workspace access verification:
+ * Database Operation: GET (SELECT query)
+ * Table: WorkSpace
+ * 
+ * What it retrieves:
+ * - Workspace data if user has access (ownership OR membership)
+ * - Returns null if access denied
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Checks if user is the workspace owner/creator
- * 3. Checks if user is a member of the workspace (for public workspaces)
- * 4. Uses OR condition to allow either ownership or membership
- * 5. Returns workspace data if access granted, null if denied
+ * 2. Queries WorkSpace table with OR condition:
+ *    - User is workspace owner (User.clerkId = current user)
+ *    - User is workspace member (via members relation)
+ * 3. Uses Prisma's findUnique with complex where clause
+ * 4. Returns workspace data if found, null if not found
  * 
  * @param workspaceId - The UUID of the workspace to check access for
  * @returns Promise with status and workspace data or access denied
@@ -62,11 +70,18 @@ export const verifyAccessToWorkspace = async (workspaceId: string) => {
 /**
  * Retrieves all folders within a specific workspace
  * 
- * This function fetches workspace folders with video counts:
- * 1. Queries database for all folders in the specified workspace
- * 2. Includes video count for each folder using _count aggregation
- * 3. Returns folders array with video counts for UI display
- * 4. Returns empty array if no folders found
+ * Database Operation: GET (SELECT query)
+ * Tables: Folder (primary), Video (for count)
+ * 
+ * What it retrieves:
+ * - All folders in the specified workspace
+ * - Video count for each folder using aggregation
+ * 
+ * How it works:
+ * 1. Queries Folder table where workSpaceId matches
+ * 2. Uses Prisma's _count aggregation to count related videos
+ * 3. Includes folder metadata (id, name, createdAt, workSpaceId)
+ * 4. Returns folders array with video counts for UI display
  * 
  * @param workSpaceId - The workspace ID to fetch folders for
  * @returns Promise with folders data or empty array
@@ -93,14 +108,23 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
 /**
  * Retrieves all videos in a workspace (both direct and in folders)
  * 
- * This function fetches comprehensive video data for a workspace:
+ * Database Operation: GET (SELECT query)
+ * Tables: Video (primary), Folder, User
+ * 
+ * What it retrieves:
+ * - All videos in workspace (direct + in folders)
+ * - Video metadata (title, source, processing status, views)
+ * - Folder information for each video
+ * - User information (name, image) for each video
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries videos using OR condition to find:
- *    - Videos directly in the workspace
- *    - Videos inside workspace folders
- * 3. Includes folder and user information for each video
- * 4. Orders videos by creation date (oldest first)
- * 5. Returns videos with complete metadata for UI display
+ * 2. Queries Video table with OR condition:
+ *    - Videos directly in workspace (workSpaceId = workspaceId)
+ *    - Videos in workspace folders (folderId = workspaceId)
+ * 3. Includes related Folder and User data via Prisma relations
+ * 4. Orders by creation date (oldest first)
+ * 5. Returns comprehensive video data for UI display
  * 
  * @param workSpaceId - The workspace ID to fetch videos for
  * @returns Promise with videos data or 404 if none found
@@ -156,12 +180,22 @@ export const getAllUserVideos = async (workSpaceId: string) => {
 /**
  * Retrieves all workspaces for the current user (owned + member of)
  * 
- * This function fetches comprehensive workspace data for the user:
+ * Database Operation: GET (SELECT query)
+ * Tables: User (primary), WorkSpace, Member, Subscription
+ * 
+ * What it retrieves:
+ * - User's owned workspaces (workspaces they created)
+ * - User's member workspaces (workspaces they're invited to)
+ * - User's subscription plan information
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries user's owned workspaces (workspaces they created)
- * 3. Queries user's member workspaces (workspaces they're invited to)
- * 4. Includes subscription plan information
- * 5. Returns complete workspace hierarchy for navigation
+ * 2. Queries User table by clerkId
+ * 3. Includes related data via Prisma relations:
+ *    - workspace: User's owned workspaces
+ *    - members.WorkSpace: User's member workspaces
+ *    - subscription: User's subscription plan
+ * 4. Returns complete workspace hierarchy for navigation
  * 
  * @returns Promise with user's workspaces and subscription data
  */
@@ -193,12 +227,20 @@ export const getWorkSpaces = async () => {
 /**
  * Creates a new workspace for the current authenticated user
  * 
- * This function handles workspace creation with subscription validation:
+ * Database Operation: POST (CREATE operation)
+ * Tables: User (query), WorkSpace (create)
+ * 
+ * What it creates:
+ * - New PUBLIC workspace associated with the user
+ * - Validates PRO subscription before creation
+ * 
+ * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Validates user has PRO subscription plan for workspace creation
- * 3. Creates new PUBLIC workspace associated with the user
- * 4. Returns success status with confirmation message
- * 5. Returns unauthorized status if user doesn't have PRO plan
+ * 2. Queries User table to check subscription plan
+ * 3. Validates user has PRO subscription for workspace creation
+ * 4. Uses Prisma's nested create to add workspace to user
+ * 5. Creates workspace with PUBLIC type and provided name
+ * 6. Returns success/error status based on authorization
  * 
  * @param name - The name for the new workspace
  * @returns Promise with creation status and confirmation/error message
@@ -251,11 +293,18 @@ export const createWorkspace = async (name: string) => {
 /**
  * Renames an existing folder within a workspace
  * 
- * This function handles folder renaming operations:
- * 1. Updates the folder name in the database using the provided folder ID
- * 2. Returns success status with confirmation message if update successful
- * 3. Returns error status if folder doesn't exist or update fails
- * 4. Handles database errors gracefully with appropriate error messages
+ * Database Operation: PUT (UPDATE operation)
+ * Table: Folder
+ * 
+ * What it updates:
+ * - Folder name in the database
+ * 
+ * How it works:
+ * 1. Uses Prisma's update method on Folder table
+ * 2. Updates folder by ID with new name
+ * 3. Returns success status if update successful
+ * 4. Returns error status if folder doesn't exist or update fails
+ * 5. Handles database errors gracefully
  * 
  * @param folderId - The unique identifier of the folder to rename
  * @param name - The new name for the folder
@@ -285,20 +334,19 @@ export const renameFolders = async (folderId: string, name: string) => {
 /**
  * Creates a new folder within a specified workspace
  * 
- * This server action handles folder creation in the database:
- * 1. Uses Prisma's nested create operation to add a folder to the workspace
- * 2. Creates folder with default "Untitled" name for immediate use
- * 3. Returns success status with confirmation message if creation succeeds
- * 4. Handles database errors gracefully with appropriate error responses
+ * Database Operation: POST (CREATE operation)
+ * Tables: WorkSpace (update), Folder (create)
  * 
- * Purpose: Provide a server-side function for creating folders that can be
- * called from client components through React Query mutations.
+ * What it creates:
+ * - New folder with default "Untitled" name
+ * - Associates folder with specified workspace
  * 
  * How it works:
- * - Updates the workspace record by adding a new folder to its folders relation
- * - Uses Prisma's nested create syntax for efficient single-query operation
- * - Returns standardized response format for consistent error handling
- * - Integrates with the useCreateFolders hook for complete folder creation flow
+ * 1. Uses Prisma's nested create operation on WorkSpace table
+ * 2. Updates workspace by adding new folder to folders relation
+ * 3. Creates folder with default "Untitled" name for immediate use
+ * 4. Uses single-query operation for efficiency
+ * 5. Returns success status with confirmation message
  * 
  * @param workspaceId - The UUID of the workspace where the folder will be created
  * @returns Promise with creation status and confirmation/error message
@@ -331,23 +379,18 @@ export const createFolder = async (workspaceId: string) => {
 /**
  * Retrieves folder information including name and video count
  * 
- * This function fetches essential folder metadata for display in the UI,
- * including the folder name and the number of videos it contains.
- * It's used for folder navigation and information display.
+ * Database Operation: GET (SELECT query)
+ * Tables: Folder (primary), Video (for count)
  * 
- * Purpose: Get folder metadata for UI display and navigation
+ * What it retrieves:
+ * - Folder name and metadata
+ * - Video count for the folder using aggregation
  * 
  * How it works:
- * 1. Queries database for folder by ID
- * 2. Includes video count using Prisma's _count aggregation
+ * 1. Queries Folder table by ID
+ * 2. Uses Prisma's _count aggregation to count related videos
  * 3. Returns folder name and video count
  * 4. Handles database errors gracefully
- * 
- * Integration:
- * - Used by folder navigation components
- * - Provides data for folder information display
- * - Connects to folder and video database models
- * - Essential for folder management UI
  * 
  * @param folderId - The unique identifier of the folder
  * @returns Promise with folder information (name and video count)
@@ -388,28 +431,24 @@ export const getFolderInfo = async (folderId: string) => {
 /**
  * Moves a video between workspaces and/or folders
  * 
- * This function handles video relocation within the application's
- * workspace structure. It can move videos between different workspaces
- * and folders, updating the video's location references in the database.
+ * Database Operation: PUT (UPDATE operation)
+ * Table: Video
  * 
- * Purpose: Enable video organization and relocation within workspace structure
+ * What it updates:
+ * - Video's workspace ID (workSpaceId)
+ * - Video's folder ID (folderId - null for workspace root)
  * 
  * How it works:
- * 1. Updates video's workspace ID to the new workspace
- * 2. Updates video's folder ID (null if moving to workspace root)
- * 3. Returns success status with confirmation message
- * 4. Handles database errors gracefully
+ * 1. Updates Video table by video ID
+ * 2. Sets new workSpaceId for destination workspace
+ * 3. Sets folderId (null if moving to workspace root, ID if moving to folder)
+ * 4. Returns success status with confirmation message
+ * 5. Handles database errors gracefully
  * 
  * Location Types:
  * - Workspace root: folderId is null, video is directly in workspace
  * - Folder: folderId is provided, video is inside specific folder
  * - Cross-workspace: video moves between different workspaces
- * 
- * Integration:
- * - Used by video management and organization components
- * - Connects to video location change forms
- * - Part of workspace and folder management system
- * - Essential for video organization functionality
  * 
  * @param videoId - ID of the video to move
  * @param workSpaceId - ID of the destination workspace
@@ -443,31 +482,21 @@ export const moveVideoLocation = async (
 /**
  * Retrieves comprehensive video data for preview and display
  * 
- * This function fetches complete video information including metadata,
- * user details, and subscription information for video preview pages.
- * It also determines if the current user is the video author for
- * conditional UI rendering.
+ * Database Operation: GET (SELECT query)
+ * Tables: Video (primary), User, Subscription
  * 
- * Purpose: Get complete video data for preview and display pages
+ * What it retrieves:
+ * - Complete video metadata (title, description, views, processing status)
+ * - User information (name, image, subscription plan)
+ * - Author verification (current user vs video author)
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries database for video with complete metadata
- * 3. Includes user information and subscription details
- * 4. Determines if current user is the video author
- * 5. Returns comprehensive video data for UI rendering
- * 
- * Data Included:
- * - Video metadata (title, description, views, processing status)
- * - User information (name, image, subscription plan)
- * - Author verification for conditional UI features
- * - Video source and creation information
- * 
- * Integration:
- * - Used by video preview and display pages
- * - Provides data for video player and metadata display
- * - Connects to user authentication and subscription systems
- * - Essential for video viewing experience
+ * 2. Queries Video table by ID with complete metadata
+ * 3. Includes related User data via Prisma relations
+ * 4. Includes nested subscription data for user
+ * 5. Compares current user ID with video author ID
+ * 6. Returns comprehensive video data for UI rendering
  * 
  * @param videoId - The unique identifier of the video to preview
  * @returns Promise with complete video data and author verification
@@ -522,23 +551,19 @@ export const getPreviewVideo = async (videoId: string) => {
 /**
  * Updates video metadata including title and description
  * 
- * This function handles video information editing, allowing users to
- * update the title and description of their videos. It provides
- * a simple interface for video metadata management.
+ * Database Operation: PUT (UPDATE operation)
+ * Table: Video
  * 
- * Purpose: Enable users to edit video information and metadata
+ * What it updates:
+ * - Video title
+ * - Video description
  * 
  * How it works:
- * 1. Updates video record in the database with new title and description
- * 2. Returns success status with confirmation message
- * 3. Handles database errors gracefully
- * 4. Validates video existence before updating
- * 
- * Integration:
- * - Used by video editing forms and components
- * - Connects to video management system
- * - Part of video metadata management
- * - Essential for video information updates
+ * 1. Updates Video table by video ID
+ * 2. Sets new title and description values
+ * 3. Returns success status with confirmation message
+ * 4. Handles database errors gracefully
+ * 5. Validates video existence before updating
  * 
  * @param videoId - ID of the video to update
  * @param title - New title for the video
@@ -569,33 +594,25 @@ export const editVideoInfo = async (
 /**
  * Handles first view notification system for video creators
  * 
- * This function manages the first view notification system, which sends
- * email notifications to video creators when their videos receive their
- * first view. It includes view tracking, email sending, and notification
- * creation with proper user preference checking.
+ * Database Operation: GET + PUT (SELECT + UPDATE operations)
+ * Tables: User (query), Video (query + update), Notification (create)
+ * External: Email sending
  * 
- * Purpose: Notify video creators when their videos get their first view
+ * What it does:
+ * - Queries user's first view notification preference
+ * - Queries video information and current view count
+ * - Updates video view count if first view
+ * - Creates notification record for viewer
+ * - Sends email notification to video creator
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Checks user's first view notification preference
- * 3. Retrieves video information and current view count
- * 4. If first view (views = 0), increments view count
- * 5. Sends email notification to video creator
- * 6. Creates in-app notification for the viewer
+ * 2. Queries User table for firstView preference
+ * 3. Queries Video table for video details and view count
+ * 4. If first view (views = 0), updates video view count
+ * 5. Creates notification record for the viewer
+ * 6. Sends email notification to video creator
  * 7. Handles email sending errors gracefully
- * 
- * Notification Features:
- * - Respects user's notification preferences
- * - Only triggers on first view (views = 0)
- * - Sends both email and in-app notifications
- * - Includes video title and creator information
- * 
- * Integration:
- * - Used by video viewing system for first view tracking
- * - Connects to email notification system
- * - Part of user engagement and creator feedback system
- * - Essential for creator notification features
  * 
  * @param videoId - ID of the video that received its first view
  * @returns Promise with notification status (no return value on success)
@@ -670,6 +687,26 @@ export const sendEmailForFirstView = async (videoId: string) => {
 }
 
 
+/**
+ * Retrieves videos from Wix CMS and matches them with database videos
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: Video (primary), User, Folder
+ * External: Wix CMS API
+ * 
+ * What it retrieves:
+ * - Videos that exist in both Wix CMS and local database
+ * - Video metadata with user and folder information
+ * 
+ * How it works:
+ * 1. Queries Wix CMS for videos using OAuth authentication
+ * 2. Extracts video IDs from Wix response
+ * 3. Queries local Video table using IN clause with Wix video IDs
+ * 4. Includes related User and Folder data via Prisma relations
+ * 5. Returns matched videos with complete metadata
+ * 
+ * @returns Promise with videos data that exist in both systems
+ */
 export const getWixContent = async () => {
   try {
     const myWixClient = createClient({

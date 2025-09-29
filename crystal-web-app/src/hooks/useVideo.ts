@@ -47,12 +47,32 @@ export const useVideoComment = (videoId: string, commentId?: string) => {
     status: number
     data: { id: string; image: string }
   }
+  /**
+   * Mutation with Callback Pattern
+   * 
+   * This demonstrates how to use React Query mutations with custom callbacks
+   * for additional functionality. The mutation handles comment creation and
+   * automatically resets the form after successful submission.
+   * 
+   * How it works:
+   * 1. Executes createCommentAndReply server action with comment data
+   * 2. Automatically invalidates 'video-comments' cache
+   * 3. Executes custom onSuccess callback to reset form
+   * 4. Provides loading states and error handling
+   * 5. Enables optimistic updates for immediate UI feedback
+   * 
+   * Callback Features:
+   * - Custom onSuccess callback for form reset
+   * - Automatic cache invalidation for comment refresh
+   * - Error handling and user feedback
+   * - Loading state management
+   */
   const { isPending, mutate } = useMutationData(
     ['new-comment'],
     (data: { comment: string }) =>
       createCommentAndReply(user.id, data.comment, videoId, commentId),
     'video-comments',
-    () => reset()
+    () => reset() // Custom callback to reset form after successful submission
   )
 
   const { register, onFormSubmit, errors, reset } = useZodForm(
