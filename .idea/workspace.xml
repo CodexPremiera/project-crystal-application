@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="improve UI for moving video to folders and workspaces">
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/code.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/trash-bin.tsx" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="improve like, download, share, and more button for the video page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/copy-link.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/copy-link.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/rich-link.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/rich-link.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/icons/links.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/links.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,15 +196,7 @@
       <workItem from="1758591624060" duration="5167000" />
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
-      <workItem from="1759149156909" duration="9021000" />
-    </task>
-    <task id="LOCAL-00035" summary="fix some problems">
-      <option name="closed" value="true" />
-      <created>1756702901316</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1756702901316</updated>
+      <workItem from="1759149156909" duration="10220000" />
     </task>
     <task id="LOCAL-00036" summary="complete billing page">
       <option name="closed" value="true" />
@@ -594,7 +582,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759154648734</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="improve like, download, share, and more button for the video page">
+      <option name="closed" value="true" />
+      <created>1759161766057</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1759161766057</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -631,7 +627,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="setup getting media sources in the widget" />
     <MESSAGE value="add auth api route for the desktop app authentication" />
     <MESSAGE value="update middleware" />
     <MESSAGE value="establish media configurations" />
@@ -656,6 +651,7 @@
     <MESSAGE value="modify the UI for editing video title and description" />
     <MESSAGE value="add backdrop blur to the header bar" />
     <MESSAGE value="improve UI for moving video to folders and workspaces" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve UI for moving video to folders and workspaces" />
+    <MESSAGE value="improve like, download, share, and more button for the video page" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve like, download, share, and more button for the video page" />
   </component>
 </project>

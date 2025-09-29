@@ -776,3 +776,69 @@ export const howToPost = async () => {
     return { status: 400 }
   }
 }
+
+/**
+ * Deletes a video and all its associated data
+ * 
+ * Database Operation: DELETE (DELETE operation)
+ * Tables: Video (primary), Comment (cascade delete)
+ * 
+ * What it deletes:
+ * - Video record and all associated data
+ * - All comments and replies associated with the video (cascade)
+ * - Video file from storage (if implemented)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user owns the video (authorization check)
+ * 3. Deletes video record from database
+ * 4. Prisma cascade deletes all related comments
+ * 5. Returns success status with confirmation message
+ * 6. Handles database errors gracefully
+ * 
+ * Security:
+ * - Only video author can delete their videos
+ * - Prevents unauthorized deletion attempts
+ * - Validates user ownership before deletion
+ * 
+ * @param videoId - ID of the video to delete
+ * @returns Promise with deletion status and confirmation message
+ */
+export const deleteVideo = async (videoId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // First verify the video exists and user owns it
+    const video = await client.video.findUnique({
+      where: { id: videoId },
+      select: { 
+        id: true,
+        User: {
+          select: { clerkId: true }
+        }
+      }
+    })
+    
+    if (!video) return { status: 404, data: 'Video not found' }
+    
+    // Verify user owns the video
+    if (video.User?.clerkId !== user.id) {
+      return { status: 403, data: 'You can only delete your own videos' }
+    }
+    
+    // Delete the video (cascade will handle comments)
+    const deletedVideo = await client.video.delete({
+      where: { id: videoId }
+    })
+    
+    if (deletedVideo) {
+      return { status: 200, data: 'Video deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Video not found' }
+  } catch (error) {
+    console.log('Error deleting video:', error)
+    return { status: 500, data: 'Failed to delete video' }
+  }
+}

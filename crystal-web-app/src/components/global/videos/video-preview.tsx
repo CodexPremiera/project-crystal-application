@@ -27,6 +27,7 @@ import {TrashBin} from "@/components/icons/trash-bin";
 import {Links} from "@/components/icons/links";
 import {Download, MoreHorizontal} from "lucide-react";
 import {Code} from "@/components/icons/code";
+import DeleteVideoConfirmation from './delete-video-confirmation'
 
 /**
  * Video Preview Component
@@ -198,14 +199,12 @@ function VideoPreview({ videoId }: Props) {
                   title={video.title as string}
                 />
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Button
-                  className="rounded-full gap-3 !p-0 !pl-1 !pr-2"
-                  variant="ghost"
-                >
-                  <TrashBin />
-                  <span className="text-[#eeeeee]">Delete</span>
-                </Button>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DeleteVideoConfirmation
+                  videoId={videoId}
+                  videoTitle={video.title as string}
+                  redirectPath="/dashboard"
+                />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
