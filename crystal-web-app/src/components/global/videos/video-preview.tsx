@@ -5,7 +5,8 @@ import {useRouter} from "next/navigation";
 import { useQueryData } from '@/hooks/useQueryData';
 import {getPreviewVideo, sendEmailForFirstView} from "@/actions/workspace";
 import {VideoProps} from "@/types/index.type";
-import EditVideo from "@/components/forms/edit-video";
+import EditVideoTitle from "@/components/global/videos/edit/edit-video-title";
+import EditVideoDesc from "@/components/global/videos/edit/edit-video-desc";
 import CopyLink from "@/components/global/videos/copy-link";
 import RichLink from "@/components/global/videos/rich-link";
 import {truncateString} from "@/lib/utils";
@@ -84,17 +85,15 @@ function VideoPreview({ videoId }: Props) {
       <div className="flex flex-col lg:col-span-2 gap-y-10">
         {/* Video header with title and edit controls */}
         <div>
-          <div className="flex gap-x-5 items-start justify-between">
+          <div className="flex gap-x-5 items-center">
             <h2 className="text-white text-4xl font-bold">{video.title}</h2>
             {/* Show edit button only for video author */}
-            {author ? (
-              <EditVideo
+            {author && (
+              <EditVideoTitle
                 videoId={videoId}
                 title={video.title as string}
                 description={video.description as string}
               />
-            ) : (
-              <></>
             )}
           </div>
           {/* Creator info and creation date */}
@@ -124,14 +123,12 @@ function VideoPreview({ videoId }: Props) {
           <div className="flex gap-x-5 items-center justify-between">
             <p className="text-[#BDBDBD] text-semibold">Description</p>
             {/* Show edit button only for video author */}
-            {author ? (
-              <EditVideo
+            {author && (
+              <EditVideoDesc
                 videoId={videoId}
                 title={video.title as string}
                 description={video.description as string}
               />
-            ) : (
-              <></>
             )}
           </div>
           <p className="text-[#9D9D9D] text-lg text-medium">

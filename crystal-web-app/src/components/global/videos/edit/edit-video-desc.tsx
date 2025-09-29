@@ -1,8 +1,8 @@
 import React from 'react'
-import Modal from '../modal'
 import { Button } from '@/components/ui/button'
 import { EditDuotone } from '@/components/icons/editDuotone'
-import EditVideoForm from '@/components/forms/edit-video'
+import Modal from "@/components/global/modal";
+import EditDescForm from "@/components/forms/edit-video/edit-desc";
 
 /**
  * Edit Video Component
@@ -30,18 +30,16 @@ import EditVideoForm from '@/components/forms/edit-video'
 
 type Props = { title: string; description: string; videoId: string }
 
-const EditVideo = ({ description, title, videoId }: Props) => {
+const EditVideoDesc = ({ description, title, videoId }: Props) => {
   return (
     <Modal
-      title="Edit video details"
-      description="You can update your video details here!"
       trigger={
         <Button variant={'ghost'}>
           <EditDuotone />
         </Button>
       }
     >
-      <EditVideoForm
+      <EditDescForm
         videoId={videoId}
         title={title}
         description={description}
@@ -50,4 +48,4 @@ const EditVideo = ({ description, title, videoId }: Props) => {
   )
 }
 
-export default EditVideo
+export default EditVideoDesc
