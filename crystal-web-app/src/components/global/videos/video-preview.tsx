@@ -15,7 +15,6 @@ import AiTools from "@/components/global/video-tools/ai-tools";
 import Activities from "@/components/global/video-tools/activities";
 import VideoTranscript from "@/components/global/video-tools/video-transcript";
 import {Button} from "@/components/ui/button";
-import {Badge} from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,11 +22,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Like} from "@/components/icons/like";
-import {TrashBin} from "@/components/icons/trash-bin";
-import {Links} from "@/components/icons/links";
 import {Download, MoreHorizontal} from "lucide-react";
-import {Code} from "@/components/icons/code";
 import DeleteVideoConfirmation from './delete-video-confirmation'
+import { useDownloadVideo } from '@/hooks/useDownloadVideo'
 
 /**
  * Video Preview Component
@@ -76,6 +73,13 @@ function VideoPreview({ videoId }: Props) {
   
   const { data: video, status, author } = data as VideoProps
   if (status !== 200) router.push('/')
+  
+  // Download functionality
+  const { downloadVideo, isDownloading } = useDownloadVideo(
+    video.source,
+    video.title,
+    videoId
+  )
   
   // Calculate days since video creation for display
   const daysAgo = Math.floor(
@@ -161,7 +165,7 @@ function VideoPreview({ videoId }: Props) {
               console.log('Download button clicked - functionality not implemented yet')
             }}
           >
-            <Like className="h-4 w-4" />
+            <Like />
             <span>10</span>
           </Button>
           
@@ -169,12 +173,11 @@ function VideoPreview({ videoId }: Props) {
           <Button
             variant="secondary"
             className="rounded-full pl-3 pr-6 flex"
-            onClick={() => {
-              console.log('Download button clicked - functionality not implemented yet')
-            }}
+            onClick={downloadVideo}
+            disabled={isDownloading}
           >
             <Download className="h-4 w-4" />
-            <span>Download</span>
+            <span>{isDownloading ? 'Downloading...' : 'Download'}</span>
           </Button>
           
           <CopyLink
