@@ -2,6 +2,32 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import React from 'react'
 
+/**
+ * Sidebar Item Component
+ * 
+ * Individual navigation item for sidebar menu.
+ * Shows as a clickable link with icon, title, and optional notifications.
+ * 
+ * Appearance:
+ * - Link with icon and title
+ * - Hover effects with background color change
+ * - Selected state with dark background
+ * - Optional notification badge
+ * - Rounded corners and padding
+ * 
+ * Special Behavior:
+ * - Changes background color on hover
+ * - Selected state shows different styling
+ * - Truncates long titles with ellipsis
+ * - Supports notification badges
+ * - Navigates to specified href
+ * 
+ * Used in:
+ * - Sidebar navigation menus
+ * - Dashboard navigation
+ * - Menu item components
+ */
+
 type Props = {
   icon: React.ReactNode
   title: string

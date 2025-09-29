@@ -3,6 +3,30 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import { toast } from 'sonner'
 
+/**
+ * Copy Link Component
+ * 
+ * Button that copies video preview link to clipboard.
+ * Shows as a button with link icon that copies video URL.
+ * 
+ * Appearance:
+ * - Button with link icon
+ * - Customizable variant and className
+ * - Standard button styling
+ * - Icon-only button design
+ * 
+ * Special Behavior:
+ * - Copies video preview URL to clipboard
+ * - Shows success toast notification
+ * - Uses environment variable for host URL
+ * - Handles clipboard API errors gracefully
+ * 
+ * Used in:
+ * - Video card hover actions
+ * - Video preview sharing
+ * - Video management interfaces
+ */
+
 type Props = {
   videoId: string
   className?: string

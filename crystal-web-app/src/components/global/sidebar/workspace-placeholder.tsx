@@ -1,5 +1,29 @@
 import React from 'react'
 
+/**
+ * Workspace Placeholder Component
+ * 
+ * Simple placeholder for workspace initials or names.
+ * Shows as a small rounded badge with text content.
+ * 
+ * Appearance:
+ * - Small rounded badge
+ * - Dark background with light text
+ * - Centered text content
+ * - Fixed height and padding
+ * 
+ * Special Behavior:
+ * - Displays workspace initials or names
+ * - Used as fallback when workspace icons unavailable
+ * - Consistent sizing across all instances
+ * - Simple text display
+ * 
+ * Used in:
+ * - Sidebar workspace indicators
+ * - Workspace selection menus
+ * - Workspace display components
+ */
+
 type Props = { children: React.ReactNode }
 
 const WorkspacePlaceholder = ({ children }: Props) => {

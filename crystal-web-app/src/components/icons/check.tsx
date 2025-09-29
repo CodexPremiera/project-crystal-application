@@ -1,3 +1,27 @@
+/**
+ * Check Icon Component
+ * 
+ * Checkmark icon for success states and confirmations.
+ * Shows as a green checkmark icon.
+ * 
+ * Appearance:
+ * - Green checkmark icon
+ * - Simple line design
+ * - Scalable SVG icon
+ * - Success color scheme
+ * 
+ * Special Behavior:
+ * - Static SVG icon
+ * - No interactive functionality
+ * - Represents success/completion state
+ * - Used for confirmation indicators
+ * 
+ * Used in:
+ * - Success states
+ * - Confirmation dialogs
+ * - Completed task indicators
+ */
+
 export const Check = () => {
   return (
     <svg

@@ -9,18 +9,26 @@ import FolderPlusDuotine from "@/components/icons/folder-plus-duotone";
 import WorkspaceForm from "@/components/forms/workspace-form";
 
 /**
- * CreateWorkspace Component
- *
- * This component provides the entry point for workspace creation in the application.
- * It renders a button that opens a modal containing the workspace creation form.
- *
- * Key Features:
- * - Fetches user's subscription plan to check workspace creation permissions
- * - Only PRO users can create additional workspaces (beyond their default personal workspace)
- * - Opens a modal with descriptive text about workspace functionality
- * - Renders the WorkspaceForm component inside the modal
- *
- * Usage: Typically placed in dashboard pages where users can create new workspaces
+ * Create Workspace Component
+ * 
+ * Button that opens a modal for creating new workspaces, but only for PRO users.
+ * Shows as a button with workspace icon that opens a modal with creation form.
+ * 
+ * Appearance:
+ * - Dark button with folder-plus icon
+ * - Text: "Create Workspace"
+ * - Opens modal with workspace creation form
+ * - Modal has title, description, and form fields
+ * 
+ * Special Behavior:
+ * - Only visible to PRO subscription users
+ * - FREE users see nothing (component doesn't render)
+ * - Modal closes automatically after successful creation
+ * - Shows loading state during creation
+ * 
+ * Used in:
+ * - Dashboard sidebar
+ * - Workspace management pages
  */
 function CreateWorkspace() {
   /**

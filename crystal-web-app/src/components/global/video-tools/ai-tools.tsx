@@ -2,6 +2,30 @@ import { Button } from '@/components/ui/button'
 import { TabsContent } from '@/components/ui/tabs'
 import React from 'react'
 
+/**
+ * AI Tools Component
+ * 
+ * Tab content for AI-powered video tools and features.
+ * Shows AI tools interface for video analysis and processing.
+ * 
+ * Appearance:
+ * - AI tools interface
+ * - Rounded container with proper spacing
+ * - Tool buttons and controls
+ * - Responsive layout
+ * 
+ * Special Behavior:
+ * - Provides AI-powered video analysis
+ * - Shows different tools based on user plan
+ * - Handles trial and subscription states
+ * - Integrates with AI services
+ * 
+ * Used in:
+ * - Video preview pages (AI Tools tab)
+ * - AI-powered video features
+ * - Video analysis interfaces
+ */
+
 import {
   Bot,
   FileTextIcon,

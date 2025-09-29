@@ -1,5 +1,29 @@
 import React from 'react'
 
+/**
+ * Dark Mode Icon Component
+ * 
+ * SVG icon representing dark mode theme preview.
+ * Shows as a dark-themed interface mockup with dark colors.
+ * 
+ * Appearance:
+ * - Dark-themed interface mockup
+ * - Black and dark gray colors
+ * - Window-like interface design
+ * - Dark mode color scheme
+ * 
+ * Special Behavior:
+ * - Static SVG icon
+ * - No interactive functionality
+ * - Represents dark mode appearance
+ * - Used for theme selection
+ * 
+ * Used in:
+ * - Theme selection interfaces
+ * - Dark mode previews
+ * - Theme switching components
+ */
+
 export const DarkMode = () => {
   return (
     <svg
