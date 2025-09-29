@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import React from 'react'
 import { toast } from 'sonner'
+import {Code} from "@/components/icons/code";
 
 /**
  * Rich Link Component
@@ -83,9 +84,11 @@ const RichLink = ({ description, id, source, title }: Props) => {
   return (
     <Button
       onClick={copyRichText}
-      className="rounded-full"
+      className="rounded-full gap-3 !p-0 !pl-1 !pr-2"
+      variant="ghost"
     >
-      Get Embedded Code
+      <Code />
+      <span className="text-[#eeeeee]">Get embedded code</span>
     </Button>
   )
 }

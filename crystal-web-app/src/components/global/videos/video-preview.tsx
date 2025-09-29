@@ -10,11 +10,23 @@ import EditVideoDesc from "@/components/global/videos/edit/edit-video-desc";
 import CopyLink from "@/components/global/videos/copy-link";
 import RichLink from "@/components/global/videos/rich-link";
 import {truncateString} from "@/lib/utils";
-import {Download} from "lucide-react";
 import TabMenu from "@/components/global/tab-menu";
 import AiTools from "@/components/global/video-tools/ai-tools";
 import Activities from "@/components/global/video-tools/activities";
 import VideoTranscript from "@/components/global/video-tools/video-transcript";
+import {Button} from "@/components/ui/button";
+import {Badge} from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {Like} from "@/components/icons/like";
+import {TrashBin} from "@/components/icons/trash-bin";
+import {Links} from "@/components/icons/links";
+import {Download, MoreHorizontal} from "lucide-react";
+import {Code} from "@/components/icons/code";
 
 /**
  * Video Preview Component
@@ -139,19 +151,64 @@ function VideoPreview({ videoId }: Props) {
       
       {/* Sidebar with sharing and download options */}
       <div className="lg:col-span-1 flex flex-col gap-y-16">
-        <div className="flex justify-end gap-x-3 items-center">
+        <div className="flex justify-end gap-2 items-center">
+          {/* Like button with count in a chip */}
+          <Button
+            variant="secondary"
+            className="rounded-full pl-3 pr-6 flex"
+            onClick={() => {
+              console.log('Download button clicked - functionality not implemented yet')
+            }}
+          >
+            <Like className="h-4 w-4" />
+            <span>10</span>
+          </Button>
+          
+          {/* Download button */}
+          <Button
+            variant="secondary"
+            className="rounded-full pl-3 pr-6 flex"
+            onClick={() => {
+              console.log('Download button clicked - functionality not implemented yet')
+            }}
+          >
+            <Download className="h-4 w-4" />
+            <span>Download</span>
+          </Button>
+          
           <CopyLink
-            variant="outline"
-            className="rounded-full bg-transparent px-10"
+            className="rounded-full"
             videoId={videoId}
+            variant="secondary"
           />
-          <RichLink
-            description={truncateString(video.description as string, 150)}
-            id={videoId}
-            source={video.source}
-            title={video.title as string}
-          />
-          <Download className="text-[#4d4c4c]" />
+          
+          {/* More options dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className='rounded-full' variant="secondary" size="icon">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="gap-1">
+              <DropdownMenuItem>
+                <RichLink
+                  description={truncateString(video.description as string, 150)}
+                  id={videoId}
+                  source={video.source}
+                  title={video.title as string}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button
+                  className="rounded-full gap-3 !p-0 !pl-1 !pr-2"
+                  variant="ghost"
+                >
+                  <TrashBin />
+                  <span className="text-[#eeeeee]">Delete</span>
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div>
           <TabMenu
