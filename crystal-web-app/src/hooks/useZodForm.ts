@@ -47,6 +47,7 @@ const useZodForm = <T extends z.ZodTypeAny>(
     watch,
     reset,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema as any),
@@ -55,6 +56,6 @@ const useZodForm = <T extends z.ZodTypeAny>(
 
   const onFormSubmit = handleSubmit(async (values) => mutation(values as any))
 
-  return { register, watch, reset, onFormSubmit, errors }
+  return { register, watch, reset, onFormSubmit, errors, control }
 }
 export default useZodForm

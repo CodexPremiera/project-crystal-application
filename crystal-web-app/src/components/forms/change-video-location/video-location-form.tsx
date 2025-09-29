@@ -5,6 +5,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useMoveVideos } from '@/hooks/useFolders'
 import React from 'react'
 import Loader from "@/components/global/loader/loader";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { Controller } from 'react-hook-form';
 
 /**
  * Change Video Location Form Component
@@ -46,6 +56,7 @@ const ChangeVideoLocation = ({
                              }: Props) => {
   const {
     register,
+    control,
     isPending,
     onFormSubmit,
     folders,
@@ -62,62 +73,57 @@ const ChangeVideoLocation = ({
       className="flex flex-col gap-y-5"
       onSubmit={onFormSubmit}
     >
-      <div className="boder-[1px] rounded-xl p-5">
-        <h2 className="text-xs text-[#a4a4a4]">Current Workspace</h2>
-        {workspace && <p>{workspace.name}</p>}
-        <h2 className="text-xs text-[#a4a4a4] mt-4">Current Folder</h2>
-        {folder ? <p>{folder.name}</p> : 'This video has no folder'}
-      </div>
-      <Separator orientation="horizontal" />
-      <div className="flex flex-col gap-y-5 p-5 border-[1px] rounded-xl">
-        <h2 className="text-xs text-[#a4a4a4]">To</h2>
+      <div className="flex flex-col gap-y-5 rounded-xl">
+        <h2 className="text-xs text-[#a4a4a4]">Move video to</h2>
         <Label className="flex-col gap-y-2 flex w-full items-start">
           <p className="text-xs w-full">Workspace</p>
-          <select
-            className="rounded-xl text-base bg-transparent w-full"
-            {...register('workspace_id')}
-          >
-            {workspaces.map((space) => (
-              <option
-                key={space.id}
-                className="text-[#a4a4a4]"
-                value={space.id}
-              >
-                {space.name}
-              </option>
-            ))}
-          </select>
+          <Controller
+            name="workspace_id"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a workspace" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {workspaces.map((space) => (
+                      <SelectItem key={space.id} value={space.id}>
+                        {space.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </Label>
         {isFetching ? (
           <Skeleton className="w-full h-[40px] rounded-xl" />
         ) : (
           <Label className="flex flex-col gap-y-2 w-full items-start">
-            <p className="text-xs">Folders in this workspace</p>
+            <p className="text-xs">Folder</p>
             {isFolders && isFolders.length > 0 ? (
-              <select
-                {...register('folder_id')}
-                className="rounded-xl bg-transparent text-base w-full"
-              >
-                {isFolders.map((folder, key) =>
-                  key === 0 ? (
-                    <option
-                      className="text-[#a4a4a4]"
-                      key={folder.id}
-                      value={folder.id}
-                    >
-                      {folder.name}
-                    </option>
-                  ) : (
-                    <option
-                      className="text-[#a4a4a4]"
-                      key={folder.id}
-                      value={folder.id}
-                    >
-                      {folder.name}
-                    </option>
-                  )
+              <Controller
+                name="folder_id"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a folder" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {isFolders.map((folder) => (
+                          <SelectItem key={folder.id} value={folder.id}>
+                            {folder.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 )}
-              </select>
+              />
             ) : (
               <p className="text-[#a4a4a4] text-sm">
                 This workspace has no folders
@@ -126,14 +132,16 @@ const ChangeVideoLocation = ({
           </Label>
         )}
       </div>
-      <Button>
-        <Loader
-          state={isPending}
-          color="#000"
-        >
-          Transfer
-        </Loader>
-      </Button>
+      <div className="flex w-full gap-3">
+        <Button className="max-w-40 flex-1">
+          <Loader
+            state={isPending}
+            color="#000"
+          >
+            Transfer
+          </Loader>
+        </Button>
+      </div>
     </form>
   )
 }

@@ -51,12 +51,14 @@ function Modal({ trigger, children, title, description, className}: Props) {
       </DialogTrigger>
       
       {/* Modal content container */}
-      <DialogContent showCloseButton={false} className="pt-0">
+      <DialogContent showCloseButton={false}>
         {/* Modal header with title and description */}
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+        {title && description && (
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
+        )}
         
         {/* Main content area - can contain any components */}
         {children}

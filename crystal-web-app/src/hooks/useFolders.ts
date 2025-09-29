@@ -91,7 +91,7 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
       moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')
   )
   // use zod form
-  const { errors, onFormSubmit, watch, register } = useZodForm(
+  const { errors, onFormSubmit, watch, register, control } = useZodForm(
     moveVideoSchema,
     mutate,
     { folder_id: undefined, workspace_id: currentWorkspace }
@@ -120,6 +120,7 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
     onFormSubmit,
     errors,
     register,
+    control,
     isPending,
     folders,
     workspaces,

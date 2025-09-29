@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add voiceflow">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add backdrop blur to the header bar" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="desktop" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -67,9 +65,6 @@
     &quot;repository&quot;: &quot;project-opal-application&quot;
   }
 }</component>
-  <component name="PackageJsonUpdateNotifier">
-    <dismissed value="$PROJECT_DIR$/package.json" />
-  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -84,42 +79,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;express&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.17.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.17.2&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/components/global&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "refinements",
+    "javascript.nodejs.core.library.configured.version": "22.17.0",
+    "javascript.nodejs.core.library.typings.version": "22.17.2",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/components/forms/edit-video",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global\videos\edit" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\lib" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-title" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -197,38 +192,6 @@
       <workItem from="1758591624060" duration="5167000" />
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
-    </task>
-    <task id="LOCAL-00030" summary="fix preview video problem">
-      <option name="closed" value="true" />
-      <created>1756692834285</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1756692834285</updated>
-    </task>
-    <task id="LOCAL-00031" summary="add video activity and ai tools feature">
-      <option name="closed" value="true" />
-      <created>1756697209572</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1756697209572</updated>
-    </task>
-    <task id="LOCAL-00032" summary="update todo in folder">
-      <option name="closed" value="true" />
-      <created>1756698208337</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1756698208337</updated>
-    </task>
-    <task id="LOCAL-00033" summary="add videos props">
-      <option name="closed" value="true" />
-      <created>1756698316051</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1756698316051</updated>
     </task>
     <task id="LOCAL-00034" summary="add videos props">
       <option name="closed" value="true" />
@@ -590,7 +553,39 @@
       <option name="project" value="LOCAL" />
       <updated>1759041829755</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="document the react query calls and server actions">
+      <option name="closed" value="true" />
+      <created>1759125302073</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1759125302073</updated>
+    </task>
+    <task id="LOCAL-00080" summary="document the components of the web-app">
+      <option name="closed" value="true" />
+      <created>1759126421183</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1759126421183</updated>
+    </task>
+    <task id="LOCAL-00081" summary="modify the UI for editing video title and description">
+      <option name="closed" value="true" />
+      <created>1759134534978</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1759134534978</updated>
+    </task>
+    <task id="LOCAL-00082" summary="add backdrop blur to the header bar">
+      <option name="closed" value="true" />
+      <created>1759135448732</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1759135448732</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +609,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="express" />
+                        <option value="refinements" />
                       </list>
                     </value>
                   </entry>
@@ -627,10 +622,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="setup tailwind and shadcn ui" />
-    <MESSAGE value="add clerk js" />
-    <MESSAGE value="establish initial general layout of window app" />
-    <MESSAGE value="setup clerk authentication" />
     <MESSAGE value="add widget with sign up and login in app window" />
     <MESSAGE value="setup getting media sources in the widget" />
     <MESSAGE value="add auth api route for the desktop app authentication" />
@@ -652,6 +643,10 @@
     <MESSAGE value="display videos in home page via wix cms" />
     <MESSAGE value="display developer notes in home page from cloudways" />
     <MESSAGE value="add voiceflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="add voiceflow" />
+    <MESSAGE value="document the react query calls and server actions" />
+    <MESSAGE value="document the components of the web-app" />
+    <MESSAGE value="modify the UI for editing video title and description" />
+    <MESSAGE value="add backdrop blur to the header bar" />
+    <option name="LAST_COMMIT_MESSAGE" value="add backdrop blur to the header bar" />
   </component>
 </project>

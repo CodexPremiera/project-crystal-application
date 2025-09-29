@@ -43,9 +43,6 @@ const CardMenu = ({
   return (
     <Modal
       className="flex items-center cursor-pointer gap-x-2"
-      title="Move to new Workspace/Folder"
-      description="This action cannot be undone. This will permanently delete your
-  account and remove your data from our servers."
       trigger={
         <Move
           size={20}
