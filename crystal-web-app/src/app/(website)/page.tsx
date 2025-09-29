@@ -1,11 +1,13 @@
+import VoiceFlowAgent from "@/components/global/voice-flow-agent";
+
 /**
  * Website Landing Page
  * 
- * This is the main landing page for the Opal application website.
+ * This is the main landing page for the Crystal application website.
  * Currently serves as a placeholder for the public-facing website
  * that users see before authentication.
  * 
- * Purpose: Provide public landing page for the Opal application
+ * Purpose: Provide public landing page for the Crystal application
  * 
  * Current Status:
  * - Placeholder implementation with minimal content
@@ -34,6 +36,6 @@
  */
 export default function Home() {
   return <main>
-    page
+    <VoiceFlowAgent />
   </main>;
 }

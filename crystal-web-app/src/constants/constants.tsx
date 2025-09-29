@@ -1,5 +1,5 @@
 import React from "react";
-import { Bell, CreditCard, File, Home, Settings } from "lucide-react";
+import {FileDuoToneBlack, Bell, CreditCard, Settings, Home} from "@/components/icons";
 
 /**
  * Application Constants and Configuration
@@ -53,25 +53,25 @@ export const MENU_ITEMS = ({
   {
     title: 'Home',
     href: `/dashboard/${workspaceId}/home`,
-    icon: <Home className="text-primary/50" /> },
+    icon: <Home />},
   {
     title: 'My Library',
     href: `/dashboard/${workspaceId}`,
-    icon: <File className="text-primary/50" />,
+    icon: <FileDuoToneBlack />,
   },
   {
     title: 'Notifications',
     href: `/dashboard/${workspaceId}/notifications`,
-    icon: <Bell className="text-primary/50" />,
+    icon: <Bell />,
   },
   {
     title: 'Billing',
     href: `/dashboard/${workspaceId}/billing`,
-    icon: <CreditCard className="text-primary/50" />,
+    icon: <CreditCard />,
   },
   {
     title: 'Settings',
     href: `/dashboard/${workspaceId}/settings`,
-    icon: <Settings className="text-primary/50" />,
+    icon: <Settings />,
   },
 ]

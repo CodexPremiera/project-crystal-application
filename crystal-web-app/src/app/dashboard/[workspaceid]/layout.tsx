@@ -79,8 +79,32 @@ const Layout = async ({ params, children }: Props) => {
   // Step 5: If workspace data is missing, don't render anything
   if (!hasAccess.data?.workspace) return null
   
+  // Create QueryClient instance for server-side data prefetching
   const query = new QueryClient()
   
+  /**
+   * Server-Side Data Prefetching with React Query
+   * 
+   * This section prefetches all essential data on the server before rendering
+   * the workspace layout. This approach provides several benefits:
+   * 
+   * 1. Performance: Data is available immediately when components mount
+   * 2. SEO: Server-rendered content with actual data
+   * 3. User Experience: No loading states for critical data
+   * 4. Caching: Data is cached and shared across components
+   * 
+   * How prefetchQuery works:
+   * - Executes server actions on the server before component rendering
+   * - Stores fetched data in React Query cache
+   * - Makes data immediately available to client components
+   * - Eliminates the need for client-side data fetching
+   * 
+   * Data Prefetched:
+   * - Workspace folders: For navigation and organization
+   * - User videos: For video display and management
+   * - User workspaces: For workspace switching and navigation
+   * - User notifications: For notification display and management
+   */
   await query.prefetchQuery({
     queryKey:['workspace-folders'],
     queryFn: () => getWorkspaceFolders(workspaceid),

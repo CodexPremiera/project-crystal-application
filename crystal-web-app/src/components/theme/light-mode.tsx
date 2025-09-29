@@ -1,5 +1,29 @@
 import React from 'react'
 
+/**
+ * Light Mode Icon Component
+ * 
+ * SVG icon representing light mode theme preview.
+ * Shows as a light-themed interface mockup with light colors.
+ * 
+ * Appearance:
+ * - Light-themed interface mockup
+ * - White and light gray colors
+ * - Window-like interface design
+ * - Light mode color scheme
+ * 
+ * Special Behavior:
+ * - Static SVG icon
+ * - No interactive functionality
+ * - Represents light mode appearance
+ * - Used for theme selection
+ * 
+ * Used in:
+ * - Theme selection interfaces
+ * - Light mode previews
+ * - Theme switching components
+ */
+
 export const LightMode = () => {
   return (
     <svg

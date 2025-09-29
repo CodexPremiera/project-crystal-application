@@ -6,6 +6,32 @@ import { useMoveVideos } from '@/hooks/useFolders'
 import React from 'react'
 import Loader from "@/components/global/loader/loader";
 
+/**
+ * Change Video Location Form Component
+ * 
+ * Form for moving videos between workspaces and folders.
+ * Shows current location and dropdowns for selecting new location.
+ * 
+ * Appearance:
+ * - Current location display at top
+ * - Workspace dropdown selector
+ * - Folder dropdown selector (if folders exist)
+ * - Transfer button at bottom
+ * - Loading skeleton for folder loading
+ * 
+ * Special Behavior:
+ * - Shows current workspace and folder
+ * - Loads available workspaces and folders
+ * - Handles workspaces with no folders
+ * - Shows loading state while fetching folders
+ * - Moves video after form submission
+ * 
+ * Used in:
+ * - Video management modals
+ * - Workspace organization interfaces
+ * - Video location change workflows
+ */
+
 type Props = {
   videoId: string
   currentFolder?: string

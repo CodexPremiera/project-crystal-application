@@ -33,16 +33,42 @@ type Props = {
 function Folders({ workspaceId }: Props) {
   const dispatch = useDispatch()
   
-  //get folders
+  /**
+   * Data Fetching with React Query (useQuery)
+   * 
+   * This component demonstrates the primary useQuery pattern for fetching
+   * and caching workspace folders. The data is automatically cached and
+   * shared across components that use the same query key.
+   * 
+   * How it works:
+   * 1. Fetches workspace folders using the getWorkspaceFolders server action
+   * 2. Caches the data with the 'workspace-folders' query key
+   * 3. Provides loading states (isFetched) for UI feedback
+   * 4. Automatically refetches when the query key changes
+   */
   const { data, isFetched } = useQueryData(
     ['workspace-folders'],
     () => getWorkspaceFolders(workspaceId),
   )
   
+  /**
+   * Optimistic Updates with useMutationState
+   * 
+   * This demonstrates how to access optimistic data from mutations in real-time.
+   * When a user creates a new folder, this component immediately displays the
+   * new folder before the server confirms the creation.
+   * 
+   * How it works:
+   * 1. Tracks the 'create-folder' mutation state
+   * 2. Accesses the latest mutation variables (optimistic data)
+   * 3. Displays the optimistic folder immediately in the UI
+   * 4. Replaces optimistic data with server response when available
+   */
   const { latestVariables } = useMutationDataState(['create-folder'])
   
   const { status, data: folders } = data as FoldersProps
   
+  // Update Redux store with fetched folders for global state management
   if (isFetched && folders) {
     dispatch(FOLDERS({ folders: folders }))
   }
@@ -64,6 +90,19 @@ function Folders({ workspaceId }: Props) {
           <p className="text-neutral-300">No folders in workspace</p>
         ) : (
           <>
+            {/* 
+              Optimistic UI Rendering
+              
+              This section demonstrates how to display optimistic data from mutations.
+              When a user creates a new folder, it immediately appears in the UI
+              with the optimistic data while the server request is pending.
+              
+              How it works:
+              1. Checks if there's a pending mutation with optimistic data
+              2. Displays the optimistic folder with temporary data
+              3. Shows the folder with an "optimistic" flag for styling
+              4. Replaces with real data when server responds
+            */}
             {latestVariables && latestVariables.status === 'pending' && (
               <Folder
                 name={latestVariables.variables.name}
@@ -71,6 +110,12 @@ function Folders({ workspaceId }: Props) {
                 optimistic
               />
             )}
+            {/* 
+              Server Data Rendering
+              
+              This renders the actual folders from the server, including
+              the newly created folder once the server confirms the creation.
+            */}
             {folders.map((folder) => (
               <Folder
                 name={folder.name}

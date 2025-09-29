@@ -7,6 +7,31 @@ import {VideoCommentProps} from "@/types/index.type";
 import CommentForm from "@/components/forms/comment-form";
 import CommentCard from "@/components/global/comment-card";
 
+/**
+ * Activities Component
+ * 
+ * Tab content for video comments and activity feed.
+ * Shows comment form and list of comments for a video.
+ * 
+ * Appearance:
+ * - Comment form at the top
+ * - List of comment cards below
+ * - Rounded container with proper spacing
+ * - Scrollable content area
+ * 
+ * Special Behavior:
+ * - Fetches video comments using React Query
+ * - Shows loading state while fetching
+ * - Displays comment form for new comments
+ * - Renders comment cards with replies
+ * - Handles empty state when no comments
+ * 
+ * Used in:
+ * - Video preview pages (Activity tab)
+ * - Video comment sections
+ * - Activity feed displays
+ */
+
 type Props = {
   author: string
   videoId: string

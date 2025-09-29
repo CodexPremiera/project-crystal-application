@@ -1,5 +1,29 @@
 import React from 'react'
 
+/**
+ * System Mode Icon Component
+ * 
+ * SVG icon representing system theme mode preview.
+ * Shows as an interface mockup that adapts to system theme.
+ * 
+ * Appearance:
+ * - System-adaptive interface mockup
+ * - Colors that match system theme
+ * - Window-like interface design
+ * - System theme color scheme
+ * 
+ * Special Behavior:
+ * - Static SVG icon
+ * - No interactive functionality
+ * - Represents system theme appearance
+ * - Used for theme selection
+ * 
+ * Used in:
+ * - Theme selection interfaces
+ * - System mode previews
+ * - Theme switching components
+ */
+
 export const SystemMode = () => {
   return (
     <svg

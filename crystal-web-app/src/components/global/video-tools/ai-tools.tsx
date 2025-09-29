@@ -2,6 +2,30 @@ import { Button } from '@/components/ui/button'
 import { TabsContent } from '@/components/ui/tabs'
 import React from 'react'
 
+/**
+ * AI Tools Component
+ * 
+ * Tab content for AI-powered video tools and features.
+ * Shows AI tools interface for video analysis and processing.
+ * 
+ * Appearance:
+ * - AI tools interface
+ * - Rounded container with proper spacing
+ * - Tool buttons and controls
+ * - Responsive layout
+ * 
+ * Special Behavior:
+ * - Provides AI-powered video analysis
+ * - Shows different tools based on user plan
+ * - Handles trial and subscription states
+ * - Integrates with AI services
+ * 
+ * Used in:
+ * - Video preview pages (AI Tools tab)
+ * - AI-powered video features
+ * - Video analysis interfaces
+ */
+
 import {
   Bot,
   FileTextIcon,
@@ -61,7 +85,7 @@ const AiTools = ({ }: Props) => {
         </div>
         <div className=" border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f] ">
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-[#a22fe0]"> Opal Ai</h2>
+            <h2 className="text-2xl font-bold text-[#a22fe0]">Crystal Ai</h2>
             <StarsIcon
               color="#a22fe0"
               fill="#a22fe0"

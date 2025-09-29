@@ -9,6 +9,31 @@ import {useMutationData, useMutationDataState} from "@/hooks/useMutationData";
 import {renameFolders} from "@/actions/workspace";
 import {Input} from "@/components/ui/input";
 
+/**
+ * Folder Component
+ * 
+ * Interactive folder card with rename functionality and navigation.
+ * Shows as a clickable card with folder name, video count, and rename capability.
+ * 
+ * Appearance:
+ * - Card layout with folder name and video count
+ * - Folder icon on the right
+ * - Hover effects with background color change
+ * - Clickable area for navigation
+ * 
+ * Special Behavior:
+ * - Double-click on name to rename (shows input field)
+ * - Click anywhere else to navigate to folder
+ * - Shows optimistic updates during rename
+ * - Loading state during rename operation
+ * - Optimistic rendering for new folders
+ * 
+ * Used in:
+ * - Workspace folder listings
+ * - Folder management interfaces
+ * - Navigation components
+ */
+
 type Props = {
   name: string
   id: string
