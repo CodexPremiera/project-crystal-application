@@ -3,8 +3,20 @@ import React from 'react'
 import CreateWorkspace from "@/components/global/create-workspace";
 import Folders from "@/components/global/folders/folders";
 import CreateFolders from "@/components/global/create-folders";
-import {getAllUserVideos, getWorkspaceFolders} from '@/actions/workspace';
+import {getAllUserVideos, getWorkspaceFolders, getWorkSpaces} from '@/actions/workspace';
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
+import {Button} from "@/components/ui/button";
+import {Like} from "@/components/icons";
+import {Download, MoreHorizontal} from "lucide-react";
+import CopyLink from "@/components/global/videos/copy-link";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import RichLink from "@/components/global/videos/rich-link";
+import {truncateString} from "@/lib/utils";
+import DeleteVideoConfirmation from "@/components/global/videos/delete-video-confirmation";
+import {TrashBin} from "@/components/icons/trash-bin";
+import {EditDuotone} from "@/components/icons/editDuotone";
+import {Users} from "@/components/icons/user";
+import DashboardInviteSection from "@/components/global/dashboard-invite-section";
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -64,6 +76,11 @@ const Page = async ({ params }: Props) => {
     queryFn: () => getAllUserVideos(workspaceid),
   })
   
+  await query.prefetchQuery({
+    queryKey: ['user-workspaces'],
+    queryFn: () => getWorkSpaces(),
+  })
+  
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div>
@@ -86,7 +103,43 @@ const Page = async ({ params }: Props) => {
                 Archive
               </TabsTrigger>
             </TabsList>
+            
+            <div className="flex justify-end gap-2 items-center">
+              <DashboardInviteSection 
+                workspaceId={workspaceid} 
+                userCount={10} 
+              />
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className='rounded-full' variant="secondary" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="gap-1">
+                  <DropdownMenuItem className="h-fit">
+                    <Button
+                      variant="ghost"
+                      className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
+                    >
+                      <EditDuotone />
+                      <span>Edit</span>
+                    </Button>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Button
+                      variant="ghost"
+                      className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
+                    >
+                      <TrashBin />
+                      <span>Delete</span>
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
+          
           <section className="py-9">
             <TabsContent value="videos">
               <Folders workspaceId={workspaceid} />

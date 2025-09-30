@@ -17,6 +17,7 @@ import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {NotificationProps, WorkSpaceProps} from "@/types/index.type";
 import Modal from "@/components/global/modal";
+import InviteWorkspaceModal from "@/components/global/invite-workspace-modal";
 import {Menu, PlusCircle} from "lucide-react";
 import Search from "@/components/global/search";
 import {MENU_ITEMS} from "@/constants/constants";
@@ -132,61 +133,8 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         />
         <p className="text-2xl">Crystal</p>
       </div>
-      <Select
-        defaultValue={activeWorkspaceId}
-        onValueChange={onChangeActiveWorkspace}
-      >
-        <SelectTrigger className="mt-16 text-neutral-400 bg-transparent">
-          <SelectValue placeholder="Select a workspace"></SelectValue>
-        </SelectTrigger>
-        <SelectContent className="bg-[#111111] backdrop-blur-xl">
-          <SelectGroup>
-            <SelectLabel>Workspaces</SelectLabel>
-            <Separator />
-            {workspace.workspace.map((workspace) => (
-              <SelectItem
-                value={workspace.id}
-                key={workspace.id}
-              >
-                {workspace.name}
-              </SelectItem>
-            ))}
-            {workspace.members.length > 0 &&
-              workspace.members.map(
-                (workspace) =>
-                  workspace.WorkSpace && (
-                    <SelectItem
-                      value={workspace.WorkSpace.id}
-                      key={workspace.WorkSpace.id}
-                    >
-                      {workspace.WorkSpace.name}
-                    </SelectItem>
-                  )
-              )}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      {currentWorkspace?.type==="PUBLIC" && workspace.subscription?.plan === "PRO" && (
-        <Modal
-          trigger={
-            <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
-            <PlusCircle
-              size={15}
-              className="text-neutral-800/90 fill-neutral-500"
-            />
-            <span className="text-neutral-400 font-semibold text-xs">
-                Invite To Workspace
-            </span>
-        </span>
-          }
-          title="Invite To Workspace"
-          description="Invite other users to your workspace"
-        >
-          <Search workspaceId={activeWorkspaceId} />
-        </Modal>
-      )}
       
-      <p className="w-full text-[#9D9D9D] font-bold mt-4">Menu</p>
+      <p className="w-full text-[#9D9D9D] font-bold mt-16">Menu</p>
       <nav className="w-full">
         <ul>
           {menuItems.map(item => (

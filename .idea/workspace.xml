@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="move create new folders button beside folder header">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="move create new workspace button in workspace tab in sidebar">
+      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/user.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/create-workspace.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/create-workspace.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar-item.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar-item.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -198,15 +198,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="5879000" />
-    </task>
-    <task id="LOCAL-00039" summary="remove unused variables">
-      <option name="closed" value="true" />
-      <created>1756708509291</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1756708509291</updated>
+      <workItem from="1759196668845" duration="12640000" />
     </task>
     <task id="LOCAL-00040" summary="workspace owner can search for other users">
       <option name="closed" value="true" />
@@ -592,7 +584,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759199729320</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="move create new workspace button in workspace tab in sidebar">
+      <option name="closed" value="true" />
+      <created>1759205054926</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1759205054926</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -629,7 +629,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="prepare the electron app for the three windows it will have" />
     <MESSAGE value="complete the studio widget feature" />
     <MESSAGE value="add webcam widget with default cam showing" />
     <MESSAGE value="fix errors where media configuration is not loading the media forms" />
@@ -654,6 +653,7 @@
     <MESSAGE value="add video deletion" />
     <MESSAGE value="add video download" />
     <MESSAGE value="move create new folders button beside folder header" />
-    <option name="LAST_COMMIT_MESSAGE" value="move create new folders button beside folder header" />
+    <MESSAGE value="move create new workspace button in workspace tab in sidebar" />
+    <option name="LAST_COMMIT_MESSAGE" value="move create new workspace button in workspace tab in sidebar" />
   </component>
 </project>
