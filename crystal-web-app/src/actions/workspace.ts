@@ -1169,3 +1169,69 @@ export const editWorkspaceName = async (workspaceId: string, newName: string) =>
     return { status: 500, data: 'Failed to update workspace name' }
   }
 }
+
+/**
+ * Deletes a workspace and all its associated data
+ * 
+ * Database Operation: DELETE (DELETE operation with cascade)
+ * Tables: WorkSpace (primary), Member, Folder, Video, Comment
+ * 
+ * What it deletes:
+ * - Workspace record and all associated data
+ * - All members of the workspace
+ * - All folders in the workspace
+ * - All videos in the workspace and folders
+ * - All comments on workspace videos (cascade delete)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is the workspace owner
+ * 3. Deletes workspace record (cascade handles related data)
+ * 4. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can delete workspaces
+ * - Validates workspace ownership before deletion
+ * - Prevents unauthorized workspace deletion
+ * 
+ * @param workspaceId - The UUID of the workspace to delete
+ * @returns Promise with deletion status and confirmation/error message
+ */
+export const deleteWorkspace = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can delete workspaces' }
+    }
+    
+    // Delete the workspace (cascade will handle related data)
+    const deletedWorkspace = await client.workSpace.delete({
+      where: {
+        id: workspaceId
+      }
+    })
+    
+    if (deletedWorkspace) {
+      return { status: 200, data: 'Workspace deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Workspace not found' }
+  } catch (error) {
+    console.log('Error deleting workspace:', error)
+    return { status: 500, data: 'Failed to delete workspace' }
+  }
+}

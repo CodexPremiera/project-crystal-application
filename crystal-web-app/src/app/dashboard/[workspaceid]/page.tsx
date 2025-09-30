@@ -131,15 +131,6 @@ const Page = async ({ params }: Props) => {
                     workspaceId={workspaceid}
                     workspaceName={workspaceName}
                   />
-                  <DropdownMenuItem>
-                    <Button
-                      variant="ghost"
-                      className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
-                    >
-                      <TrashBin />
-                      <span>Delete</span>
-                    </Button>
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

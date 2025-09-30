@@ -84,7 +84,7 @@ model Folder {
   id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String     @default("Untitled Folder")
   createdAt   DateTime   @default(now())
-  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id])
+  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
   workSpaceId String?    @db.Uuid
   videos      Video[]
 }
@@ -113,7 +113,7 @@ model Member {
   userId      String?    @db.Uuid
   createdAt   DateTime   @default(now())
   member      Boolean    @default(true)
-  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id])
+  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
   workSpaceId String?    @db.Uuid
 }
 
@@ -131,7 +131,7 @@ model Invite {
   receiver    User?      @relation("receiver", fields: [receiverId], references: [id])
   receiverId  String?    @db.Uuid
   content     String
-  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id])
+  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
   workSpaceId String?    @db.Uuid
   accepted    Boolean    @default(false)
   createdAt   DateTime   @default(now())
