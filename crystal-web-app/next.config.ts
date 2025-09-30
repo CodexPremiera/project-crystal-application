@@ -4,6 +4,24 @@ const nextConfig: NextConfig = {
   // Disable telemetry to prevent mkdir errors
   telemetry: false,
   
+  // Image configuration for external domains
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.clerk.dev',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  
   // Experimental features
   experimental: {
     // Disable turbopack if causing issues

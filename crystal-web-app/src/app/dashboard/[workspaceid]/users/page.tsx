@@ -1,11 +1,11 @@
 import React from 'react'
-import { getWorkSpaces, getWorkspaceMemberCount } from '@/actions/workspace'
+import { getWorkSpaces, getWorkspaceMemberCount, getWorkspaceOwner } from '@/actions/workspace'
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import { Users } from '@/components/icons/user'
 import DashboardInviteSection from '@/components/global/dashboard-invite-section'
-import { useQueryData } from '@/hooks/useQueryData'
-import { WorkSpaceProps } from '@/types/index.type'
 import { notFound } from 'next/navigation'
+import { currentUser } from '@clerk/nextjs/server'
+import OwnerCard from "@/components/global/users/owner-card";
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -52,6 +52,14 @@ const Page = async ({ params }: Props) => {
   const { workspaceid } = await params
   const query = new QueryClient()
   
+  // Get current user for comparison
+  const currentUserData = await currentUser()
+  
+  // Create a serializable copy of the user data
+  const user = currentUserData ? {
+    id: currentUserData.id
+  } : null
+  
   // Prefetch workspace data to check type
   await query.prefetchQuery({
     queryKey: ['user-workspaces'],
@@ -70,6 +78,22 @@ const Page = async ({ params }: Props) => {
   if (currentWorkspace?.type === 'PERSONAL') {
     notFound()
   }
+  
+  // Get workspace owner information using server action
+  const workspaceOwnerData = await getWorkspaceOwner(workspaceid)
+  
+  // Create a serializable copy of the workspace owner data
+  const workspaceOwner = workspaceOwnerData.status === 200 ? {
+    User: workspaceOwnerData.data?.User ? {
+      firstname: workspaceOwnerData.data.User.firstname,
+      lastname: workspaceOwnerData.data.User.lastname,
+      image: workspaceOwnerData.data.User.image,
+      clerkId: workspaceOwnerData.data.User.clerkId,
+    } : null
+  } : null
+  
+  // Debug: Log the workspace owner data
+  console.log('Workspace Owner Data:', workspaceOwner)
   
   await query.prefetchQuery({
     queryKey: ['workspace-member-count', workspaceid],
@@ -100,27 +124,10 @@ const Page = async ({ params }: Props) => {
         <div className="bg-card rounded-lg border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-medium">Current Members</h2>
-            <span className="text-sm text-muted-foreground">
-              {/* Member count will be displayed by DashboardInviteSection */}
-            </span>
           </div>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium">
-                  {/* This would be the current user's initial */}
-                  U
-                </div>
-                <div>
-                  <p className="font-medium">You</p>
-                  <p className="text-sm text-muted-foreground">Workspace Owner</p>
-                </div>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Owner
-              </div>
-            </div>
+            <OwnerCard workspaceOwner={workspaceOwner} user={user} />
             
             {/* Additional members would be listed here */}
             <div className="text-center py-8 text-muted-foreground">

@@ -898,3 +898,59 @@ export const getWorkspaceMemberCount = async (workspaceId: string) => {
     return { status: 500, data: 0 }
   }
 }
+
+/**
+ * Retrieves workspace owner information for member display
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: WorkSpace (primary), User
+ * 
+ * What it retrieves:
+ * - Workspace owner's profile information
+ * - Owner's name, image, and Clerk ID
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace
+ * 3. Queries WorkSpace table with related User data
+ * 4. Returns owner information for member display
+ * 
+ * @param workspaceId - The UUID of the workspace to get owner info for
+ * @returns Promise with workspace owner data or error status
+ */
+export const getWorkspaceOwner = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // Verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+            clerkId: true,
+          }
+        }
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: null } // No access to workspace
+    }
+    
+    return { status: 200, data: workspace }
+  } catch (error) {
+    console.log('Error getting workspace owner:', error)
+    return { status: 500, data: null }
+  }
+}
