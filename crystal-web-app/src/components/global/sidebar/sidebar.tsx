@@ -100,8 +100,6 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
    */
   const {data, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces);
   
-  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId});
-  
   const {data: notifications} = useQueryData(
     ["user-notifications"],
     getNotifications
@@ -117,6 +115,8 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === activeWorkspaceId
   );
+  
+  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId, currentWorkspace});
   
   if (isFetched && workspace) {
     dispatch(WORKSPACES({ workspaces: workspace.workspace }))

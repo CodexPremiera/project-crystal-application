@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="show true user count in workspace">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="create temporary workspace page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/icons/user.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/user.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/constants/constants.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/constants/constants.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -197,15 +198,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="16263000" />
-    </task>
-    <task id="LOCAL-00043" summary="add stripe payment">
-      <option name="closed" value="true" />
-      <created>1757253688067</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1757253688067</updated>
+      <workItem from="1759196668845" duration="17129000" />
     </task>
     <task id="LOCAL-00044" summary="add stripe subscription">
       <option name="closed" value="true" />
@@ -591,7 +584,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759233743455</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="create temporary workspace page">
+      <option name="closed" value="true" />
+      <created>1759235080331</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1759235080332</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -628,7 +629,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add route for the studio tray" />
     <MESSAGE value="document the desktop app" />
     <MESSAGE value="remove redundant files in the ui components" />
     <MESSAGE value="remove redundant files in git tracking" />
@@ -653,6 +653,7 @@
     <MESSAGE value="move invite member to the workspace library page" />
     <MESSAGE value="update global header to show current workspace" />
     <MESSAGE value="show true user count in workspace" />
-    <option name="LAST_COMMIT_MESSAGE" value="show true user count in workspace" />
+    <MESSAGE value="create temporary workspace page" />
+    <option name="LAST_COMMIT_MESSAGE" value="create temporary workspace page" />
   </component>
 </project>

@@ -48,36 +48,46 @@ import {Users} from "@/components/icons/user";
  */
 export const MENU_ITEMS = ({
                              workspaceId,
+                             currentWorkspace,
                            }: {
   workspaceId: string
-}): { title: string; href: string; icon: React.ReactNode }[] => [
-  {
-    title: 'Home',
-    href: `/dashboard/${workspaceId}/home`,
-    icon: <Home />},
-  {
-    title: 'My Library',
-    href: `/dashboard/${workspaceId}`,
-    icon: <FileDuoToneBlack />,
-  },
-  {
-    title: 'Users',
-    href: `/dashboard/${workspaceId}/users`,
-    icon: <Users opacity={20}/>,
-  },
-  {
-    title: 'Notifications',
-    href: `/dashboard/${workspaceId}/notifications`,
-    icon: <Bell />,
-  },
-  {
-    title: 'Billing',
-    href: `/dashboard/${workspaceId}/billing`,
-    icon: <CreditCard />,
-  },
-  {
-    title: 'Settings',
-    href: `/dashboard/${workspaceId}/settings`,
-    icon: <Settings />,
-  },
-]
+  currentWorkspace?: { type: 'PERSONAL' | 'PUBLIC' }
+}): { title: string; href: string; icon: React.ReactNode }[] => {
+  const baseItems = [
+    {
+      title: 'Home',
+      href: `/dashboard/${workspaceId}/home`,
+      icon: <Home />},
+    {
+      title: 'My Library',
+      href: `/dashboard/${workspaceId}`,
+      icon: <FileDuoToneBlack />,
+    },
+    {
+      title: 'Notifications',
+      href: `/dashboard/${workspaceId}/notifications`,
+      icon: <Bell />,
+    },
+    {
+      title: 'Billing',
+      href: `/dashboard/${workspaceId}/billing`,
+      icon: <CreditCard />,
+    },
+    {
+      title: 'Settings',
+      href: `/dashboard/${workspaceId}/settings`,
+      icon: <Settings />,
+    },
+  ]
+
+  // Add Users tab only for PUBLIC workspaces
+  if (currentWorkspace?.type === 'PUBLIC') {
+    baseItems.splice(2, 0, {
+      title: 'Users',
+      href: `/dashboard/${workspaceId}/users`,
+      icon: <Users opacity={30}/>,
+    })
+  }
+
+  return baseItems
+}

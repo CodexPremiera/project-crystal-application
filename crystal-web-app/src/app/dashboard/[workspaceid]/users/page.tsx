@@ -5,6 +5,7 @@ import { Users } from '@/components/icons/user'
 import DashboardInviteSection from '@/components/global/dashboard-invite-section'
 import { useQueryData } from '@/hooks/useQueryData'
 import { WorkSpaceProps } from '@/types/index.type'
+import { notFound } from 'next/navigation'
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -51,10 +52,24 @@ const Page = async ({ params }: Props) => {
   const { workspaceid } = await params
   const query = new QueryClient()
   
+  // Prefetch workspace data to check type
   await query.prefetchQuery({
     queryKey: ['user-workspaces'],
     queryFn: () => getWorkSpaces(),
   })
+  
+  // Get workspace data to check if it's PERSONAL
+  const workspaceData = await getWorkSpaces()
+  const workspace = workspaceData.data as any
+  
+  const currentWorkspace = workspace?.workspace.find(
+    (item: any) => item.id === workspaceid
+  )
+  
+  // Redirect to 404 if workspace is PERSONAL
+  if (currentWorkspace?.type === 'PERSONAL') {
+    notFound()
+  }
   
   await query.prefetchQuery({
     queryKey: ['workspace-member-count', workspaceid],
@@ -109,7 +124,9 @@ const Page = async ({ params }: Props) => {
             
             {/* Additional members would be listed here */}
             <div className="text-center py-8 text-muted-foreground">
-              <Users size={48} className="mx-auto mb-4 opacity-50" />
+              <div className="mx-auto mb-4 opacity-50">
+                <Users size={48} />
+              </div>
               <p>No additional members yet</p>
               <p className="text-sm">Invite users to collaborate on this workspace</p>
             </div>
