@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="move invite member to the workspace library page">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="update global header to show current workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/global-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/global-header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/dashboard-invite-section.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/dashboard-invite-section.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,15 +198,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="14235000" />
-    </task>
-    <task id="LOCAL-00041" summary="workspace owner can now send email invites to their workspace">
-      <option name="closed" value="true" />
-      <created>1757236099533</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1757236099533</updated>
+      <workItem from="1759196668845" duration="15202000" />
     </task>
     <task id="LOCAL-00042" summary="users can accept invitations to the workspace">
       <option name="closed" value="true" />
@@ -590,7 +584,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759231280286</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="update global header to show current workspace">
+      <option name="closed" value="true" />
+      <created>1759232485867</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1759232485867</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -627,7 +629,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add webcam widget with default cam showing" />
     <MESSAGE value="fix errors where media configuration is not loading the media forms" />
     <MESSAGE value="add route for the studio tray" />
     <MESSAGE value="document the desktop app" />
@@ -652,6 +653,7 @@
     <MESSAGE value="move create new folders button beside folder header" />
     <MESSAGE value="move create new workspace button in workspace tab in sidebar" />
     <MESSAGE value="move invite member to the workspace library page" />
-    <option name="LAST_COMMIT_MESSAGE" value="move invite member to the workspace library page" />
+    <MESSAGE value="update global header to show current workspace" />
+    <option name="LAST_COMMIT_MESSAGE" value="update global header to show current workspace" />
   </component>
 </project>

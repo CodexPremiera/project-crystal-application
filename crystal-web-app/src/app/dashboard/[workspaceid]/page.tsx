@@ -106,8 +106,7 @@ const Page = async ({ params }: Props) => {
             
             <div className="flex justify-end gap-2 items-center">
               <DashboardInviteSection 
-                workspaceId={workspaceid} 
-                userCount={10} 
+                workspaceId={workspaceid}
               />
               
               <DropdownMenu>

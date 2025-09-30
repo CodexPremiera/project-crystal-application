@@ -1,7 +1,7 @@
 'use client'
 
 import { useQueryData } from '@/hooks/useQueryData'
-import { getWorkSpaces } from '@/actions/workspace'
+import { getWorkSpaces, getWorkspaceMemberCount } from '@/actions/workspace'
 import { WorkSpaceProps } from '@/types/index.type'
 import InviteWorkspaceModal from './invite-workspace-modal'
 import { Users } from '@/components/icons/user'
@@ -30,16 +30,24 @@ import { Users } from '@/components/icons/user'
 
 type Props = {
   workspaceId: string
-  userCount: number
 }
 
-const DashboardInviteSection = ({ workspaceId, userCount }: Props) => {
+const DashboardInviteSection = ({ workspaceId }: Props) => {
   const { data } = useQueryData(['user-workspaces'], getWorkSpaces)
+  const { data: memberCountData } = useQueryData(
+    ['workspace-member-count', workspaceId], 
+    () => getWorkspaceMemberCount(workspaceId)
+  )
+  
   const { data: workspace } = data as WorkSpaceProps
+  const memberCount = (memberCountData as any)?.data || 0
   
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === workspaceId
   )
+
+  // Show "only you" for PERSONAL workspaces, member count for PUBLIC workspaces
+  const displayText = currentWorkspace?.type === 'PERSONAL' ? '1' : memberCount
 
   return (
     <div className="flex items-center bg-secondary text-secondary-foreground/80 shadow-xs rounded-full py-2 px-4 gap-3">
@@ -47,11 +55,13 @@ const DashboardInviteSection = ({ workspaceId, userCount }: Props) => {
         <div>
           <Users size={20} />
         </div>
-        <span>10</span>
+        <span>{displayText}</span>
       </div>
       <InviteWorkspaceModal 
         workspaceId={workspaceId}
-        currentWorkspace={currentWorkspace}
+        currentWorkspace={currentWorkspace ? {
+          type: currentWorkspace.type === 'PERSONAL' ? 'PRIVATE' : currentWorkspace.type
+        } : undefined}
       />
     </div>
   )

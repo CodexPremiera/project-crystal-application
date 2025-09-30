@@ -842,3 +842,59 @@ export const deleteVideo = async (videoId: string) => {
     return { status: 500, data: 'Failed to delete video' }
   }
 }
+
+/**
+ * Retrieves the member count for a specific workspace
+ * 
+ * Database Operation: GET (SELECT query with aggregation)
+ * Tables: Member (primary), WorkSpace
+ * 
+ * What it retrieves:
+ * - Total count of members in the specified workspace
+ * - Includes both workspace owner and invited members
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace (owner or member)
+ * 3. Counts all members in the workspace using Prisma's _count
+ * 4. Returns the member count for UI display
+ * 
+ * @param workspaceId - The UUID of the workspace to get member count for
+ * @returns Promise with member count or error status
+ */
+export const getWorkspaceMemberCount = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // First verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        id: true,
+        _count: {
+          select: {
+            members: true, // Count all members
+          },
+        },
+      },
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 0 } // No access to workspace
+    }
+    
+    // Return member count (add 1 for the workspace owner)
+    const memberCount = workspace._count.members + 1
+    return { status: 200, data: memberCount }
+  } catch (error) {
+    console.log('Error getting workspace member count:', error)
+    return { status: 500, data: 0 }
+  }
+}
