@@ -1,14 +1,17 @@
 interface Props {
-  size: number;
+  size?: number;
+  opacity?: number;
 }
 
-export const Users = ({ size = 24 } : Props) => {
+export const Users = ({ size = 24, opacity = 1 } : Props) => {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="14" cy="7" r="4" fill="#A0A0A0"/>
-      <path d="M12 13C8.68629 13 6 15.6863 6 19C6 20.1046 6.89543 21 8 21H20C21.1046 21 22 20.1046 22 19V18C22 15.2386 19.7614 13 17 13H12Z" fill="#A0A0A0"/>
-      <path d="M7 13C4.23858 13 2 15.2386 2 18V19C2 20.1046 2.89543 21 4 21H16C17.1046 21 18 20.1046 18 19V18C18 15.2386 15.7614 13 13 13H7Z" fill="#CBCBCB"/>
-      <circle cx="10" cy="7" r="4" fill="#CBCBCB"/>
-    </svg>
+    <div className={`opacity-${opacity}`}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="7" r="4" fill="#A0A0A0"/>
+        <path d="M12 13C8.68629 13 6 15.6863 6 19C6 20.1046 6.89543 21 8 21H20C21.1046 21 22 20.1046 22 19V18C22 15.2386 19.7614 13 17 13H12Z" fill="#A0A0A0"/>
+        <path d="M7 13C4.23858 13 2 15.2386 2 18V19C2 20.1046 2.89543 21 4 21H16C17.1046 21 18 20.1046 18 19V18C18 15.2386 15.7614 13 13 13H7Z" fill="#CBCBCB"/>
+        <circle cx="10" cy="7" r="4" fill="#CBCBCB"/>
+      </svg>
+    </div>
   )
 }

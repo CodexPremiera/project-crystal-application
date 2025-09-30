@@ -1,5 +1,6 @@
 import React from "react";
 import {FileDuoToneBlack, Bell, CreditCard, Settings, Home} from "@/components/icons";
+import {Users} from "@/components/icons/user";
 
 /**
  * Application Constants and Configuration
@@ -58,6 +59,11 @@ export const MENU_ITEMS = ({
     title: 'My Library',
     href: `/dashboard/${workspaceId}`,
     icon: <FileDuoToneBlack />,
+  },
+  {
+    title: 'Users',
+    href: `/dashboard/${workspaceId}/users`,
+    icon: <Users opacity={20}/>,
   },
   {
     title: 'Notifications',
