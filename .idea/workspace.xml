@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add video deletion">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add video download">
+      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/icons/add.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/create-folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/create-folders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,11 +116,11 @@
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-title" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -195,15 +198,8 @@
       <workItem from="1758591624060" duration="5167000" />
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
-      <workItem from="1759149156909" duration="11054000" />
-    </task>
-    <task id="LOCAL-00037" summary="create notifications page">
-      <option name="closed" value="true" />
-      <created>1756707074882</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1756707074882</updated>
+      <workItem from="1759149156909" duration="11222000" />
+      <workItem from="1759196668845" duration="2479000" />
     </task>
     <task id="LOCAL-00038" summary="create settings page">
       <option name="closed" value="true" />
@@ -589,7 +585,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759163123125</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="add video download">
+      <option name="closed" value="true" />
+      <created>1759163949269</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1759163949269</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -626,7 +630,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update middleware" />
     <MESSAGE value="establish media configurations" />
     <MESSAGE value="prepare the electron app for the three windows it will have" />
     <MESSAGE value="complete the studio widget feature" />
@@ -651,6 +654,7 @@
     <MESSAGE value="improve UI for moving video to folders and workspaces" />
     <MESSAGE value="improve like, download, share, and more button for the video page" />
     <MESSAGE value="add video deletion" />
-    <option name="LAST_COMMIT_MESSAGE" value="add video deletion" />
+    <MESSAGE value="add video download" />
+    <option name="LAST_COMMIT_MESSAGE" value="add video download" />
   </component>
 </project>

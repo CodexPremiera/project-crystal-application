@@ -88,7 +88,6 @@ const Page = async ({ params }: Props) => {
             </TabsList>
             <div className="flex gap-x-3">
               <CreateWorkspace />
-              <CreateFolders workspaceId={workspaceid} />
             </div>
           </div>
           <section className="py-9">

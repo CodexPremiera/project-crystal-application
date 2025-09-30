@@ -1,8 +1,9 @@
 'use client'
-import FolderPlusDuotine from '@/components/icons/folder-plus-duotone'
 import { Button } from '@/components/ui/button'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { useCreateFolders } from '@/hooks/useCreateFolders'
 import React from 'react'
+import {Add} from "@/components/icons/add";
 
 /**
  * Create Folders Button Component
@@ -31,13 +32,16 @@ type Props = { workspaceId: string }
 const CreateFolders = ({ workspaceId }: Props) => {
   const { onCreateNewFolder } = useCreateFolders(workspaceId)
   return (
-    <Button
-      onClick={onCreateNewFolder}
-      className="bg-[#1D1D1D] text-[#707070] flex items-center gap-2 py-6 px-4 rounded-2xl"
-    >
-      <FolderPlusDuotine />
-      Create A folder
-    </Button>
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button onClick={onCreateNewFolder} variant="ghost" className='rounded-full'>
+          <Add />
+        </Button>
+      </HoverCardTrigger>
+      <HoverCardContent side="right" className="text-xs py-2 px-3 flex w-fit">
+        <p>Create a new folder</p>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
 
