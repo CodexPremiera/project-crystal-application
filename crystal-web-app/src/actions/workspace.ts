@@ -1090,3 +1090,82 @@ export const removeUserFromWorkspace = async (workspaceId: string, memberClerkId
     return { status: 500, data: 'Failed to remove user from workspace' }
   }
 }
+
+/**
+ * Updates the name of a workspace
+ * 
+ * Database Operation: PUT (UPDATE operation)
+ * Table: WorkSpace
+ * 
+ * What it updates:
+ * - Workspace name in the database
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is the workspace owner
+ * 3. Updates workspace name using Prisma update
+ * 4. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can edit workspace name
+ * - Validates workspace ownership before update
+ * - Prevents unauthorized name changes
+ * 
+ * @param workspaceId - The UUID of the workspace to update
+ * @param newName - The new name for the workspace
+ * @returns Promise with update status and confirmation/error message
+ */
+export const editWorkspaceName = async (workspaceId: string, newName: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Validate input
+    if (!newName || newName.trim().length === 0) {
+      return { status: 400, data: 'Workspace name cannot be empty' }
+    }
+    
+    if (newName.trim().length > 100) {
+      return { status: 400, data: 'Workspace name must be less than 100 characters' }
+    }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can edit workspace name' }
+    }
+    
+    // Update the workspace name
+    const updatedWorkspace = await client.workSpace.update({
+      where: {
+        id: workspaceId
+      },
+      data: {
+        name: newName.trim()
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (updatedWorkspace) {
+      return { status: 200, data: 'Workspace name updated successfully' }
+    }
+    
+    return { status: 404, data: 'Workspace not found' }
+  } catch (error) {
+    console.log('Error editing workspace name:', error)
+    return { status: 500, data: 'Failed to update workspace name' }
+  }
+}

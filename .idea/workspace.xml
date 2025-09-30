@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="show other workspace users in the users page">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add ability to remove user from workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/user-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/user-card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,15 +197,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="23155000" />
-    </task>
-    <task id="LOCAL-00047" summary="update package">
-      <option name="closed" value="true" />
-      <created>1757260444527</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1757260444527</updated>
+      <workItem from="1759196668845" duration="25004000" />
     </task>
     <task id="LOCAL-00048" summary="update package">
       <option name="closed" value="true" />
@@ -593,7 +583,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759244487053</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="add ability to remove user from workspace">
+      <option name="closed" value="true" />
+      <created>1759246887767</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1759246887771</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -630,7 +628,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="establish express server listening" />
     <MESSAGE value="establish socket connection" />
     <MESSAGE value="handle saving chucks on temporary file" />
     <MESSAGE value="handle processing chucks to database" />
@@ -655,6 +652,7 @@
     <MESSAGE value="prevent access for personal workspaces to user workspace page" />
     <MESSAGE value="show workspace owner in the users page" />
     <MESSAGE value="show other workspace users in the users page" />
-    <option name="LAST_COMMIT_MESSAGE" value="show other workspace users in the users page" />
+    <MESSAGE value="add ability to remove user from workspace" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ability to remove user from workspace" />
   </component>
 </project>

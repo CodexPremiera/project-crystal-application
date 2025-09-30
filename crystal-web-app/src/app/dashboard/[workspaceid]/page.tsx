@@ -17,6 +17,7 @@ import {TrashBin} from "@/components/icons/trash-bin";
 import {EditDuotone} from "@/components/icons/editDuotone";
 import {Users} from "@/components/icons/user";
 import DashboardInviteSection from "@/components/global/dashboard-invite-section";
+import WorkspaceActions from "@/components/global/workspace/workspace-actions";
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -81,6 +82,16 @@ const Page = async ({ params }: Props) => {
     queryFn: () => getWorkSpaces(),
   })
   
+  // Get workspace data to extract the current workspace name
+  const workspaceData = await getWorkSpaces()
+  const workspace = workspaceData.data as any
+  
+  const currentWorkspace = workspace?.workspace.find(
+    (item: any) => item.id === workspaceid
+  )
+  
+  const workspaceName = currentWorkspace?.name || 'Unknown Workspace'
+  
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div>
@@ -116,15 +127,10 @@ const Page = async ({ params }: Props) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="gap-1">
-                  <DropdownMenuItem className="h-fit">
-                    <Button
-                      variant="ghost"
-                      className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
-                    >
-                      <EditDuotone />
-                      <span>Edit</span>
-                    </Button>
-                  </DropdownMenuItem>
+                  <WorkspaceActions 
+                    workspaceId={workspaceid}
+                    workspaceName={workspaceName}
+                  />
                   <DropdownMenuItem>
                     <Button
                       variant="ghost"
