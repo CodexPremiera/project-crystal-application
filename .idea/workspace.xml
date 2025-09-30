@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add edit workspace for editing workspace name">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/workspace/workspace-actions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/workspace/edit-workspace-button.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix cascade on folder, videos, and user" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -199,23 +193,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="26741000" />
-    </task>
-    <task id="LOCAL-00049" summary="move web application to its subdirectory">
-      <option name="closed" value="true" />
-      <created>1757263486638</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1757263486638</updated>
-    </task>
-    <task id="LOCAL-00050" summary="fix some warnings">
-      <option name="closed" value="true" />
-      <created>1757263831540</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1757263831540</updated>
+      <workItem from="1759196668845" duration="27046000" />
     </task>
     <task id="LOCAL-00051" summary="fix workspace id error">
       <option name="closed" value="true" />
@@ -593,7 +571,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759248473157</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="add delete workspace with cascade on folder, videos, and user">
+      <option name="closed" value="true" />
+      <created>1759250374773</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1759250374774</updated>
+    </task>
+    <task id="LOCAL-00099" summary="fix cascade on folder, videos, and user">
+      <option name="closed" value="true" />
+      <created>1759250393143</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1759250393143</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -630,8 +624,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="handle saving chucks on temporary file" />
-    <MESSAGE value="handle processing chucks to database" />
     <MESSAGE value="establish aws and express server routes" />
     <MESSAGE value="display videos in home page via wix cms" />
     <MESSAGE value="display developer notes in home page from cloudways" />
@@ -655,6 +647,8 @@
     <MESSAGE value="show other workspace users in the users page" />
     <MESSAGE value="add ability to remove user from workspace" />
     <MESSAGE value="add edit workspace for editing workspace name" />
-    <option name="LAST_COMMIT_MESSAGE" value="add edit workspace for editing workspace name" />
+    <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
+    <MESSAGE value="fix cascade on folder, videos, and user" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix cascade on folder, videos, and user" />
   </component>
 </project>

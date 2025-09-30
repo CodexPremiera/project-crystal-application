@@ -56,12 +56,8 @@ export const MENU_ITEMS = ({
   const baseItems = [
     {
       title: 'Home',
-      href: `/dashboard/${workspaceId}/home`,
-      icon: <Home />},
-    {
-      title: 'My Library',
       href: `/dashboard/${workspaceId}`,
-      icon: <FileDuoToneBlack />,
+      icon: <Home />,
     },
     {
       title: 'Notifications',
@@ -78,6 +74,11 @@ export const MENU_ITEMS = ({
       href: `/dashboard/${workspaceId}/settings`,
       icon: <Settings />,
     },
+    {
+      title: 'Updates',
+      href: `/dashboard/${workspaceId}/updates`,
+      icon: <FileDuoToneBlack />
+    }
   ]
 
   // Add Users tab only for PUBLIC workspaces
