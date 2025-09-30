@@ -1,11 +1,12 @@
 import React from 'react'
-import { getWorkSpaces, getWorkspaceMemberCount, getWorkspaceOwner } from '@/actions/workspace'
+import { getWorkSpaces, getWorkspaceMemberCount, getWorkspaceOwner, getWorkspaceMembers } from '@/actions/workspace'
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import { Users } from '@/components/icons/user'
 import DashboardInviteSection from '@/components/global/dashboard-invite-section'
 import { notFound } from 'next/navigation'
 import { currentUser } from '@clerk/nextjs/server'
 import OwnerCard from "@/components/global/users/owner-card";
+import UserCard from "@/components/global/users/user-card";
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -92,8 +93,11 @@ const Page = async ({ params }: Props) => {
     } : null
   } : null
   
-  // Debug: Log the workspace owner data
-  console.log('Workspace Owner Data:', workspaceOwner)
+  // Get workspace members (excluding owner)
+  const workspaceMembersData = await getWorkspaceMembers(workspaceid)
+  
+  // Create a serializable copy of the workspace members data
+  const workspaceMembers = workspaceMembersData.status === 200 ? workspaceMembersData.data : []
   
   await query.prefetchQuery({
     queryKey: ['workspace-member-count', workspaceid],
@@ -129,14 +133,21 @@ const Page = async ({ params }: Props) => {
           <div className="space-y-4">
             <OwnerCard workspaceOwner={workspaceOwner} user={user} />
             
-            {/* Additional members would be listed here */}
-            <div className="text-center py-8 text-muted-foreground">
-              <div className="mx-auto mb-4 opacity-50">
-                <Users size={48} />
+            {/* Render workspace members */}
+            {workspaceMembers && workspaceMembers.length > 0 ? (
+              workspaceMembers.map((member, index) => (
+                <UserCard 
+                  key={member.User?.clerkId || index} 
+                  workspaceMember={member} 
+                  user={user} 
+                />
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No additional members yet</p>
+                <p className="text-sm">Invite users to collaborate on this workspace</p>
               </div>
-              <p>No additional members yet</p>
-              <p className="text-sm">Invite users to collaborate on this workspace</p>
-            </div>
+            )}
           </div>
         </div>
       </div>

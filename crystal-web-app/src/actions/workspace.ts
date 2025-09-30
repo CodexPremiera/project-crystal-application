@@ -954,3 +954,69 @@ export const getWorkspaceOwner = async (workspaceId: string) => {
     return { status: 500, data: null }
   }
 }
+
+/**
+ * Retrieves workspace members (excluding the owner)
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: WorkSpace (primary), Member, User
+ * 
+ * What it retrieves:
+ * - All workspace members (invited users, not the owner)
+ * - Member profile information (name, image, Clerk ID)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace
+ * 3. Queries WorkSpace table with members relation
+ * 4. Includes related User data for each member
+ * 5. Returns members array for UI display
+ * 
+ * @param workspaceId - The UUID of the workspace to get members for
+ * @returns Promise with workspace members data or error status
+ */
+export const getWorkspaceMembers = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // Verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        members: {
+          select: {
+            User: {
+              select: {
+                firstname: true,
+                lastname: true,
+                image: true,
+                clerkId: true,
+              }
+            }
+          }
+        }
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: [] } // No access to workspace
+    }
+    
+    // Extract members from the nested structure
+    const members = workspace.members.map(member => ({
+      User: member.User
+    }))
+    
+    return { status: 200, data: members }
+  } catch (error) {
+    console.log('Error getting workspace members:', error)
+    return { status: 500, data: [] }
+  }
+}
