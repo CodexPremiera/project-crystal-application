@@ -86,9 +86,6 @@ const Page = async ({ params }: Props) => {
                 Archive
               </TabsTrigger>
             </TabsList>
-            <div className="flex gap-x-3">
-              <CreateWorkspace />
-            </div>
           </div>
           <section className="py-9">
             <TabsContent value="videos">
