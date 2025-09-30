@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="show other workspace users in the users page">
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/user-card.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/users/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/owner-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/owner-card.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/user-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/users/user-card.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,15 +199,7 @@
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
       <workItem from="1759149156909" duration="11222000" />
-      <workItem from="1759196668845" duration="22143000" />
-    </task>
-    <task id="LOCAL-00046" summary="update readme with the complete web application">
-      <option name="closed" value="true" />
-      <created>1757260119718</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1757260119718</updated>
+      <workItem from="1759196668845" duration="23155000" />
     </task>
     <task id="LOCAL-00047" summary="update package">
       <option name="closed" value="true" />
@@ -593,7 +585,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759238116058</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="show other workspace users in the users page">
+      <option name="closed" value="true" />
+      <created>1759244487053</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1759244487053</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

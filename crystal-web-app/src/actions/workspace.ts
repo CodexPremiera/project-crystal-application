@@ -1020,3 +1020,73 @@ export const getWorkspaceMembers = async (workspaceId: string) => {
     return { status: 500, data: [] }
   }
 }
+
+/**
+ * Removes a user from a workspace
+ * 
+ * Database Operation: DELETE (DELETE operation)
+ * Tables: Member (primary), WorkSpace, User
+ * 
+ * What it removes:
+ * - Member record linking user to workspace
+ * - User loses access to workspace content
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is workspace owner (only owners can remove members)
+ * 3. Finds the member record to delete
+ * 4. Deletes the member record from database
+ * 5. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can remove members
+ * - Prevents users from removing themselves
+ * - Validates workspace ownership before deletion
+ * 
+ * @param workspaceId - The UUID of the workspace
+ * @param memberClerkId - The Clerk ID of the member to remove
+ * @returns Promise with removal status and confirmation/error message
+ */
+export const removeUserFromWorkspace = async (workspaceId: string, memberClerkId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can remove members' }
+    }
+    
+    // Prevent users from removing themselves
+    if (user.id === memberClerkId) {
+      return { status: 400, data: 'You cannot remove yourself from the workspace' }
+    }
+    
+    // Find and delete the member record
+    const deletedMember = await client.member.deleteMany({
+      where: {
+        workSpaceId: workspaceId,
+        User: { clerkId: memberClerkId }
+      }
+    })
+    
+    if (deletedMember.count > 0) {
+      return { status: 200, data: 'User removed from workspace successfully' }
+    }
+    
+    return { status: 404, data: 'User not found in workspace' }
+  } catch (error) {
+    console.log('Error removing user from workspace:', error)
+    return { status: 500, data: 'Failed to remove user from workspace' }
+  }
+}

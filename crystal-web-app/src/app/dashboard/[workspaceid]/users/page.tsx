@@ -139,7 +139,8 @@ const Page = async ({ params }: Props) => {
                 <UserCard 
                   key={member.User?.clerkId || index} 
                   workspaceMember={member} 
-                  user={user} 
+                  user={user}
+                  workspaceId={workspaceid}
                 />
               ))
             ) : (

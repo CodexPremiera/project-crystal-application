@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import DeleteUserModal from "./delete-user-modal";
 
 interface Props {
   workspaceMember: {
@@ -17,6 +18,7 @@ interface Props {
   user: {
     id: string | null;
   } | null;
+  workspaceId: string;
 }
 
 /**
@@ -27,17 +29,25 @@ interface Props {
  * 
  * Features:
  * - Member profile display (name, image, role)
- * - Remove user button (currently design-only)
+ * - Remove user button with confirmation modal
  * - Current user identification
  * 
  * @param workspaceMember - Member data from database
  * @param user - Current authenticated user data
+ * @param workspaceId - ID of the workspace for removal action
  */
-function UserCard({ workspaceMember, user }: Props) {
+function UserCard({ workspaceMember, user, workspaceId }: Props) {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const handleRemoveUser = () => {
-    // TODO: Implement remove user functionality
-    console.log('Remove user functionality not yet implemented');
+    setIsDeleteModalOpen(true);
   };
+
+  const handleCloseModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const memberName = `${workspaceMember?.User?.firstname || ''} ${workspaceMember?.User?.lastname || ''}`.trim() || 'Unknown User';
 
   return (
     <div className="flex items-center justify-between px-5 py-4 bg-secondary/50 rounded-2xl">
@@ -75,14 +85,22 @@ function UserCard({ workspaceMember, user }: Props) {
       </div>
       
       <Button
-        variant="outline"
+        variant="destructive"
         size="sm"
         onClick={handleRemoveUser}
-        className="text-destructive hover:text-destructive-foreground hover:bg-destructive"
+        className="text-foreground/80 !bg-destructive/50 hover:bg-destructive/80"
       >
         <Trash2 size={16} />
-        <span className="ml-2">Remove</span>
+        <span className="ml-1">Remove user</span>
       </Button>
+      
+      <DeleteUserModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseModal}
+        workspaceId={workspaceId}
+        memberName={memberName}
+        memberClerkId={workspaceMember?.User?.clerkId || ''}
+      />
     </div>
   );
 }
