@@ -7,7 +7,7 @@ import {Button} from "@/components/ui/button";
 
 const LandingPageNavBar = () => {
   return (
-    <div className="flex w-full justify-between items-center">
+    <div className="flex w-full justify-between items-center z-50 px-10 h-16 bg-[#171717]/80 backdrop-blur-lg fixed border-b border-neutral-100/5">
       <div className="text-3xl font-semibold flex items-center gap-x-3">
         <Menu className="w-6 h-6"/>
         <Image
@@ -21,7 +21,7 @@ const LandingPageNavBar = () => {
       <div className="hidden gap-x-10 items-center lg:flex">
         <Link
           href="/crystal-web-app/public"
-          className="bg-[#7320DD] py-2 px-5 font-semibold text-lg rounded-full hover:bg-[#7320DD]/80"
+          className="bg-[#7320DD] py-1 px-5 font-semibold text-lg rounded-full hover:bg-[#7320DD]/80"
         >
           Home
         </Link>
