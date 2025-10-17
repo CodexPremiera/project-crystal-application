@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="interchange home and my library page">
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/public/blurred_eclipse.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/public/crystal_home_page.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add landing page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/_components/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/_components/navbar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,11 +113,11 @@
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-title" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -205,15 +199,15 @@
       <workItem from="1759196668845" duration="27375000" />
       <workItem from="1759289280800" duration="7547000" />
       <workItem from="1759323434546" duration="920000" />
-      <workItem from="1759369772450" duration="3441000" />
-    </task>
-    <task id="LOCAL-00052" summary="add readme to root directory">
-      <option name="closed" value="true" />
-      <created>1757265049928</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1757265049928</updated>
+      <workItem from="1759369772450" duration="6139000" />
+      <workItem from="1759413058477" duration="19000" />
+      <workItem from="1759549895068" duration="3801000" />
+      <workItem from="1759722291874" duration="1223000" />
+      <workItem from="1759748349562" duration="592000" />
+      <workItem from="1759758600760" duration="26000" />
+      <workItem from="1759813083598" duration="140000" />
+      <workItem from="1760151037000" duration="4309000" />
+      <workItem from="1760349570558" duration="813000" />
     </task>
     <task id="LOCAL-00053" summary="install electron react app">
       <option name="closed" value="true" />
@@ -599,7 +593,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759250746686</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="add landing page">
+      <option name="closed" value="true" />
+      <created>1759373466285</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1759373466285</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -636,7 +638,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="display videos in home page via wix cms" />
     <MESSAGE value="display developer notes in home page from cloudways" />
     <MESSAGE value="add voiceflow" />
     <MESSAGE value="document the react query calls and server actions" />
@@ -661,6 +662,7 @@
     <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
     <MESSAGE value="fix cascade on folder, videos, and user" />
     <MESSAGE value="interchange home and my library page" />
-    <option name="LAST_COMMIT_MESSAGE" value="interchange home and my library page" />
+    <MESSAGE value="add landing page" />
+    <option name="LAST_COMMIT_MESSAGE" value="add landing page" />
   </component>
 </project>
