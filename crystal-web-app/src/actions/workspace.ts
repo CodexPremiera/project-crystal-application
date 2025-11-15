@@ -516,6 +516,7 @@ export const getPreviewVideo = async (videoId: string) => {
         description: true,
         processing: true,
         views: true,
+        likes: true,
         summary: true,
         User: {
           select: {
@@ -545,6 +546,105 @@ export const getPreviewVideo = async (videoId: string) => {
   } catch (error) {
     console.log(error)
     return { status: 400 }
+  }
+}
+
+/**
+ * Toggles like status for a video (like if not liked, unlike if already liked)
+ * 
+ * Database Operation: POST/DELETE + UPDATE (INSERT/DELETE + UPDATE operations)
+ * Tables: VideoLike (create/delete), Video (update counter)
+ * 
+ * What it does:
+ * - Creates VideoLike entry if user hasn't liked the video
+ * - Deletes VideoLike entry if user has already liked the video
+ * - Increments or decrements Video.likes counter atomically
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Checks if VideoLike entry exists for (videoId, userId)
+ * 4. If exists: deletes entry and decrements Video.likes
+ * 5. If not exists: creates entry and increments Video.likes
+ * 6. Returns updated like count for optimistic UI updates
+ * 7. Handles errors gracefully
+ * 
+ * @param videoId - The unique identifier of the video to toggle like for
+ * @returns Promise with status and updated like count
+ */
+export const toggleVideoLike = async (videoId: string) => {
+  try {
+    const clerkUser = await currentUser()
+    if (!clerkUser) return { status: 401, data: { likes: 0 } }
+    
+    const user = await client.user.findUnique({
+      where: { clerkId: clerkUser.id },
+    })
+    
+    if (!user) return { status: 404, data: { likes: 0 } }
+    
+    const existingLike = await client.videoLike.findUnique({
+      where: {
+        videoId_userId: {
+          videoId,
+          userId: user.id,
+        },
+      },
+    })
+    
+    if (existingLike) {
+      await client.$transaction([
+        client.videoLike.delete({
+          where: {
+            id: existingLike.id,
+          },
+        }),
+        client.video.update({
+          where: { id: videoId },
+          data: {
+            likes: { decrement: 1 },
+          },
+        }),
+      ])
+      
+      const updatedVideo = await client.video.findUnique({
+        where: { id: videoId },
+        select: { likes: true },
+      })
+      
+      return {
+        status: 200,
+        data: { likes: updatedVideo?.likes ?? 0, liked: false },
+      }
+    } else {
+      await client.$transaction([
+        client.videoLike.create({
+          data: {
+            videoId,
+            userId: user.id,
+          },
+        }),
+        client.video.update({
+          where: { id: videoId },
+          data: {
+            likes: { increment: 1 },
+          },
+        }),
+      ])
+      
+      const updatedVideo = await client.video.findUnique({
+        where: { id: videoId },
+        select: { likes: true },
+      })
+      
+      return {
+        status: 200,
+        data: { likes: updatedVideo?.likes ?? 0, liked: true },
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return { status: 400, data: { likes: 0 } }
   }
 }
 

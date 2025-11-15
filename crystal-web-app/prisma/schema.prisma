@@ -32,6 +32,7 @@ model User {
   trial        Boolean        @default(false)
   firstView    Boolean        @default(false)
   comment      Comment[]
+  videoLikes   VideoLike[]
 }
 
 model Comment {
@@ -103,8 +104,10 @@ model Video {
   WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
   workSpaceId String?    @db.Uuid
   views       Int        @default(0)
+  likes       Int        @default(0)
   summary     String?
   Comment     Comment[]
+  VideoLike   VideoLike[]
 }
 
 model Member {
@@ -150,4 +153,15 @@ enum PRESET {
 enum SUBSCRIPTION_PLAN {
   PRO
   FREE
+}
+
+model VideoLike {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  videoId   String   @db.Uuid
+  userId    String   @db.Uuid
+  likedAt   DateTime @default(now())
+  Video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([videoId, userId])
 }

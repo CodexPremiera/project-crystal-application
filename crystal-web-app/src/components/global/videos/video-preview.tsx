@@ -3,8 +3,9 @@
 import React, {useEffect} from 'react';
 import {useRouter} from "next/navigation";
 import { useQueryData } from '@/hooks/useQueryData';
-import {getPreviewVideo, sendEmailForFirstView} from "@/actions/workspace";
+import {getPreviewVideo, sendEmailForFirstView, toggleVideoLike} from "@/actions/workspace";
 import {VideoProps} from "@/types/index.type";
+import { useMutationData } from '@/hooks/useMutationData';
 import EditVideoTitle from "@/components/global/videos/edit/edit-video-title";
 import EditVideoDesc from "@/components/global/videos/edit/edit-video-desc";
 import CopyLink from "@/components/global/videos/copy-link";
@@ -79,6 +80,13 @@ function VideoPreview({ videoId }: Props) {
     video.source,
     video.title,
     videoId
+  )
+  
+  // Like functionality
+  const { mutate: toggleLike, isPending: isLiking } = useMutationData(
+    ['toggle-video-like'],
+    async () => await toggleVideoLike(videoId),
+    'preview-video'
   )
   
   // Calculate days since video creation for display
@@ -161,12 +169,11 @@ function VideoPreview({ videoId }: Props) {
           <Button
             variant="secondary"
             className="rounded-full pl-3 pr-6 flex"
-            onClick={() => {
-              console.log('Download button clicked - functionality not implemented yet')
-            }}
+            onClick={() => toggleLike(undefined)}
+            disabled={isLiking}
           >
             <Like />
-            <span>10</span>
+            <span>{video.likes ?? 0}</span>
           </Button>
           
           {/* Download button */}

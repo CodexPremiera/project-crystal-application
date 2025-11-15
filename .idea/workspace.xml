@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add basic search">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="quick fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/types/index.type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/types/index.type.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,15 +216,7 @@
       <workItem from="1761957682957" duration="4394000" />
       <workItem from="1762055507445" duration="7065000" />
       <workItem from="1762430549649" duration="57000" />
-      <workItem from="1763195932506" duration="1535000" />
-    </task>
-    <task id="LOCAL-00054" summary="setup tailwind and shadcn ui">
-      <option name="closed" value="true" />
-      <created>1757267468426</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1757267468426</updated>
+      <workItem from="1763195932506" duration="3087000" />
     </task>
     <task id="LOCAL-00055" summary="add clerk js">
       <option name="closed" value="true" />
@@ -608,7 +602,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760698962866</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="quick fix">
+      <option name="closed" value="true" />
+      <created>1763211112883</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1763211112883</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -645,7 +647,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add voiceflow" />
     <MESSAGE value="document the react query calls and server actions" />
     <MESSAGE value="document the components of the web-app" />
     <MESSAGE value="modify the UI for editing video title and description" />
@@ -670,6 +671,7 @@
     <MESSAGE value="interchange home and my library page" />
     <MESSAGE value="add landing page" />
     <MESSAGE value="add basic search" />
-    <option name="LAST_COMMIT_MESSAGE" value="add basic search" />
+    <MESSAGE value="quick fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="quick fix" />
   </component>
 </project>
