@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Folder, Video, Building2, Calendar, FileText } from 'lucide-react'
 import Link from 'next/link'
+import VideoCard from '@/components/global/videos/video-card'
+import WorkspacePlaceholder from '@/components/global/sidebar/workspace-placeholder'
 
 interface SearchPageProps {
   params: Promise<{ workspaceid: string }>
@@ -118,20 +120,7 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   }
 
   return (
-    <div className="space-y-6">
-      {/* Search Header */}
-      <div className="flex items-center gap-3">
-        <h1 className="text-3xl font-bold">Search Results</h1>
-        <Badge variant="outline" className="text-sm">
-          "{query}"
-        </Badge>
-      </div>
-
-      {/* Results Summary */}
-      <div className="text-gray-600 dark:text-gray-400">
-        Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
-      </div>
-
+    <div className="space-y-6"> 
       {/* No Results */}
       {results.length === 0 && (
         <div className="flex flex-col items-center justify-center min-h-[300px] gap-4">
@@ -146,6 +135,80 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         </div>
       )}
 
+      {/* Videos Section */}
+      {videos.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <Video className="h-5 w-5" />
+            Videos ({videos.length})
+          </h2>
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {videos.map((video) => {
+              if (!video.videoData) {
+                // Fallback to Card if videoData is not available
+                return (
+                  <Card key={video.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          {getTypeIcon(video.type)}
+                          <div>
+                            <CardTitle className="text-lg">{video.name}</CardTitle>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Video in {video.workspaceName}
+                              {video.folderName && ` • ${video.folderName}`}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge className={getTypeColor(video.type)}>
+                          Video
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      {video.description && (
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                          {video.description}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(video.createdAt)}
+                        </div>
+                      </div>
+                      <div className="mt-4">
+                        <Link
+                          href={getItemLink(video)}
+                          className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                        >
+                          Open Video →
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              }
+              
+              return (
+                <VideoCard
+                  key={video.id}
+                  id={video.videoData.id}
+                  title={video.videoData.title}
+                  source={video.videoData.source}
+                  createdAt={video.videoData.createdAt}
+                  workspaceId={video.videoData.workSpaceId || video.workspaceId || ''}
+                  User={video.videoData.User}
+                  Folder={video.videoData.Folder}
+                  processing={video.videoData.processing}
+                  isAdvanced={false}
+                />
+              )
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Workspaces Section */}
       {workspaces.length > 0 && (
         <section className="space-y-4">
@@ -155,11 +218,13 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
           </h2>
           <div className="grid gap-4">
             {workspaces.map((workspace) => (
-              <Card key={workspace.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
+              <Card key={workspace.id} className="hover:shadow-md transition-shadow !py-3">
+                <CardHeader className="!pb-0">
+                  <Link href={getItemLink(workspace)} className="!hover:bg-[#252525] flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      {getTypeIcon(workspace.type)}
+                      <WorkspacePlaceholder>
+                        {workspace.name.charAt(0)}
+                      </WorkspacePlaceholder>
                       <div>
                         <CardTitle className="text-lg">{workspace.name}</CardTitle>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -167,27 +232,8 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                         </p>
                       </div>
                     </div>
-                    <Badge className={getTypeColor(workspace.type)}>
-                      Workspace
-                    </Badge>
-                  </div>
+                  </Link>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(workspace.createdAt)}
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <Link
-                      href={getItemLink(workspace)}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                    >
-                      Open Workspace →
-                    </Link>
-                  </div>
-                </CardContent>
               </Card>
             ))}
           </div>
@@ -233,60 +279,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
                       className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                     >
                       Open Folder →
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Videos Section */}
-      {videos.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Video className="h-5 w-5" />
-            Videos ({videos.length})
-          </h2>
-          <div className="grid gap-4">
-            {videos.map((video) => (
-              <Card key={video.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      {getTypeIcon(video.type)}
-                      <div>
-                        <CardTitle className="text-lg">{video.name}</CardTitle>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Video in {video.workspaceName}
-                          {video.folderName && ` • ${video.folderName}`}
-                        </p>
-                      </div>
-                    </div>
-                    <Badge className={getTypeColor(video.type)}>
-                      Video
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {video.description && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-                      {video.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(video.createdAt)}
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <Link
-                      href={getItemLink(video)}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                    >
-                      Open Video →
                     </Link>
                   </div>
                 </CardContent>

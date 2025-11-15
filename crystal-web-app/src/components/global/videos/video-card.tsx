@@ -25,6 +25,7 @@ type Props = {
   source: string
   processing: boolean
   workspaceId: string
+  isAdvanced?: boolean
 }
 
 /**
@@ -45,11 +46,13 @@ type Props = {
  * 6. Handles loading states and processing indicators
  * 
  * Interactive Features:
- * - Hover effects reveal action buttons
- * - Video card menu for editing and management
- * - Copy link functionality for sharing
+ * - Hover effects reveal action buttons (when isAdvanced is true)
+ * - Video card menu for editing and management (when isAdvanced is true)
+ * - Copy link functionality for sharing (when isAdvanced is true)
  * - Click navigation to video preview
  * - Processing state indicators
+ * 
+ * @param props.isAdvanced - Optional prop to show/hide action buttons (CardMenu and CopyLink). Defaults to true.
  * 
  * Data Display:
  * - Video thumbnail with processing overlay
@@ -78,18 +81,20 @@ function VideoCard(props: Props) {
       state={false}
     >
       <div className=" group overflow-hidden cursor-pointer bg-[#171717] relative border-[1px] border-[#252525] flex flex-col rounded-xl">
-        <div className="absolute top-3 right-3 z-50 gap-x-3 hidden group-hover:flex">
-          <CardMenu
-            currentFolderName={props.Folder?.name}
-            videoId={props.id}
-            currentWorkspace={props.workspaceId}
-            currentFolder={props.Folder?.id}
-          />
-          <CopyLink
-            className="p-[5px] h-5 bg-hover:bg-transparent bg-[#252525]"
-            videoId={props.id}
-          />
-        </div>
+        {props.isAdvanced !== false && (
+          <div className="absolute top-3 right-3 z-50 gap-x-3 hidden group-hover:flex">
+            <CardMenu
+              currentFolderName={props.Folder?.name}
+              videoId={props.id}
+              currentWorkspace={props.workspaceId}
+              currentFolder={props.Folder?.id}
+            />
+            <CopyLink
+              className="p-[5px] h-5 bg-hover:bg-transparent bg-[#252525]"
+              videoId={props.id}
+            />
+          </div>
+        )}
         <Link
           href={`/dashboard/${props.workspaceId}/video/${props.id}`}
           className="hover:bg-[#252525] transition duration-150 flex flex-col justify-between h-full"

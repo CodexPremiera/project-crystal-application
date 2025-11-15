@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="quick fix">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="improve search components design">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/workspace.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-preview.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/types/index.type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/types/index.type.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/search.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/search.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/updates/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/updates/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/video-card.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,15 +216,7 @@
       <workItem from="1761957682957" duration="4394000" />
       <workItem from="1762055507445" duration="7065000" />
       <workItem from="1762430549649" duration="57000" />
-      <workItem from="1763195932506" duration="3087000" />
-    </task>
-    <task id="LOCAL-00055" summary="add clerk js">
-      <option name="closed" value="true" />
-      <created>1757267904401</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1757267904401</updated>
+      <workItem from="1763195932506" duration="6768000" />
     </task>
     <task id="LOCAL-00056" summary="establish initial general layout of window app">
       <option name="closed" value="true" />
@@ -610,7 +602,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763211112883</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="add video like functionality">
+      <option name="closed" value="true" />
+      <created>1763212728658</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1763212728658</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,8 +647,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="document the react query calls and server actions" />
-    <MESSAGE value="document the components of the web-app" />
     <MESSAGE value="modify the UI for editing video title and description" />
     <MESSAGE value="add backdrop blur to the header bar" />
     <MESSAGE value="improve UI for moving video to folders and workspaces" />
@@ -672,6 +670,20 @@
     <MESSAGE value="add landing page" />
     <MESSAGE value="add basic search" />
     <MESSAGE value="quick fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="quick fix" />
+    <MESSAGE value="add video like functionality" />
+    <MESSAGE value="improve search components design" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve search components design" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx</url>
+          <line>236</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

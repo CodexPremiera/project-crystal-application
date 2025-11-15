@@ -21,6 +21,24 @@ export interface SearchResult {
   folderName?: string
   createdAt: Date
   description?: string
+  videoData?: {
+    id: string
+    title: string | null
+    source: string
+    createdAt: Date
+    workSpaceId: string | null
+    folderId: string | null
+    processing: boolean
+    User: {
+      firstname: string | null
+      lastname: string | null
+      image: string | null
+    } | null
+    Folder: {
+      id: string
+      name: string
+    } | null
+  }
 }
 
 export interface SearchResponse {
@@ -148,9 +166,18 @@ export const searchContent = async (query: string): Promise<SearchResponse> => {
         id: true,
         title: true,
         description: true,
+        source: true,
         createdAt: true,
         workSpaceId: true,
         folderId: true,
+        processing: true,
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true
+          }
+        },
         WorkSpace: {
           select: {
             name: true
@@ -158,6 +185,7 @@ export const searchContent = async (query: string): Promise<SearchResponse> => {
         },
         Folder: {
           select: {
+            id: true,
             name: true
           }
         }
@@ -202,7 +230,19 @@ export const searchContent = async (query: string): Promise<SearchResponse> => {
         folderId: video.folderId,
         folderName: video.Folder?.name,
         description: video.description,
-        createdAt: video.createdAt
+        createdAt: video.createdAt,
+        // Include full video data for VideoCard component
+        videoData: {
+          id: video.id,
+          title: video.title,
+          source: video.source,
+          createdAt: video.createdAt,
+          workSpaceId: video.workSpaceId,
+          folderId: video.folderId,
+          processing: video.processing,
+          User: video.User,
+          Folder: video.Folder
+        }
       })
     })
 
