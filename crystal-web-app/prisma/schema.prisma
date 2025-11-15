@@ -121,23 +121,34 @@ model Member {
 }
 
 model Notification {
-  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  User    User?   @relation(fields: [userId], references: [id])
-  userId  String? @db.Uuid
-  content String
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User             User?              @relation(fields: [userId], references: [id])
+  userId           String?            @db.Uuid
+  content          String
+  createdAt        DateTime           @default(now())
+  NotificationInvite NotificationInvite?
 }
 
 model Invite {
-  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  sender      User?      @relation("sender", fields: [senderId], references: [id])
-  senderId    String?    @db.Uuid
-  receiver    User?      @relation("receiver", fields: [receiverId], references: [id])
-  receiverId  String?    @db.Uuid
-  content     String
-  WorkSpace   WorkSpace? @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
-  workSpaceId String?    @db.Uuid
-  accepted    Boolean    @default(false)
-  createdAt   DateTime   @default(now())
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sender            User?               @relation("sender", fields: [senderId], references: [id])
+  senderId          String?             @db.Uuid
+  receiver          User?               @relation("receiver", fields: [receiverId], references: [id])
+  receiverId        String?             @db.Uuid
+  content           String
+  WorkSpace         WorkSpace?          @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
+  workSpaceId       String?             @db.Uuid
+  accepted          Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  NotificationInvite NotificationInvite[]
+}
+
+model NotificationInvite {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId String     @unique @db.Uuid
+  Invite        Invite      @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  inviteId      String      @db.Uuid
 }
 
 enum Type {

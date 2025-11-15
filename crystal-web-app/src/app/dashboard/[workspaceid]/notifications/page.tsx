@@ -1,7 +1,7 @@
 'use client'
 
 import { getNotifications } from '@/actions/user'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useQueryData } from '@/hooks/useQueryData'
 import { User } from 'lucide-react'
 import React from 'react'
@@ -63,6 +63,23 @@ const Notifications = () => {
         id: string
         userId: string | null
         content: string
+        createdAt: Date | string
+        NotificationInvite: {
+          Invite: {
+            senderId: string | null
+            receiverId: string | null
+            sender: {
+              image: string | null
+              firstname: string | null
+              lastname: string | null
+            } | null
+            receiver: {
+              image: string | null
+              firstname: string | null
+              lastname: string | null
+            } | null
+          } | null
+        } | null
       }[]
     }
   }
@@ -75,21 +92,48 @@ const Notifications = () => {
     )
   }
 
+  const formatDate = (date: Date) => {
+    const daysAgo = Math.floor(
+      (new Date().getTime() - new Date(date).getTime()) / (24 * 60 * 60 * 1000)
+    )
+    return daysAgo === 0 ? 'Today' : `${daysAgo}d ago`
+  }
+
   return (
-    <div className="flex flex-col">
-      {notification.notification.map((n) => (
-        <div
-          key={n.id}
-          className="border-2 flex gap-x-3 items-center rounded-lg p-3"
-        >
-          <Avatar>
-            <AvatarFallback>
-              <User />
-            </AvatarFallback>
-          </Avatar>
-          <p>{n.content}</p>
-        </div>
-      ))}
+    <div className="flex flex-col gap-y-3">
+      {notification.notification.map((n) => {
+        const isWorkspaceInvite = n.NotificationInvite !== null
+        const invite = n.NotificationInvite?.Invite
+        
+        let avatarUser = null
+        if (isWorkspaceInvite && invite && n.userId) {
+          if (n.userId === invite.senderId) {
+            avatarUser = invite.receiver
+          } else if (n.userId === invite.receiverId) {
+            avatarUser = invite.sender
+          }
+        }
+
+        return (
+          <div
+            key={n.id}
+            className="border-2 flex gap-x-3 items-center rounded-lg p-3"
+          >
+            <Avatar>
+              {isWorkspaceInvite && avatarUser?.image ? (
+                <AvatarImage src={avatarUser.image} />
+              ) : null}
+              <AvatarFallback>
+                <User />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col flex-1">
+              <p>{n.content}</p>
+              <p className="text-[#6d6b6b] text-sm">{formatDate(n.createdAt)}</p>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
