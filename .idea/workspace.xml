@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add landing page">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add basic search">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,14 +209,12 @@
       <workItem from="1759813083598" duration="140000" />
       <workItem from="1760151037000" duration="4309000" />
       <workItem from="1760349570558" duration="813000" />
-    </task>
-    <task id="LOCAL-00053" summary="install electron react app">
-      <option name="closed" value="true" />
-      <created>1757265712497</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1757265712497</updated>
+      <workItem from="1760698805601" duration="5410000" />
+      <workItem from="1760969171527" duration="31000" />
+      <workItem from="1761957682957" duration="4394000" />
+      <workItem from="1762055507445" duration="7065000" />
+      <workItem from="1762430549649" duration="57000" />
+      <workItem from="1763195932506" duration="1535000" />
     </task>
     <task id="LOCAL-00054" summary="setup tailwind and shadcn ui">
       <option name="closed" value="true" />
@@ -601,7 +600,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759373466285</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="add basic search">
+      <option name="closed" value="true" />
+      <created>1760698962866</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1760698962866</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -638,7 +645,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="display developer notes in home page from cloudways" />
     <MESSAGE value="add voiceflow" />
     <MESSAGE value="document the react query calls and server actions" />
     <MESSAGE value="document the components of the web-app" />
@@ -663,6 +669,7 @@
     <MESSAGE value="fix cascade on folder, videos, and user" />
     <MESSAGE value="interchange home and my library page" />
     <MESSAGE value="add landing page" />
-    <option name="LAST_COMMIT_MESSAGE" value="add landing page" />
+    <MESSAGE value="add basic search" />
+    <option name="LAST_COMMIT_MESSAGE" value="add basic search" />
   </component>
 </project>
