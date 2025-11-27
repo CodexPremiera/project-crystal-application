@@ -42,14 +42,11 @@ import { Controller } from 'react-hook-form';
 
 type Props = {
   videoId: string
-  currentFolder?: string
   currentWorkSpace?: string
-  currentFolderName?: string
 }
 
 const ChangeVideoLocation = ({
                                videoId,
-                               currentFolder,
                                currentWorkSpace,
                              }: Props) => {
   const {

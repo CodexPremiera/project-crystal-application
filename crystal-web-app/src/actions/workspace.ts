@@ -872,7 +872,7 @@ export const howToPost = async () => {
         content: response.data[0].content.rendered,
       }
     }
-  } catch (_error) {
+  } catch {
     return { status: 400 }
   }
 }

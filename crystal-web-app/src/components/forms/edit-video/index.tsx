@@ -3,6 +3,7 @@ import { useEditVideo } from '@/hooks/useEditVideo'
 import React from 'react'
 import FormGenerator from "@/components/forms/form-generator";
 import Loader from "@/components/global/loader/loader";
+import { FieldValues, UseFormRegister } from 'react-hook-form'
 
 /**
  * Edit Video Form Component
@@ -61,7 +62,7 @@ const EditVideoForm = ({ description, title, videoId }: Props) => {
     >
       {/* Video title input field */}
       <FormGenerator
-        register={register}
+        register={register as unknown as UseFormRegister<FieldValues>}
         errors={errors}
         name="title"
         inputType="input"
@@ -72,7 +73,7 @@ const EditVideoForm = ({ description, title, videoId }: Props) => {
 
       {/* Video description textarea field */}
       <FormGenerator
-        register={register}
+        register={register as unknown as UseFormRegister<FieldValues>}
         label="Description"
         errors={errors}
         name="description"

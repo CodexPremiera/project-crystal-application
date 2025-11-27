@@ -3,9 +3,9 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 type Props = {
-  params: {
+  params: Promise<{
     inviteId: string
-  }
+  }>
 }
 
 /**
@@ -59,7 +59,8 @@ type Props = {
  * @param params.inviteId - Unique identifier of the workspace invitation
  * @returns JSX element with invitation result or redirect
  */
-const Page = async ({ params: { inviteId } }: Props) => {
+const Page = async ({ params }: Props) => {
+  const { inviteId } = await params
   const invite = await acceptInvite(inviteId)
 
   if (invite.status === 404) return redirect('/auth/sign-in')

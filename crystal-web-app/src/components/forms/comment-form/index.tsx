@@ -5,6 +5,7 @@ import React from 'react'
 import FormGenerator from "@/components/forms/form-generator";
 import Loader from "@/components/global/loader/loader";
 import {useVideoComment} from "@/hooks/useVideo";
+import { FieldValues, UseFormRegister } from 'react-hook-form'
 
 type Props = {
   videoId: string
@@ -64,7 +65,7 @@ const CommentForm = ({ author, videoId, commentId }: Props) => {
       onSubmit={onFormSubmit}
     >
       <FormGenerator
-        register={register}
+        register={register as unknown as UseFormRegister<FieldValues>}
         errors={errors}
         placeholder={`Respond to ${author}...`}
         name="comment"

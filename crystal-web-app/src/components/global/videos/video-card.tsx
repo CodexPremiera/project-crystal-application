@@ -84,10 +84,8 @@ function VideoCard(props: Props) {
         {props.isAdvanced !== false && (
           <div className="absolute top-3 right-3 z-50 gap-x-3 hidden group-hover:flex">
             <CardMenu
-              currentFolderName={props.Folder?.name}
               videoId={props.id}
               currentWorkspace={props.workspaceId}
-              currentFolder={props.Folder?.id}
             />
             <CopyLink
               className="p-[5px] h-5 bg-hover:bg-transparent bg-[#252525]"

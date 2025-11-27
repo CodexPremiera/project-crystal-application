@@ -3,6 +3,7 @@ import { useMutationData } from './useMutationData'
 import { useQueryData } from './useQueryData'
 import useZodForm from './useZodForm'
 import { createCommentAndReply, getUserProfile } from '@/actions/user'
+import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
 
 /**
  * Custom hook for managing video comments and replies
@@ -69,15 +70,15 @@ export const useVideoComment = (videoId: string, commentId?: string) => {
    */
   const { isPending, mutate } = useMutationData(
     ['new-comment'],
-    (data: { comment: string }) =>
-      createCommentAndReply(user.id, data.comment, videoId, commentId),
+    ((data: { comment: string }) =>
+      createCommentAndReply(user.id, data.comment, videoId, commentId)) as MutationFunction<unknown, unknown>,
     'video-comments',
     () => reset() // Custom callback to reset form after successful submission
   )
 
   const { register, onFormSubmit, errors, reset } = useZodForm(
     createCommentSchema,
-    mutate
+    mutate as UseMutateFunction
   )
   return { register, errors, onFormSubmit, isPending }
 }

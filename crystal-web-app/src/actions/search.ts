@@ -213,7 +213,7 @@ export const searchContent = async (query: string): Promise<SearchResponse> => {
         id: folder.id,
         name: folder.name,
         type: 'folder',
-        workspaceId: folder.workSpaceId,
+        workspaceId: folder.workSpaceId ?? undefined,
         workspaceName: folder.WorkSpace?.name,
         createdAt: folder.createdAt
       })
@@ -225,11 +225,11 @@ export const searchContent = async (query: string): Promise<SearchResponse> => {
         id: video.id,
         name: video.title || 'Untitled Video',
         type: 'video',
-        workspaceId: video.workSpaceId,
+        workspaceId: video.workSpaceId ?? undefined,
         workspaceName: video.WorkSpace?.name,
-        folderId: video.folderId,
+        folderId: video.folderId ?? undefined,
         folderName: video.Folder?.name,
-        description: video.description,
+        description: video.description ?? undefined,
         createdAt: video.createdAt,
         // Include full video data for VideoCard component
         videoData: {
@@ -399,7 +399,7 @@ export const searchFolders = async (query: string): Promise<SearchResponse> => {
       id: folder.id,
       name: folder.name,
       type: 'folder',
-      workspaceId: folder.workSpaceId,
+      workspaceId: folder.workSpaceId ?? undefined,
       workspaceName: folder.WorkSpace?.name,
       createdAt: folder.createdAt
     }))
@@ -501,11 +501,11 @@ export const searchVideos = async (query: string): Promise<SearchResponse> => {
       id: video.id,
       name: video.title || 'Untitled Video',
       type: 'video',
-      workspaceId: video.workSpaceId,
+      workspaceId: video.workSpaceId ?? undefined,
       workspaceName: video.WorkSpace?.name,
-      folderId: video.folderId,
+      folderId: video.folderId ?? undefined,
       folderName: video.Folder?.name,
-      description: video.description,
+      description: video.description ?? undefined,
       createdAt: video.createdAt
     }))
 

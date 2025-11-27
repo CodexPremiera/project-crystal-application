@@ -100,7 +100,7 @@ export async function getConnectionPoolStatus() {
         (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') as max_connections
       FROM pg_stat_activity 
       WHERE state = 'active'
-    `
+    ` as Array<{ active_connections: number; max_connections: number }>
     
     return {
       activeConnections: result[0]?.active_connections || 0,
