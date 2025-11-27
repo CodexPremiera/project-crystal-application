@@ -5,6 +5,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {UserButton} from "@clerk/nextjs";
 import { useRouter, usePathname } from 'next/navigation';
+import { UploadVideoDialog } from '@/components/global/upload-video-dialog';
 
 /**
  * Infobar Component
@@ -32,6 +33,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 function Infobar() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
 
@@ -80,7 +82,10 @@ function Infobar() {
         />
       </form>
       <div className="flex items-center gap-4">
-        <Button className="bg-[#9D9D9D] flex items-center gap-2">
+        <Button 
+          className="bg-[#9D9D9D] flex items-center gap-2"
+          onClick={() => setUploadDialogOpen(true)}
+        >
           <UploadIcon size={20} />
           <span className="flex items-center gap-2">Upload</span>
         </Button>
@@ -90,6 +95,14 @@ function Infobar() {
         </Button>
         <UserButton />
       </div>
+      
+      <UploadVideoDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onUploadComplete={() => {
+          router.refresh()
+        }}
+      />
     </header>
   )
 }

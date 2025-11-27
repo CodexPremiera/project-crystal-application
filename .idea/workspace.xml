@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="refine skeleton loading for dashboard">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add progressive loading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/videos.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/videos.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -222,15 +222,7 @@
       <workItem from="1763475202107" duration="22000" />
       <workItem from="1764083049590" duration="2706000" />
       <workItem from="1764163970866" duration="726000" />
-      <workItem from="1764210955613" duration="11211000" />
-    </task>
-    <task id="LOCAL-00060" summary="add auth api route for the desktop app authentication">
-      <option name="closed" value="true" />
-      <created>1757345755303</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1757345755303</updated>
+      <workItem from="1764210955613" duration="13656000" />
     </task>
     <task id="LOCAL-00061" summary="update middleware">
       <option name="closed" value="true" />
@@ -616,7 +608,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764226807855</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="add progressive loading">
+      <option name="closed" value="true" />
+      <created>1764227523364</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1764227523364</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -653,7 +653,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve like, download, share, and more button for the video page" />
     <MESSAGE value="add video deletion" />
     <MESSAGE value="add video download" />
     <MESSAGE value="move create new folders button beside folder header" />
@@ -678,7 +677,8 @@
     <MESSAGE value="add workspace invitation notification on both the host and invited user" />
     <MESSAGE value="refine the layouts and design across desktop app" />
     <MESSAGE value="refine skeleton loading for dashboard" />
-    <option name="LAST_COMMIT_MESSAGE" value="refine skeleton loading for dashboard" />
+    <MESSAGE value="add progressive loading" />
+    <option name="LAST_COMMIT_MESSAGE" value="add progressive loading" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
