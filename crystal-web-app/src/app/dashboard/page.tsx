@@ -1,4 +1,5 @@
 import { handleAuthRedirect } from "@/lib/auth-redirect";
+export const dynamic = "force-dynamic";
 
 /**
  * Main Dashboard Entry Page
