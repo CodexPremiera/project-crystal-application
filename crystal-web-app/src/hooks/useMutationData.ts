@@ -51,7 +51,7 @@ import { toast } from 'sonner'
  */
 export const useMutationData = (
   mutationKey: MutationKey,
-  mutationFn: MutationFunction<any, any>,
+  mutationFn: MutationFunction<unknown, unknown>,
   queryKey?: string,
   onSuccess?: () => void
 ) => {
@@ -120,7 +120,7 @@ export const useMutationDataState = (mutationKey: MutationKey) => {
     filters: { mutationKey },
     select: (mutation) => {
       return {
-        variables: mutation.state.variables as any,
+        variables: mutation.state.variables as Record<string, unknown>,
         status: mutation.state.status,
       }
     },

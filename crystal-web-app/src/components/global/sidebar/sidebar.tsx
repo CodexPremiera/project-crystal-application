@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from "next/image";
-import {usePathname, useRouter} from 'next/navigation';
+import {usePathname} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
 import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";

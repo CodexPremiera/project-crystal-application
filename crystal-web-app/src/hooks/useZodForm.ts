@@ -40,7 +40,7 @@ import z from 'zod'
 const useZodForm = <T extends z.ZodTypeAny>(
   schema: T,
   mutation: UseMutateFunction,
-  defaultValues?: any
+  defaultValues?: z.infer<T>
 ) => {
   const {
     register,
@@ -49,12 +49,12 @@ const useZodForm = <T extends z.ZodTypeAny>(
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema as any),
+  } = useForm<z.infer<T>>({
+    resolver: zodResolver(schema),
     defaultValues: { ...defaultValues },
   })
 
-  const onFormSubmit = handleSubmit(async (values) => mutation(values as any))
+  const onFormSubmit = handleSubmit(async (values) => mutation(values))
 
   return { register, watch, reset, onFormSubmit, errors, control }
 }

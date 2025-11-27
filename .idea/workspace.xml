@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add progressive loading">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-express/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-express/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-express/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add progressive loading" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -91,7 +85,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "refinements",
+    "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "22.17.0",
     "javascript.nodejs.core.library.typings.version": "22.17.2",
     "js.debugger.nextJs.config.created.client": "true",
@@ -679,16 +673,5 @@
     <MESSAGE value="refine skeleton loading for dashboard" />
     <MESSAGE value="add progressive loading" />
     <option name="LAST_COMMIT_MESSAGE" value="add progressive loading" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx</url>
-          <line>236</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

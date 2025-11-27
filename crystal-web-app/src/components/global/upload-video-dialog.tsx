@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
-import { UploadIcon, X } from 'lucide-react'
+import { UploadIcon } from 'lucide-react'
 import { getUserProfile } from '@/actions/user'
 
 type UploadVideoDialogProps = {
@@ -123,7 +123,6 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
 
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
-          const response = JSON.parse(xhr.responseText)
           toast.success('Video uploaded successfully! Processing will begin shortly.')
           
           resetForm()
@@ -145,10 +144,11 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
       xhr.open('POST', uploadUrl)
       xhr.send(formData)
 
-    } catch (err: any) {
+    } catch (err) {
       console.error('Upload error:', err)
-      setError(err.message || 'Upload failed. Please try again.')
-      toast.error('Upload failed: ' + (err.message || 'Please try again'))
+      const errorMessage = err instanceof Error ? err.message : 'Upload failed. Please try again.'
+      setError(errorMessage)
+      toast.error('Upload failed: ' + (err instanceof Error ? err.message : 'Please try again'))
     } finally {
       setUploading(false)
     }

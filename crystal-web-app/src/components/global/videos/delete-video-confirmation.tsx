@@ -73,7 +73,7 @@ function DeleteVideoConfirmation({ videoId, videoTitle, redirectPath }: Props) {
             Delete Video
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[#9D9D9D]">
-            Are you sure you want to delete "{videoTitle}"? This action cannot be undone.
+            Are you sure you want to delete &quot;{videoTitle}&quot;? This action cannot be undone.
             All comments and associated data will be permanently removed.
           </AlertDialogDescription>
         </AlertDialogHeader>

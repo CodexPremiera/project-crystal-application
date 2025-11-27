@@ -69,7 +69,7 @@ function DeleteWorkspaceModal({ isOpen, onClose, workspaceId, workspaceName }: P
         <DialogHeader>
           <DialogTitle>Delete Workspace</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete <strong>"{workspaceName}"</strong>? 
+            Are you sure you want to delete <strong>&quot;{workspaceName}&quot;</strong>? 
             This action cannot be undone and will permanently delete:
             <br />
             <br />

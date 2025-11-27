@@ -39,7 +39,7 @@ function Videos({ folderId, videosKey, workspaceId }: Props) {
    * - Shows loading state until data is available
    * - Prevents destructuring errors during initial load
    */
-  const { data: videoData, isFetched } = useQueryData([videosKey], () =>
+  const { data: videoData } = useQueryData([videosKey], () =>
     getAllUserVideos(folderId)
   )
   

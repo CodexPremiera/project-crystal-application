@@ -84,10 +84,10 @@ const Page = async ({ params }: Props) => {
   
   // Only await workspace data needed for initial render (workspace name)
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as any
+  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string }> } | undefined
   
   const currentWorkspace = workspace?.workspace.find(
-    (item: any) => item.id === workspaceid
+    (item) => item.id === workspaceid
   )
   
   const workspaceName = currentWorkspace?.name || 'Unknown Workspace'
