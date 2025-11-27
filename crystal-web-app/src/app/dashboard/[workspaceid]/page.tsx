@@ -1,21 +1,11 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import React from 'react'
-import CreateWorkspace from "@/components/global/create-workspace";
 import Folders from "@/components/global/folders/folders";
-import CreateFolders from "@/components/global/create-folders";
 import {getAllUserVideos, getWorkspaceFolders, getWorkSpaces} from '@/actions/workspace';
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
 import {Button} from "@/components/ui/button";
-import {Like} from "@/components/icons";
-import {Download, MoreHorizontal} from "lucide-react";
-import CopyLink from "@/components/global/videos/copy-link";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import RichLink from "@/components/global/videos/rich-link";
-import {truncateString} from "@/lib/utils";
-import DeleteVideoConfirmation from "@/components/global/videos/delete-video-confirmation";
-import {TrashBin} from "@/components/icons/trash-bin";
-import {EditDuotone} from "@/components/icons/editDuotone";
-import {Users} from "@/components/icons/user";
+import {MoreHorizontal} from "lucide-react";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import DashboardInviteSection from "@/components/global/dashboard-invite-section";
 import WorkspaceActions from "@/components/global/workspace/workspace-actions";
 
@@ -34,25 +24,34 @@ type Props = {
  * Purpose: Provide main workspace interface for video and folder management
  * 
  * How it works:
- * 1. Prefetches workspace folders and videos for performance
- * 2. Provides tabbed interface for content organization
- * 3. Includes workspace creation functionality for PRO users
- * 4. Displays folder structure and video content
- * 5. Offers content creation and management tools
+ * 1. Starts non-blocking prefetch for workspace folders and videos
+ * 2. Fetches workspace name (only blocking operation needed for render)
+ * 3. Renders page immediately with minimal blocking
+ * 4. Provides tabbed interface for content organization
+ * 5. Components load progressively as data becomes available
  * 
  * Page Features:
  * - Tab navigation between Videos and Archive sections
- * - Workspace creation button for PRO users
+ * - Workspace actions dropdown with management options
+ * - Invitation section for workspace collaboration
  * - Dynamic routing based on workspaceId parameter
  * - Clean, organized layout for workspace content
  * - Folder management and organization tools
  * - Video browsing and management interface
  * 
  * Data Management:
- * - Prefetches workspace folders for immediate display
- * - Prefetches user videos for content browsing
+ * - Non-blocking prefetch for folders and videos (fast render)
+ * - Minimal blocking fetch for workspace name (required for UI)
  * - Uses React Query for efficient data caching
  * - Provides hydration boundary for SSR optimization
+ * - Components show loading states while data loads
+ * - Progressive data streaming from server
+ * 
+ * Performance:
+ * - Page renders immediately after workspace name loads
+ * - Content areas show loading states during data fetch
+ * - Optimized for fast Time to Interactive (TTI)
+ * - Background data prefetching for smooth UX
  * 
  * Integration:
  * - Used as main workspace dashboard interface
@@ -67,22 +66,23 @@ const Page = async ({ params }: Props) => {
   const { workspaceid } = await params
   const query = new QueryClient()
   
-  await query.prefetchQuery({
+  // Start non-blocking prefetch queries in background
+  query.prefetchQuery({
     queryKey: ['workspace-folders'],
     queryFn: () => getWorkspaceFolders(workspaceid),
   })
   
-  await query.prefetchQuery({
+  query.prefetchQuery({
     queryKey: ['user-videos'],
     queryFn: () => getAllUserVideos(workspaceid),
   })
   
-  await query.prefetchQuery({
+  query.prefetchQuery({
     queryKey: ['user-workspaces'],
     queryFn: () => getWorkSpaces(),
   })
   
-  // Get workspace data to extract the current workspace name
+  // Only await workspace data needed for initial render (workspace name)
   const workspaceData = await getWorkSpaces()
   const workspace = workspaceData.data as any
   

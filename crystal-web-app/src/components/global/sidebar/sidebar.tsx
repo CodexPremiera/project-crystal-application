@@ -2,24 +2,12 @@
 
 import React from 'react';
 import Image from "next/image";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
 import {usePathname, useRouter} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
 import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {NotificationProps, WorkSpaceProps} from "@/types/index.type";
-import Modal from "@/components/global/modal";
-import InviteWorkspaceModal from "@/components/global/invite-workspace-modal";
-import {Menu, PlusCircle} from "lucide-react";
-import Search from "@/components/global/search";
+import {Menu} from "lucide-react";
 import {MENU_ITEMS} from "@/constants/constants";
 import SidebarItem from "@/components/global/sidebar/sidebar-item";
 import {getNotifications} from "@/actions/user";
@@ -81,7 +69,7 @@ type Props = {
  */
 export default function Sidebar({ activeWorkspaceId }: Props) {
   // TODO: Add the upgrade functionality
-  const router = useRouter();
+  // const router = useRouter();
   const pathName = usePathname();
   const dispatch = useDispatch()
   
@@ -107,10 +95,6 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   
   const {data: workspace} = data as WorkSpaceProps;
   const {data: count} = notifications as NotificationProps;
-  
-  const onChangeActiveWorkspace = (value: string) => {
-    router.push(`/dashboard/${value}`);
-  }
   
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === activeWorkspaceId
@@ -198,20 +182,18 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
               workspace.workspace.map(
                 (item) =>
                   item !== currentWorkspace && (
-                    <>
-                      <SidebarItem
-                        href={`/dashboard/${item.id}`}
-                        selected={pathName === `/dashboard/${item.id}`}
-                        title={item.name}
-                        notifications={0}
-                        key={item.name}
-                        icon={
-                          <WorkspacePlaceholder>
-                            {item.name.charAt(0)}
-                          </WorkspacePlaceholder>
-                        }
-                      />
-                    </>
+                    <SidebarItem
+                      href={`/dashboard/${item.id}`}
+                      selected={pathName === `/dashboard/${item.id}`}
+                      title={item.name}
+                      notifications={0}
+                      key={item.id}
+                      icon={
+                        <WorkspacePlaceholder>
+                          {item.name.charAt(0)}
+                        </WorkspacePlaceholder>
+                      }
+                    />
                   )
               )
             }

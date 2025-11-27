@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add workspace invitation notification on both the host and invited user">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="refine the layouts and design across desktop app">
+      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/loading.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/file.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/file.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/globe.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/globe.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/window.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/window.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,42 +88,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;refinements&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.17.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.17.2&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/public&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "refinements",
+    "javascript.nodejs.core.library.configured.version": "22.17.0",
+    "javascript.nodejs.core.library.typings.version": "22.17.2",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/dashboard/[workspaceid]",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global\videos\edit" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-title" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global\videos\edit" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -218,14 +225,7 @@
       <workItem from="1763475202107" duration="22000" />
       <workItem from="1764083049590" duration="2706000" />
       <workItem from="1764163970866" duration="726000" />
-    </task>
-    <task id="LOCAL-00058" summary="add widget with sign up and login in app window">
-      <option name="closed" value="true" />
-      <created>1757340116467</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1757340116467</updated>
+      <workItem from="1764210955613" duration="10423000" />
     </task>
     <task id="LOCAL-00059" summary="setup getting media sources in the widget">
       <option name="closed" value="true" />
@@ -611,7 +611,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763224580087</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="refine the layouts and design across desktop app">
+      <option name="closed" value="true" />
+      <created>1764219110077</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1764219110077</updated>
+    </task>
+    <option name="localTasksCounter" value="108" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -648,7 +656,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add backdrop blur to the header bar" />
     <MESSAGE value="improve UI for moving video to folders and workspaces" />
     <MESSAGE value="improve like, download, share, and more button for the video page" />
     <MESSAGE value="add video deletion" />
@@ -673,7 +680,8 @@
     <MESSAGE value="add video like functionality" />
     <MESSAGE value="improve search components design" />
     <MESSAGE value="add workspace invitation notification on both the host and invited user" />
-    <option name="LAST_COMMIT_MESSAGE" value="add workspace invitation notification on both the host and invited user" />
+    <MESSAGE value="refine the layouts and design across desktop app" />
+    <option name="LAST_COMMIT_MESSAGE" value="refine the layouts and design across desktop app" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
