@@ -5,8 +5,6 @@ import Modal from "@/components/global/modal";
 import {getWorkSpaces} from "@/actions/workspace";
 import {useQueryData} from "@/hooks/useQueryData";
 import {Button} from "@/components/ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import FolderPlusDuotine from "@/components/icons/folder-plus-duotone";
 import WorkspaceForm from "@/components/forms/workspace-form";
 import {Add} from "@/components/icons/add";
 

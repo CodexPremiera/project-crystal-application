@@ -69,9 +69,6 @@ function VideoPreview({ videoId }: Props) {
     getPreviewVideo(videoId)
   )
   
-  // Function to notify creator of first view
-  const notifyFirstView = async () => await sendEmailForFirstView(videoId)
-  
   const { data: video, status, author } = data as VideoProps
   if (status !== 200) router.push('/')
   
@@ -96,13 +93,14 @@ function VideoPreview({ videoId }: Props) {
   
   // Handle first view notification
   useEffect(() => {
-    if (video.views === 0) {
-      notifyFirstView()
+    const notifyFirstView = async () => {
+      if (video.views === 0) {
+        await sendEmailForFirstView(videoId)
+      }
     }
-    return () => {
-      notifyFirstView()
-    }
-  }, [notifyFirstView, video.views])
+    
+    notifyFirstView()
+  }, [video.views, videoId])
   
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 lg:py-10 overflow-y-auto gap-5">

@@ -71,7 +71,7 @@ export default function Home() {
       <div className="flex flex-col w-full gap-6 max-w-[960px]">
         <div className="gap-1 flex flex-col w-full">
           <h2 className="text-4xl font-extrabold">Pricing</h2>
-          <span className="text-[#9D9D9D]">Choose the plan that's right for you</span>
+          <span className="text-[#9D9D9D]">Choose the plan that&apos;s right for you</span>
         </div>
         <div className="flex gap-6 w-full">
           <div className="flex flex-col gap-4 p-6 rounded-2xl flex-1 bg-dark-radial-gradient border border-white/5">

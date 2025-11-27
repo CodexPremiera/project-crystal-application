@@ -40,7 +40,7 @@ const DashboardInviteSection = ({ workspaceId }: Props) => {
   )
   
   const { data: workspace } = data as WorkSpaceProps
-  const memberCount = (memberCountData as any)?.data || 0
+  const memberCount = (memberCountData as { data?: number })?.data || 0
   
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === workspaceId

@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useMoveVideos } from '@/hooks/useFolders'
 import React from 'react'
@@ -10,7 +9,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
@@ -55,18 +53,13 @@ const ChangeVideoLocation = ({
                                currentWorkSpace,
                              }: Props) => {
   const {
-    register,
     control,
     isPending,
     onFormSubmit,
-    folders,
     workspaces,
     isFetching,
     isFolders,
   } = useMoveVideos(videoId, currentWorkSpace!)
-  
-  const folder = folders.find((f) => f.id === currentFolder)
-  const workspace = workspaces.find((f) => f.id === currentWorkSpace)
   
   return (
     <form

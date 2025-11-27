@@ -134,8 +134,8 @@ export const onAuthenticateUser = async () => {
     })
     
     return newUser ? { status: 201, user: newUser } : { status: 400, message: 'User creation failed' }
-  } catch (error: any) {
-    return { status: 500, error: error.message }
+  } catch (error) {
+    return { status: 500, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 

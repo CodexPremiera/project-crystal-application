@@ -109,7 +109,7 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
   }, [currentWorkspace])
   
   useEffect(() => {
-    const workspace = watch(async (value: any) => {
+    const workspace = watch(async (value) => {
       if (value.workspace_id) await fetchFolders(value.workspace_id)
     })
     

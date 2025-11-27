@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Disable telemetry to prevent mkdir errors
-  telemetry: false,
-  
   // Image configuration for external domains
   images: {
     remotePatterns: [
@@ -22,15 +19,12 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // Experimental features
-  experimental: {
-    // Disable turbopack if causing issues
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Turbopack configuration (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },

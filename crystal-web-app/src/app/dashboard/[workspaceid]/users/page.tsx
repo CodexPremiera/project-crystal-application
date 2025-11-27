@@ -69,10 +69,10 @@ const Page = async ({ params }: Props) => {
   
   // Get workspace data to check if it's PERSONAL
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as any
+  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string; type: string }> } | undefined
   
   const currentWorkspace = workspace?.workspace.find(
-    (item: any) => item.id === workspaceid
+    (item) => item.id === workspaceid
   )
   
   // Redirect to 404 if workspace is PERSONAL
