@@ -19,10 +19,10 @@ import { deleteVideo } from '@/actions/workspace'
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: videoId } = params
+    const { id: videoId } = await params
     
     // Validate video ID format
     if (!videoId || typeof videoId !== 'string') {

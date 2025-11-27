@@ -10,9 +10,9 @@ import React from 'react'
 
 
 type Props = {
-  params: {
+  params: Promise<{
     videoId: string
-  }
+  }>
 }
 
 /**
@@ -68,7 +68,8 @@ type Props = {
  * @param params - Contains videoId from URL parameters
  * @returns JSX element with workspace video viewing interface
  */
-const VideoPage = async ({ params: { videoId } }: Props) => {
+const VideoPage = async ({ params }: Props) => {
+  const { videoId } = await params
   const query = new QueryClient()
 
   await query.prefetchQuery({

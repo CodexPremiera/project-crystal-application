@@ -31,8 +31,7 @@ interface SearchPageProps {
  * @param searchParams - URL search parameters containing the query
  * @returns JSX element with search results display
  */
-export default async function SearchPage({ params, searchParams }: SearchPageProps) {
-  const { workspaceid } = await params
+export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { query } = await searchParams
 
   if (!query) {
