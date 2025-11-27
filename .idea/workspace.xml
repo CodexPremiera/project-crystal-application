@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix deployment errors 3">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix deployment errors 6" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -219,30 +217,6 @@
       <workItem from="1764083049590" duration="2706000" />
       <workItem from="1764163970866" duration="726000" />
       <workItem from="1764210955613" duration="13656000" />
-    </task>
-    <task id="LOCAL-00063" summary="prepare the electron app for the three windows it will have">
-      <option name="closed" value="true" />
-      <created>1757407340060</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1757407340061</updated>
-    </task>
-    <task id="LOCAL-00064" summary="complete the studio widget feature">
-      <option name="closed" value="true" />
-      <created>1757407833858</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1757407833858</updated>
-    </task>
-    <task id="LOCAL-00065" summary="add webcam widget with default cam showing">
-      <option name="closed" value="true" />
-      <created>1757468149619</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1757468149619</updated>
     </task>
     <task id="LOCAL-00066" summary="fix errors where media configuration is not loading the media forms">
       <option name="closed" value="true" />
@@ -612,7 +586,31 @@
       <option name="project" value="LOCAL" />
       <updated>1764250243726</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="fix deployment errors 4">
+      <option name="closed" value="true" />
+      <created>1764250687829</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1764250687829</updated>
+    </task>
+    <task id="LOCAL-00113" summary="fix deployment errors 5">
+      <option name="closed" value="true" />
+      <created>1764252584988</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1764252584988</updated>
+    </task>
+    <task id="LOCAL-00114" summary="fix deployment errors 6">
+      <option name="closed" value="true" />
+      <created>1764252751098</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1764252751098</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -649,9 +647,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="move create new folders button beside folder header" />
-    <MESSAGE value="move create new workspace button in workspace tab in sidebar" />
-    <MESSAGE value="move invite member to the workspace library page" />
     <MESSAGE value="update global header to show current workspace" />
     <MESSAGE value="show true user count in workspace" />
     <MESSAGE value="create temporary workspace page" />
@@ -674,6 +669,9 @@
     <MESSAGE value="add progressive loading" />
     <MESSAGE value="fix deployment errors 2" />
     <MESSAGE value="fix deployment errors 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix deployment errors 3" />
+    <MESSAGE value="fix deployment errors 4" />
+    <MESSAGE value="fix deployment errors 5" />
+    <MESSAGE value="fix deployment errors 6" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix deployment errors 6" />
   </component>
 </project>

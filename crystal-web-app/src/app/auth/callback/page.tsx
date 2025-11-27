@@ -1,5 +1,6 @@
 import {onAuthenticateUser} from "@/actions/user";
 import {redirect} from "next/navigation";
+export const dynamic = "force-dynamic";
 
 /**
  * Authentication Callback Page
@@ -47,11 +48,21 @@ import {redirect} from "next/navigation";
 const AuthCallbackPage = async () => {
   const auth = await onAuthenticateUser()
   console.log(auth)
-  if (auth.status === 200 || auth.status === 201)
-    return redirect(`/dashboard/${auth.user?.workspace[0].id}`)
   
-  if (auth.status === 403 || auth.status === 400 || auth.status === 500)
+  if (auth.status === 200 || auth.status === 201) {
+    if (!auth.user?.workspace?.[0]?.id) {
+      console.error('No workspace found for authenticated user:', auth.user)
+      return redirect('/auth/sign-in')
+    }
+    return redirect(`/dashboard/${auth.user.workspace[0].id}`)
+  }
+  
+  if (auth.status === 403 || auth.status === 400 || auth.status === 500) {
     return redirect('/auth/sign-in')
+  }
+  
+  console.error('Unexpected auth status:', auth.status)
+  return redirect('/auth/sign-in')
 }
 
 export default AuthCallbackPage
