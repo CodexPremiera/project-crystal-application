@@ -6,7 +6,6 @@ import Folder from "@/components/global/folders/folder";
 import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkspaceFolders} from "@/actions/workspace";
 import {useMutationDataState} from "@/hooks/useMutationData";
-import {ArrowRight} from "lucide-react";
 import FolderDuotone from "@/components/icons/folder-duotone";
 import {useDispatch} from "react-redux";
 import {FOLDERS} from "@/redux/slices/folders";
@@ -46,6 +45,7 @@ function Folders({ workspaceId }: Props) {
    * 2. Caches the data with the 'workspace-folders' query key
    * 3. Provides loading states (isFetched) for UI feedback
    * 4. Automatically refetches when the query key changes
+   * 5. Handles initial undefined state during progressive loading
    */
   const { data, isFetched } = useQueryData(
     ['workspace-folders'],
@@ -67,7 +67,10 @@ function Folders({ workspaceId }: Props) {
    */
   const { latestVariables } = useMutationDataState(['create-folder'])
   
-  const { status, data: folders } = data as FoldersProps
+  const { status, data: folders } = (data || {
+    status: 404,
+    data: []
+  }) as FoldersProps
   
   // Update Redux store with fetched folders for global state management
   if (isFetched && folders) {

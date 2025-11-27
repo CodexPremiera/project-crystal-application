@@ -27,17 +27,26 @@ function Videos({ folderId, videosKey, workspaceId }: Props) {
    * 2. Caches data with the provided videosKey for component-specific caching
    * 3. Automatically refetches when folderId or videosKey changes
    * 4. Provides loading states and error handling
+   * 5. Shows loading state while data is being fetched
    * 
    * Query Key Strategy:
    * - Uses dynamic videosKey for component-specific caching
    * - Different keys allow separate caching for different video contexts
    * - Enables efficient cache management across the application
+   * 
+   * Progressive Loading:
+   * - Component renders immediately even if data isn't ready
+   * - Shows loading state until data is available
+   * - Prevents destructuring errors during initial load
    */
-  const { data: videoData } = useQueryData([videosKey], () =>
+  const { data: videoData, isFetched } = useQueryData([videosKey], () =>
     getAllUserVideos(folderId)
   )
   
-  const { status: videosStatus, data: videos } = videoData as VideosProps
+  const { status: videosStatus, data: videos } = (videoData || {
+    status: 404,
+    data: []
+  }) as VideosProps
   
   return (
     <div className="flex flex-col gap-4 mt-4">

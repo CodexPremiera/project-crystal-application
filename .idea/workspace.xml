@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="refine the layouts and design across desktop app">
-      <change afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/loading.tsx" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="refine skeleton loading for dashboard">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/file.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/file.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/globe.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/globe.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/public/window.svg" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/public/window.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/folders/folders.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/sidebar/sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/videos.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/videos/videos.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,15 +222,7 @@
       <workItem from="1763475202107" duration="22000" />
       <workItem from="1764083049590" duration="2706000" />
       <workItem from="1764163970866" duration="726000" />
-      <workItem from="1764210955613" duration="10423000" />
-    </task>
-    <task id="LOCAL-00059" summary="setup getting media sources in the widget">
-      <option name="closed" value="true" />
-      <created>1757340693901</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1757340693901</updated>
+      <workItem from="1764210955613" duration="11211000" />
     </task>
     <task id="LOCAL-00060" summary="add auth api route for the desktop app authentication">
       <option name="closed" value="true" />
@@ -619,7 +608,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764219110077</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="refine skeleton loading for dashboard">
+      <option name="closed" value="true" />
+      <created>1764226807855</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1764226807855</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -656,7 +653,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve UI for moving video to folders and workspaces" />
     <MESSAGE value="improve like, download, share, and more button for the video page" />
     <MESSAGE value="add video deletion" />
     <MESSAGE value="add video download" />
@@ -681,7 +677,8 @@
     <MESSAGE value="improve search components design" />
     <MESSAGE value="add workspace invitation notification on both the host and invited user" />
     <MESSAGE value="refine the layouts and design across desktop app" />
-    <option name="LAST_COMMIT_MESSAGE" value="refine the layouts and design across desktop app" />
+    <MESSAGE value="refine skeleton loading for dashboard" />
+    <option name="LAST_COMMIT_MESSAGE" value="refine skeleton loading for dashboard" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

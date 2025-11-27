@@ -93,8 +93,8 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
     getNotifications
   )
   
-  const {data: workspace} = data as WorkSpaceProps;
-  const {data: count} = notifications as NotificationProps;
+  const {data: workspace} = (data || { data: { workspace: [], members: [] } }) as WorkSpaceProps;
+  const {data: count} = (notifications || { data: { _count: { notification: 0 } } }) as NotificationProps;
   
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === activeWorkspaceId
