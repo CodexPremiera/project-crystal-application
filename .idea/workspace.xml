@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="improve search components design">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add workspace invitation notification on both the host and invited user">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/actions/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/actions/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/notifications/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/notifications/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,15 +212,12 @@
       <workItem from="1761957682957" duration="4394000" />
       <workItem from="1762055507445" duration="7065000" />
       <workItem from="1762430549649" duration="57000" />
-      <workItem from="1763195932506" duration="10613000" />
-    </task>
-    <task id="LOCAL-00057" summary="setup clerk authentication">
-      <option name="closed" value="true" />
-      <created>1757269984965</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1757269984965</updated>
+      <workItem from="1763195932506" duration="11565000" />
+      <workItem from="1763273199775" duration="2416000" />
+      <workItem from="1763376934741" duration="3933000" />
+      <workItem from="1763475202107" duration="22000" />
+      <workItem from="1764083049590" duration="2706000" />
+      <workItem from="1764163970866" duration="726000" />
     </task>
     <task id="LOCAL-00058" summary="add widget with sign up and login in app window">
       <option name="closed" value="true" />
@@ -609,7 +603,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763216053922</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="add workspace invitation notification on both the host and invited user">
+      <option name="closed" value="true" />
+      <created>1763224580087</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1763224580087</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -646,7 +648,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="modify the UI for editing video title and description" />
     <MESSAGE value="add backdrop blur to the header bar" />
     <MESSAGE value="improve UI for moving video to folders and workspaces" />
     <MESSAGE value="improve like, download, share, and more button for the video page" />
@@ -671,7 +672,8 @@
     <MESSAGE value="quick fix" />
     <MESSAGE value="add video like functionality" />
     <MESSAGE value="improve search components design" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve search components design" />
+    <MESSAGE value="add workspace invitation notification on both the host and invited user" />
+    <option name="LAST_COMMIT_MESSAGE" value="add workspace invitation notification on both the host and invited user" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -679,7 +681,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx</url>
           <line>236</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

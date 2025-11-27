@@ -31,14 +31,14 @@ export const useStudioSettings = (
   preset?: "HD" | "SD",
   plan?: "PRO" | "FREE"
 ) => {
-  // Only initialize form when we have valid default values
-  const defaultValues = screen && audio && preset ? {
-    screen,
-    audio,
-    preset,
-  } : undefined;
+  // Initialize form with default values, using empty strings as fallback
+  const defaultValues = {
+    screen: screen || "",
+    audio: audio || "",
+    preset: preset || "SD" as "HD" | "SD",
+  };
 
-  const { register, watch } = useZodForm(updateStudioSettingsSchema, defaultValues);
+  const { register, watch, control } = useZodForm(updateStudioSettingsSchema, defaultValues);
 
   // Track current preset for UI updates
   const [onPreset, setPreset] = useState<"HD" | "SD" | undefined>();
@@ -102,5 +102,5 @@ export const useStudioSettings = (
     return () => subscribe.unsubscribe();
   }, [watch]);
 
-  return { register, isPending, onPreset };
+  return { register, isPending, onPreset, control };
 };

@@ -1,4 +1,4 @@
-import { app, ipcMain, desktopCapturer, BrowserWindow } from "electron";
+import { app, ipcMain, desktopCapturer, BrowserWindow, screen } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,11 +11,27 @@ let win;
 let studio;
 let floatingWebCam;
 function createWindow() {
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+  const margin = 20;
+  const mainWidth = 480;
+  const mainHeight = 400;
+  const studioWidth = 320;
+  const studioHeight = 50;
+  const webcamSize = 192;
+  const mainX = Math.floor((screenWidth - mainWidth) / 2);
+  const mainY = Math.floor((screenHeight - mainHeight) / 2);
+  const studioX = screenWidth - studioWidth - 2 * margin;
+  const studioY = screenHeight - 5 * studioHeight - 2 * margin;
+  const webcamX = margin;
+  const webcamY = screenHeight - webcamSize - margin;
   win = new BrowserWindow({
-    width: 600,
-    height: 600,
-    minHeight: 600,
-    minWidth: 300,
+    width: mainWidth,
+    height: mainHeight,
+    x: mainX,
+    y: mainY,
+    minWidth: 540,
+    minHeight: 200,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -29,12 +45,14 @@ function createWindow() {
     }
   });
   studio = new BrowserWindow({
-    width: 400,
-    height: 50,
+    width: studioWidth,
+    height: studioHeight,
+    x: studioX,
+    y: studioY,
     minHeight: 70,
     maxHeight: 400,
-    minWidth: 300,
-    maxWidth: 400,
+    minWidth: studioWidth,
+    maxWidth: studioWidth,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -48,12 +66,14 @@ function createWindow() {
     }
   });
   floatingWebCam = new BrowserWindow({
-    width: 400,
-    height: 200,
-    minHeight: 70,
-    maxHeight: 400,
-    minWidth: 300,
-    maxWidth: 400,
+    width: webcamSize,
+    height: webcamSize,
+    x: webcamX,
+    y: webcamY,
+    minHeight: 192,
+    maxHeight: 192,
+    minWidth: 192,
+    maxWidth: 192,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -129,8 +149,11 @@ ipcMain.on("hide-plugin", (event, payload) => {
   console.log(event);
   win == null ? void 0 : win.webContents.send("hide-plugin", payload);
 });
-ipcMain.on("open-devtools", (event) => {
+ipcMain.on("open-devtools", () => {
   win == null ? void 0 : win.webContents.openDevTools();
+});
+ipcMain.on("minimize-window", () => {
+  win == null ? void 0 : win.minimize();
 });
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
