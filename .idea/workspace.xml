@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix deployment errors 6" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix deployment errors 7">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -217,14 +219,6 @@
       <workItem from="1764083049590" duration="2706000" />
       <workItem from="1764163970866" duration="726000" />
       <workItem from="1764210955613" duration="13656000" />
-    </task>
-    <task id="LOCAL-00066" summary="fix errors where media configuration is not loading the media forms">
-      <option name="closed" value="true" />
-      <created>1757468195698</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1757468195698</updated>
     </task>
     <task id="LOCAL-00067" summary="add route for the studio tray">
       <option name="closed" value="true" />
@@ -610,7 +604,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764252751098</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="fix deployment errors 7">
+      <option name="closed" value="true" />
+      <created>1764253561488</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1764253561488</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,7 +649,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update global header to show current workspace" />
     <MESSAGE value="show true user count in workspace" />
     <MESSAGE value="create temporary workspace page" />
     <MESSAGE value="prevent access for personal workspaces to user workspace page" />
@@ -672,6 +673,7 @@
     <MESSAGE value="fix deployment errors 4" />
     <MESSAGE value="fix deployment errors 5" />
     <MESSAGE value="fix deployment errors 6" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix deployment errors 6" />
+    <MESSAGE value="fix deployment errors 7" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix deployment errors 7" />
   </component>
 </project>
