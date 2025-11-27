@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import Loader from "@/components/global/loader/loader";
 import {useMutationData} from "@/hooks/useMutationData";
 import {inviteMembers} from "@/actions/user";
+import { MutationFunction } from '@tanstack/react-query'
 
 type Props = {
   workspaceId: string
@@ -34,8 +35,8 @@ const Search = ({ workspaceId }: Props) => {
   
   const { mutate, isPending } = useMutationData(
     ['invite-member'],
-    (data: { receiverId: string; email: string }) =>
-      inviteMembers(workspaceId, data.receiverId, data.email)
+    ((data: { receiverId: string; email: string }) =>
+      inviteMembers(workspaceId, data.receiverId, data.email)) as MutationFunction<unknown, unknown>
   )
   
   return (

@@ -4,6 +4,7 @@ import React from 'react'
 import Loader from "@/components/global/loader/loader";
 import {useCreateWorkspace} from "@/hooks/useCreateWorkspace";
 import FormGenerator from "@/components/forms/form-generator";
+import { FieldValues, UseFormRegister } from 'react-hook-form'
 
 /**
  * Workspace Creation Form Component
@@ -44,7 +45,7 @@ const WorkspaceForm = () => {
       className="flex flex-col gap-y-3"
     >
       <FormGenerator
-        register={register}
+        register={register as unknown as UseFormRegister<FieldValues>}
         name="name"
         placeholder={'Workspace Name'}
         label="Name"

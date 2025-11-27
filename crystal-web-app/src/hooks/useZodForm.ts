@@ -1,6 +1,6 @@
 import { UseMutateFunction } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, Resolver, FieldValues } from 'react-hook-form'
 import z from 'zod'
 
 /**
@@ -37,11 +37,13 @@ import z from 'zod'
  * @param defaultValues - Optional default values for form initialization
  * @returns Object containing form utilities and validation errors
  */
-const useZodForm = <T extends z.ZodTypeAny>(
-  schema: T,
+const useZodForm = <TSchema extends z.ZodType>(
+  schema: TSchema,
   mutation: UseMutateFunction,
-  defaultValues?: z.infer<T>
+  defaultValues?: z.infer<TSchema>
 ) => {
+  type FormData = z.infer<TSchema> & FieldValues
+  
   const {
     register,
     watch,
@@ -49,12 +51,15 @@ const useZodForm = <T extends z.ZodTypeAny>(
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<z.infer<T>>({
-    resolver: zodResolver(schema),
-    defaultValues: { ...defaultValues },
+  } = useForm<FormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema as any) as Resolver<FormData>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    defaultValues: (defaultValues ? { ...defaultValues } : undefined) as any,
   })
 
-  const onFormSubmit = handleSubmit(async (values) => mutation(values))
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onFormSubmit = handleSubmit(async (values) => mutation(values as any))
 
   return { register, watch, reset, onFormSubmit, errors, control }
 }

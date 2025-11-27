@@ -30,14 +30,10 @@ import ChangeVideoLocation from "@/components/forms/change-video-location/video-
 type Props = {
   videoId: string
   currentWorkspace?: string
-  currentFolder?: string
-  currentFolderName?: string
 }
 
 const CardMenu = ({
                     videoId,
-                    currentFolder,
-                    currentFolderName,
                     currentWorkspace,
                   }: Props) => {
   return (
@@ -52,10 +48,8 @@ const CardMenu = ({
       }
     >
       <ChangeVideoLocation
-        currentFolder={currentFolder}
         currentWorkSpace={currentWorkspace}
         videoId={videoId}
-        currentFolderName={currentFolderName}
       />
     </Modal>
   )

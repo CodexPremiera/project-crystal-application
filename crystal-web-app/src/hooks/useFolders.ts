@@ -4,6 +4,7 @@ import { useMutationData } from './useMutationData'
 import { getWorkspaceFolders, moveVideoLocation } from '@/actions/workspace'
 import useZodForm from './useZodForm'
 import { moveVideoSchema } from '@/components/forms/change-video-location/schema'
+import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
 
 /**
  * Custom hook for moving videos between workspaces and folders
@@ -87,13 +88,13 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
    */
   const { mutate, isPending } = useMutationData(
     ['change-video-location'],
-    (data: { folder_id?: string; workspace_id: string }) =>
-      moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')
+    ((data: { folder_id?: string; workspace_id: string }) =>
+      moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')) as MutationFunction<unknown, unknown>
   )
   // use zod form
   const { errors, onFormSubmit, watch, register, control } = useZodForm(
     moveVideoSchema,
-    mutate,
+    mutate as UseMutateFunction,
     { folder_id: undefined, workspace_id: currentWorkspace }
   )
   

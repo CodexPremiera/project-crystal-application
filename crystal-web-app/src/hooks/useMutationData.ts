@@ -65,8 +65,9 @@ export const useMutationData = (
       if (onSuccess) onSuccess()
       
       // Show toast notification based on response status
-      return toast(data?.status === 200 ? 'Success' : 'Error', {
-        description: data?.data,
+      const response = data as { status?: number; data?: string }
+      return toast(response?.status === 200 ? 'Success' : 'Error', {
+        description: response?.data,
       })
     },
     onSettled: async () => {

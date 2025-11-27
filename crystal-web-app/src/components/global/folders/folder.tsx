@@ -8,6 +8,7 @@ import { Folder as FolderIcon } from 'lucide-react';
 import {useMutationData, useMutationDataState} from "@/hooks/useMutationData";
 import {renameFolders} from "@/actions/workspace";
 import {Input} from "@/components/ui/input";
+import { MutationFunction } from '@tanstack/react-query'
 
 /**
  * Folder Component
@@ -54,7 +55,7 @@ function Folder({ id, name, optimistic, count }: Props) {
   //optimistic
   const { mutate, isPending } = useMutationData(
     ['rename-folders'],
-    (data: { name: string }) => renameFolders(id, data.name),
+    ((data: { name: string }) => renameFolders(id, data.name)) as MutationFunction<unknown, unknown>,
     'workspace-folders',
     Renamed
   )
@@ -106,8 +107,8 @@ function Folder({ id, name, optimistic, count }: Props) {
             >
               {latestVariables &&
               latestVariables.status === 'pending' &&
-              latestVariables.variables.id === id
-                ? latestVariables.variables.name
+              (latestVariables.variables as { id: string; name: string }).id === id
+                ? (latestVariables.variables as { id: string; name: string }).name
                 : name}
             </p>
           )}

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 type Props = {
-  searchParams: { session_id?: string; cancel?: boolean }
+  searchParams: Promise<{ session_id?: string; cancel?: boolean }>
 }
 
 /**
@@ -48,12 +48,12 @@ type Props = {
  * - Integrates with user authentication flow
  * - Part of payment and subscription system
  * 
- * @param searchParams - URL parameters from Stripe redirect
- * @param searchParams.session_id - Stripe checkout session ID for successful payments
- * @param searchParams.cancel - Boolean indicating payment cancellation
+ * @param searchParams - Promise containing URL parameters from Stripe redirect
  * @returns JSX element with payment processing result or redirect
  */
-const page = async ({ searchParams: { cancel, session_id } }: Props) => {
+const page = async ({ searchParams }: Props) => {
+  const { cancel, session_id } = await searchParams
+
   if (session_id) {
     const customer = await completeSubscription(session_id)
     if (customer.status === 200) {

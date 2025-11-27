@@ -2,6 +2,7 @@ import { createWorkspace } from '@/actions/workspace'
 import { useMutationData } from './useMutationData'
 import useZodForm from './useZodForm'
 import { workspaceSchema } from '@/components/forms/workspace-form/schema'
+import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
 
 /**
  * Custom hook for creating new workspaces
@@ -58,10 +59,10 @@ export const useCreateWorkspace = () => {
    */
   const { mutate, isPending } = useMutationData(
     ['create-workspace'],
-    (data: { name: string }) => createWorkspace(data.name),
+    ((data: { name: string }) => createWorkspace(data.name)) as MutationFunction<unknown, unknown>,
     'user-workspaces' // Query key to invalidate after successful creation
   )
 
-  const { errors, onFormSubmit, register } = useZodForm(workspaceSchema, mutate)
+  const { errors, onFormSubmit, register } = useZodForm(workspaceSchema, mutate as UseMutateFunction)
   return { errors, onFormSubmit, register, isPending }
 }

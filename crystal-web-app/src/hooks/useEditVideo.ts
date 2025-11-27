@@ -2,6 +2,7 @@ import { editVideoInfoSchema } from '@/components/forms/edit-video/schema'
 import useZodForm from './useZodForm'
 import { useMutationData } from './useMutationData'
 import { editVideoInfo } from '@/actions/workspace'
+import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
 
 /**
  * useEditVideo Hook
@@ -66,15 +67,15 @@ export const useEditVideo = (
    */
   const { mutate, isPending } = useMutationData(
     ['edit-video'],
-    (data: { title: string; description: string }) =>
-      editVideoInfo(videoId, data.title, data.description),
+    ((data: { title: string; description: string }) =>
+      editVideoInfo(videoId, data.title, data.description)) as MutationFunction<unknown, unknown>,
     'preview-video' // Invalidate preview-video cache after update
   )
   
   // Initialize form with validation and submission logic
   const { errors, onFormSubmit, register } = useZodForm(
     editVideoInfoSchema,
-    mutate,
+    mutate as UseMutateFunction,
     {
       title,
       description,

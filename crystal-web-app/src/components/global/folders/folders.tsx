@@ -108,8 +108,8 @@ function Folders({ workspaceId }: Props) {
             */}
             {latestVariables && latestVariables.status === 'pending' && (
               <Folder
-                name={latestVariables.variables.name}
-                id={latestVariables.variables.id}
+                name={(latestVariables.variables as { name: string; id: string }).name}
+                id={(latestVariables.variables as { name: string; id: string }).id}
                 optimistic
               />
             )}

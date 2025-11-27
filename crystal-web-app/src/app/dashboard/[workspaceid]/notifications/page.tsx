@@ -92,7 +92,7 @@ const Notifications = () => {
     )
   }
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | string) => {
     const daysAgo = Math.floor(
       (new Date().getTime() - new Date(date).getTime()) / (24 * 60 * 60 * 1000)
     )
@@ -121,7 +121,7 @@ const Notifications = () => {
           >
             <Avatar>
               {isWorkspaceInvite && avatarUser?.image ? (
-                <AvatarImage src={avatarUser.image} />
+                <AvatarImage src={avatarUser?.image} />
               ) : null}
               <AvatarFallback>
                 <User />

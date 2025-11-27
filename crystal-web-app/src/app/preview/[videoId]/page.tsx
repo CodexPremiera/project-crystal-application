@@ -11,9 +11,9 @@ import React from 'react'
 
 
 type Props = {
-  params: {
+  params: Promise<{
     videoId: string
-  }
+  }>
 }
 
 /**
@@ -50,10 +50,12 @@ type Props = {
  * - Integrates with user profile and authentication
  * - Part of video sharing and engagement features
  * 
- * @param params - Contains videoId from URL parameters
+ * @param params - Promise containing videoId from URL parameters
  * @returns JSX element with video preview interface
  */
-const VideoPage = async ({ params: { videoId } }: Props) => {
+const VideoPage = async ({ params }: Props) => {
+  const { videoId } = await params
+
   const query = new QueryClient()
 
   await query.prefetchQuery({

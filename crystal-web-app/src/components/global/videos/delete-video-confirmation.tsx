@@ -86,7 +86,7 @@ function DeleteVideoConfirmation({ videoId, videoTitle, redirectPath }: Props) {
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => deleteVideo()}
+            onClick={() => deleteVideo(undefined)}
             className="bg-red-600 hover:bg-red-700 text-white"
             disabled={isDeleting}
           >
