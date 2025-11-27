@@ -72,6 +72,7 @@ export type VideoProps = {
     } | null
     description: string | null
     views: number
+    likes: number
     processing: boolean
     summary: string
     createdAt: Date

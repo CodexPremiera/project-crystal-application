@@ -14,6 +14,7 @@ type Props = {
   title?: string;
   description?: string;
   className?: string;
+  showCloseButton?: boolean;
 };
 
 /**
@@ -38,7 +39,7 @@ type Props = {
  * @param className - Additional CSS classes for styling
  * @returns JSX element containing the modal structure
  */
-function Modal({ trigger, children, title, description, className }: Props) {
+function Modal({ trigger, children, title, description, className}: Props) {
   return (
     <Dialog>
       {/* Trigger element that opens the modal */}
@@ -50,12 +51,14 @@ function Modal({ trigger, children, title, description, className }: Props) {
       </DialogTrigger>
       
       {/* Modal content container */}
-      <DialogContent>
+      <DialogContent showCloseButton={false}>
         {/* Modal header with title and description */}
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+        {title && description && (
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </DialogHeader>
+        )}
         
         {/* Main content area - can contain any components */}
         {children}

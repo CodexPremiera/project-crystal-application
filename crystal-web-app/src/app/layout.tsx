@@ -66,7 +66,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${manrope.className} bg-[#171717] antialiased`}>
+        <body className={`${manrope.className} bg-[#171717] antialiased`} suppressHydrationWarning>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

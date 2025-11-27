@@ -164,9 +164,43 @@ export const getNotifications = async () => {
     if (!user) return { status: 404 }
     
     const notifications = await client.user.findUnique({
-      where: { clerkId: user.id }, // Fixed field name
+      where: { clerkId: user.id },
       select: {
-        notification: true,
+        notification: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            id: true,
+            userId: true,
+            content: true,
+            createdAt: true,
+            NotificationInvite: {
+              select: {
+                Invite: {
+                  select: {
+                    senderId: true,
+                    receiverId: true,
+                    sender: {
+                      select: {
+                        image: true,
+                        firstname: true,
+                        lastname: true,
+                      },
+                    },
+                    receiver: {
+                      select: {
+                        image: true,
+                        firstname: true,
+                        lastname: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         _count: { select: { notification: true } },
       },
     })
@@ -589,6 +623,16 @@ export const inviteMembers = async (
         },
       })
       if (workspace) {
+        const receiverInfo = await client.user.findUnique({
+          where: {
+            id: receiverId,
+          },
+          select: {
+            firstname: true,
+            lastname: true,
+          },
+        })
+        
         const invitation = await client.invite.create({
           data: {
             senderId: senderInfo.id,
@@ -608,11 +652,35 @@ export const inviteMembers = async (
           data: {
             notification: {
               create: {
-                content: `${user.firstName} ${user.lastName} invited ${senderInfo.firstname} into ${workspace.name}`,
+                content: `You invited ${receiverInfo?.firstname || ''} ${receiverInfo?.lastname || ''} into ${workspace.name}`,
+                NotificationInvite: {
+                  create: {
+                    inviteId: invitation.id,
+                  },
+                },
               },
             },
           },
         })
+        
+        await client.user.update({
+          where: {
+            id: receiverId,
+          },
+          data: {
+            notification: {
+              create: {
+                content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
+                NotificationInvite: {
+                  create: {
+                    inviteId: invitation.id,
+                  },
+                },
+              },
+            },
+          },
+        })
+        
         if (invitation) {
           const { transporter, mailOptions } = await sendEmail(
             email,

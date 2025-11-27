@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add voiceflow">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add progressive loading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-express/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-express/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/infobar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +28,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="desktop" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -67,9 +71,6 @@
     &quot;repository&quot;: &quot;project-opal-application&quot;
   }
 }</component>
-  <component name="PackageJsonUpdateNotifier">
-    <dismissed value="$PROJECT_DIR$/package.json" />
-  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -84,42 +85,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;express&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.17.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.17.2&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/components/global&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "refinements",
+    "javascript.nodejs.core.library.configured.version": "22.17.0",
+    "javascript.nodejs.core.library.typings.version": "22.17.2",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/dashboard/[workspaceid]",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\lib" />
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\api" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-desktop-app" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\global\videos\edit" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-express" />
-      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\public" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\icons" />
+      <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\components\forms\edit-video" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -197,254 +198,31 @@
       <workItem from="1758591624060" duration="5167000" />
       <workItem from="1758869916928" duration="1430000" />
       <workItem from="1759038651316" duration="5002000" />
-    </task>
-    <task id="LOCAL-00030" summary="fix preview video problem">
-      <option name="closed" value="true" />
-      <created>1756692834285</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1756692834285</updated>
-    </task>
-    <task id="LOCAL-00031" summary="add video activity and ai tools feature">
-      <option name="closed" value="true" />
-      <created>1756697209572</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1756697209572</updated>
-    </task>
-    <task id="LOCAL-00032" summary="update todo in folder">
-      <option name="closed" value="true" />
-      <created>1756698208337</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1756698208337</updated>
-    </task>
-    <task id="LOCAL-00033" summary="add videos props">
-      <option name="closed" value="true" />
-      <created>1756698316051</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1756698316051</updated>
-    </task>
-    <task id="LOCAL-00034" summary="add videos props">
-      <option name="closed" value="true" />
-      <created>1756699863226</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1756699863226</updated>
-    </task>
-    <task id="LOCAL-00035" summary="fix some problems">
-      <option name="closed" value="true" />
-      <created>1756702901316</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1756702901316</updated>
-    </task>
-    <task id="LOCAL-00036" summary="complete billing page">
-      <option name="closed" value="true" />
-      <created>1756706130160</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1756706130160</updated>
-    </task>
-    <task id="LOCAL-00037" summary="create notifications page">
-      <option name="closed" value="true" />
-      <created>1756707074882</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1756707074882</updated>
-    </task>
-    <task id="LOCAL-00038" summary="create settings page">
-      <option name="closed" value="true" />
-      <created>1756707454022</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1756707454022</updated>
-    </task>
-    <task id="LOCAL-00039" summary="remove unused variables">
-      <option name="closed" value="true" />
-      <created>1756708509291</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1756708509291</updated>
-    </task>
-    <task id="LOCAL-00040" summary="workspace owner can search for other users">
-      <option name="closed" value="true" />
-      <created>1756710102104</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1756710102104</updated>
-    </task>
-    <task id="LOCAL-00041" summary="workspace owner can now send email invites to their workspace">
-      <option name="closed" value="true" />
-      <created>1757236099533</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1757236099533</updated>
-    </task>
-    <task id="LOCAL-00042" summary="users can accept invitations to the workspace">
-      <option name="closed" value="true" />
-      <created>1757238981878</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1757238981878</updated>
-    </task>
-    <task id="LOCAL-00043" summary="add stripe payment">
-      <option name="closed" value="true" />
-      <created>1757253688067</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1757253688067</updated>
-    </task>
-    <task id="LOCAL-00044" summary="add stripe subscription">
-      <option name="closed" value="true" />
-      <created>1757257418873</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1757257418873</updated>
-    </task>
-    <task id="LOCAL-00045" summary="add comprehensive documentation on each component and page">
-      <option name="closed" value="true" />
-      <created>1757259386366</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1757259386366</updated>
-    </task>
-    <task id="LOCAL-00046" summary="update readme with the complete web application">
-      <option name="closed" value="true" />
-      <created>1757260119718</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1757260119718</updated>
-    </task>
-    <task id="LOCAL-00047" summary="update package">
-      <option name="closed" value="true" />
-      <created>1757260444527</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1757260444527</updated>
-    </task>
-    <task id="LOCAL-00048" summary="update package">
-      <option name="closed" value="true" />
-      <created>1757260841935</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1757260841935</updated>
-    </task>
-    <task id="LOCAL-00049" summary="move web application to its subdirectory">
-      <option name="closed" value="true" />
-      <created>1757263486638</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1757263486638</updated>
-    </task>
-    <task id="LOCAL-00050" summary="fix some warnings">
-      <option name="closed" value="true" />
-      <created>1757263831540</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1757263831540</updated>
-    </task>
-    <task id="LOCAL-00051" summary="fix workspace id error">
-      <option name="closed" value="true" />
-      <created>1757264181751</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1757264181751</updated>
-    </task>
-    <task id="LOCAL-00052" summary="add readme to root directory">
-      <option name="closed" value="true" />
-      <created>1757265049928</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1757265049928</updated>
-    </task>
-    <task id="LOCAL-00053" summary="install electron react app">
-      <option name="closed" value="true" />
-      <created>1757265712497</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1757265712497</updated>
-    </task>
-    <task id="LOCAL-00054" summary="setup tailwind and shadcn ui">
-      <option name="closed" value="true" />
-      <created>1757267468426</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1757267468426</updated>
-    </task>
-    <task id="LOCAL-00055" summary="add clerk js">
-      <option name="closed" value="true" />
-      <created>1757267904401</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1757267904401</updated>
-    </task>
-    <task id="LOCAL-00056" summary="establish initial general layout of window app">
-      <option name="closed" value="true" />
-      <created>1757269611670</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1757269611670</updated>
-    </task>
-    <task id="LOCAL-00057" summary="setup clerk authentication">
-      <option name="closed" value="true" />
-      <created>1757269984965</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1757269984965</updated>
-    </task>
-    <task id="LOCAL-00058" summary="add widget with sign up and login in app window">
-      <option name="closed" value="true" />
-      <created>1757340116467</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1757340116467</updated>
-    </task>
-    <task id="LOCAL-00059" summary="setup getting media sources in the widget">
-      <option name="closed" value="true" />
-      <created>1757340693901</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1757340693901</updated>
-    </task>
-    <task id="LOCAL-00060" summary="add auth api route for the desktop app authentication">
-      <option name="closed" value="true" />
-      <created>1757345755303</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1757345755303</updated>
+      <workItem from="1759149156909" duration="11222000" />
+      <workItem from="1759196668845" duration="27375000" />
+      <workItem from="1759289280800" duration="7547000" />
+      <workItem from="1759323434546" duration="920000" />
+      <workItem from="1759369772450" duration="6139000" />
+      <workItem from="1759413058477" duration="19000" />
+      <workItem from="1759549895068" duration="3801000" />
+      <workItem from="1759722291874" duration="1223000" />
+      <workItem from="1759748349562" duration="592000" />
+      <workItem from="1759758600760" duration="26000" />
+      <workItem from="1759813083598" duration="140000" />
+      <workItem from="1760151037000" duration="4309000" />
+      <workItem from="1760349570558" duration="813000" />
+      <workItem from="1760698805601" duration="5410000" />
+      <workItem from="1760969171527" duration="31000" />
+      <workItem from="1761957682957" duration="4394000" />
+      <workItem from="1762055507445" duration="7065000" />
+      <workItem from="1762430549649" duration="57000" />
+      <workItem from="1763195932506" duration="11565000" />
+      <workItem from="1763273199775" duration="2416000" />
+      <workItem from="1763376934741" duration="3933000" />
+      <workItem from="1763475202107" duration="22000" />
+      <workItem from="1764083049590" duration="2706000" />
+      <workItem from="1764163970866" duration="726000" />
+      <workItem from="1764210955613" duration="13656000" />
     </task>
     <task id="LOCAL-00061" summary="update middleware">
       <option name="closed" value="true" />
@@ -590,7 +368,255 @@
       <option name="project" value="LOCAL" />
       <updated>1759041829755</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="document the react query calls and server actions">
+      <option name="closed" value="true" />
+      <created>1759125302073</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1759125302073</updated>
+    </task>
+    <task id="LOCAL-00080" summary="document the components of the web-app">
+      <option name="closed" value="true" />
+      <created>1759126421183</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1759126421183</updated>
+    </task>
+    <task id="LOCAL-00081" summary="modify the UI for editing video title and description">
+      <option name="closed" value="true" />
+      <created>1759134534978</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1759134534978</updated>
+    </task>
+    <task id="LOCAL-00082" summary="add backdrop blur to the header bar">
+      <option name="closed" value="true" />
+      <created>1759135448732</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1759135448732</updated>
+    </task>
+    <task id="LOCAL-00083" summary="improve UI for moving video to folders and workspaces">
+      <option name="closed" value="true" />
+      <created>1759154648734</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1759154648734</updated>
+    </task>
+    <task id="LOCAL-00084" summary="improve like, download, share, and more button for the video page">
+      <option name="closed" value="true" />
+      <created>1759161766057</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1759161766057</updated>
+    </task>
+    <task id="LOCAL-00085" summary="add video deletion">
+      <option name="closed" value="true" />
+      <created>1759163123125</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1759163123125</updated>
+    </task>
+    <task id="LOCAL-00086" summary="add video download">
+      <option name="closed" value="true" />
+      <created>1759163949269</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1759163949269</updated>
+    </task>
+    <task id="LOCAL-00087" summary="move create new folders button beside folder header">
+      <option name="closed" value="true" />
+      <created>1759199729320</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1759199729320</updated>
+    </task>
+    <task id="LOCAL-00088" summary="move create new workspace button in workspace tab in sidebar">
+      <option name="closed" value="true" />
+      <created>1759205054926</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1759205054926</updated>
+    </task>
+    <task id="LOCAL-00089" summary="move invite member to the workspace library page">
+      <option name="closed" value="true" />
+      <created>1759231280286</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1759231280286</updated>
+    </task>
+    <task id="LOCAL-00090" summary="update global header to show current workspace">
+      <option name="closed" value="true" />
+      <created>1759232485867</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1759232485867</updated>
+    </task>
+    <task id="LOCAL-00091" summary="show true user count in workspace">
+      <option name="closed" value="true" />
+      <created>1759233743455</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1759233743455</updated>
+    </task>
+    <task id="LOCAL-00092" summary="create temporary workspace page">
+      <option name="closed" value="true" />
+      <created>1759235080331</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1759235080332</updated>
+    </task>
+    <task id="LOCAL-00093" summary="prevent access for personal workspaces to user workspace page">
+      <option name="closed" value="true" />
+      <created>1759235516427</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1759235516427</updated>
+    </task>
+    <task id="LOCAL-00094" summary="show workspace owner in the users page">
+      <option name="closed" value="true" />
+      <created>1759238116058</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1759238116058</updated>
+    </task>
+    <task id="LOCAL-00095" summary="show other workspace users in the users page">
+      <option name="closed" value="true" />
+      <created>1759244487053</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1759244487053</updated>
+    </task>
+    <task id="LOCAL-00096" summary="add ability to remove user from workspace">
+      <option name="closed" value="true" />
+      <created>1759246887767</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1759246887771</updated>
+    </task>
+    <task id="LOCAL-00097" summary="add edit workspace for editing workspace name">
+      <option name="closed" value="true" />
+      <created>1759248473157</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1759248473157</updated>
+    </task>
+    <task id="LOCAL-00098" summary="add delete workspace with cascade on folder, videos, and user">
+      <option name="closed" value="true" />
+      <created>1759250374773</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1759250374774</updated>
+    </task>
+    <task id="LOCAL-00099" summary="fix cascade on folder, videos, and user">
+      <option name="closed" value="true" />
+      <created>1759250393143</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1759250393143</updated>
+    </task>
+    <task id="LOCAL-00100" summary="interchange home and my library page">
+      <option name="closed" value="true" />
+      <created>1759250746686</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1759250746686</updated>
+    </task>
+    <task id="LOCAL-00101" summary="add landing page">
+      <option name="closed" value="true" />
+      <created>1759373466285</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1759373466285</updated>
+    </task>
+    <task id="LOCAL-00102" summary="add basic search">
+      <option name="closed" value="true" />
+      <created>1760698962866</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1760698962866</updated>
+    </task>
+    <task id="LOCAL-00103" summary="quick fix">
+      <option name="closed" value="true" />
+      <created>1763211112883</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1763211112883</updated>
+    </task>
+    <task id="LOCAL-00104" summary="add video like functionality">
+      <option name="closed" value="true" />
+      <created>1763212728658</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1763212728658</updated>
+    </task>
+    <task id="LOCAL-00105" summary="improve search components design">
+      <option name="closed" value="true" />
+      <created>1763216053922</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1763216053922</updated>
+    </task>
+    <task id="LOCAL-00106" summary="add workspace invitation notification on both the host and invited user">
+      <option name="closed" value="true" />
+      <created>1763224580087</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1763224580087</updated>
+    </task>
+    <task id="LOCAL-00107" summary="refine the layouts and design across desktop app">
+      <option name="closed" value="true" />
+      <created>1764219110077</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1764219110077</updated>
+    </task>
+    <task id="LOCAL-00108" summary="refine skeleton loading for dashboard">
+      <option name="closed" value="true" />
+      <created>1764226807855</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1764226807855</updated>
+    </task>
+    <task id="LOCAL-00109" summary="add progressive loading">
+      <option name="closed" value="true" />
+      <created>1764227523364</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1764227523364</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +640,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="express" />
+                        <option value="refinements" />
                       </list>
                     </value>
                   </entry>
@@ -627,31 +653,42 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="setup tailwind and shadcn ui" />
-    <MESSAGE value="add clerk js" />
-    <MESSAGE value="establish initial general layout of window app" />
-    <MESSAGE value="setup clerk authentication" />
-    <MESSAGE value="add widget with sign up and login in app window" />
-    <MESSAGE value="setup getting media sources in the widget" />
-    <MESSAGE value="add auth api route for the desktop app authentication" />
-    <MESSAGE value="update middleware" />
-    <MESSAGE value="establish media configurations" />
-    <MESSAGE value="prepare the electron app for the three windows it will have" />
-    <MESSAGE value="complete the studio widget feature" />
-    <MESSAGE value="add webcam widget with default cam showing" />
-    <MESSAGE value="fix errors where media configuration is not loading the media forms" />
-    <MESSAGE value="add route for the studio tray" />
-    <MESSAGE value="document the desktop app" />
-    <MESSAGE value="remove redundant files in the ui components" />
-    <MESSAGE value="remove redundant files in git tracking" />
-    <MESSAGE value="establish express server listening" />
-    <MESSAGE value="establish socket connection" />
-    <MESSAGE value="handle saving chucks on temporary file" />
-    <MESSAGE value="handle processing chucks to database" />
-    <MESSAGE value="establish aws and express server routes" />
-    <MESSAGE value="display videos in home page via wix cms" />
-    <MESSAGE value="display developer notes in home page from cloudways" />
-    <MESSAGE value="add voiceflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="add voiceflow" />
+    <MESSAGE value="add video deletion" />
+    <MESSAGE value="add video download" />
+    <MESSAGE value="move create new folders button beside folder header" />
+    <MESSAGE value="move create new workspace button in workspace tab in sidebar" />
+    <MESSAGE value="move invite member to the workspace library page" />
+    <MESSAGE value="update global header to show current workspace" />
+    <MESSAGE value="show true user count in workspace" />
+    <MESSAGE value="create temporary workspace page" />
+    <MESSAGE value="prevent access for personal workspaces to user workspace page" />
+    <MESSAGE value="show workspace owner in the users page" />
+    <MESSAGE value="show other workspace users in the users page" />
+    <MESSAGE value="add ability to remove user from workspace" />
+    <MESSAGE value="add edit workspace for editing workspace name" />
+    <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
+    <MESSAGE value="fix cascade on folder, videos, and user" />
+    <MESSAGE value="interchange home and my library page" />
+    <MESSAGE value="add landing page" />
+    <MESSAGE value="add basic search" />
+    <MESSAGE value="quick fix" />
+    <MESSAGE value="add video like functionality" />
+    <MESSAGE value="improve search components design" />
+    <MESSAGE value="add workspace invitation notification on both the host and invited user" />
+    <MESSAGE value="refine the layouts and design across desktop app" />
+    <MESSAGE value="refine skeleton loading for dashboard" />
+    <MESSAGE value="add progressive loading" />
+    <option name="LAST_COMMIT_MESSAGE" value="add progressive loading" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/crystal-web-app/src/app/dashboard/[workspaceid]/search/page.tsx</url>
+          <line>236</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

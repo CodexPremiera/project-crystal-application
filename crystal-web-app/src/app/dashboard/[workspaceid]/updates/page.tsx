@@ -3,7 +3,7 @@ import HowToPost from '@/components/global/how-to-post'
 import VideoCard from '@/components/global/videos/video-card'
 import React from 'react'
 
-const Home = async () => {
+const Updates = async () => {
   const videos = await getWixContent()
   const post = await howToPost()
   
@@ -32,4 +32,4 @@ const Home = async () => {
   )
 }
 
-export default Home
+export default Updates

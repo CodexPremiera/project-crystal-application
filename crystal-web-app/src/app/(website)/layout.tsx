@@ -7,8 +7,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex flex-col py-10 px-10 w-full">
-        <LandingPageNavBar />
+    <div className="flex flex-col gap-10 w-full bg-[#111111]">
+      <LandingPageNavBar />
       {children}
     </div>
   );

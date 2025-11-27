@@ -46,11 +46,11 @@ const SidebarItem = ({ href, icon, selected, title }: Props) => {
           selected ? 'bg-[#1D1D1D]' : ''
         )}
       >
-        <div className="flex items-center gap-2 transition-all p-[5px] cursor-pointer">
+        <div className="flex w-full items-center gap-2 transition-all py-1 px-2 cursor-pointer">
           {icon}
           <span
             className={cn(
-              'font-medium group-hover:text-[#9D9D9D] transition-all truncate w-32',
+              'font-medium group-hover:text-[#9D9D9D] transition-all truncate flex-1 min-w-0 pr-2',
               selected ? 'text-[#9D9D9D]' : 'text-[#545454]'
             )}
           >

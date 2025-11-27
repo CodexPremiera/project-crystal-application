@@ -6,11 +6,11 @@ import Folder from "@/components/global/folders/folder";
 import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkspaceFolders} from "@/actions/workspace";
 import {useMutationDataState} from "@/hooks/useMutationData";
-import {ArrowRight} from "lucide-react";
 import FolderDuotone from "@/components/icons/folder-duotone";
 import {useDispatch} from "react-redux";
 import {FOLDERS} from "@/redux/slices/folders";
 import Videos from "@/components/global/videos/videos";
+import CreateFolders from "@/components/global/create-folders";
 
 export type FoldersProps = {
   status: number
@@ -45,6 +45,7 @@ function Folders({ workspaceId }: Props) {
    * 2. Caches the data with the 'workspace-folders' query key
    * 3. Provides loading states (isFetched) for UI feedback
    * 4. Automatically refetches when the query key changes
+   * 5. Handles initial undefined state during progressive loading
    */
   const { data, isFetched } = useQueryData(
     ['workspace-folders'],
@@ -66,7 +67,10 @@ function Folders({ workspaceId }: Props) {
    */
   const { latestVariables } = useMutationDataState(['create-folder'])
   
-  const { status, data: folders } = data as FoldersProps
+  const { status, data: folders } = (data || {
+    status: 404,
+    data: []
+  }) as FoldersProps
   
   // Update Redux store with fetched folders for global state management
   if (isFetched && folders) {
@@ -78,11 +82,10 @@ function Folders({ workspaceId }: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <FolderDuotone />
-          <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <p className="text-[#BDBDBD]">See all</p>
-          <ArrowRight color="#707070" />
+          <div className="flex items-center gap-1">
+            <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
+            <CreateFolders workspaceId={workspaceId} />
+          </div>
         </div>
       </div>
       <section className={cn(status !== 200 && 'justify-center', 'flex items-center gap-4 overflow-x-auto w-full')}>
@@ -130,7 +133,7 @@ function Folders({ workspaceId }: Props) {
       <Videos
         workspaceId={workspaceId}
         folderId={workspaceId}
-        videosKey="user-videos"
+          videosKey="user-videos"
       />
     </div>
   )

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain } from "electron";
+import { app, BrowserWindow, desktopCapturer, ipcMain, screen } from "electron";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
@@ -35,7 +35,7 @@ let floatingWebCam: BrowserWindow | null; // Webcam window
  * This function sets up the main Electron windows for the Crystal Desktop App:
  * 1. Main Control Window (600x600px) - Primary configuration interface
  * 2. Studio Tray Window (400x50px) - Recording controls and preview
- * 3. Webcam Window (400x200px) - Optional camera feed
+ * 3. Webcam Window (160x160px) - Optional camera feed
  * 
  * All windows are configured as:
  * - Frameless and transparent for modern appearance
@@ -44,15 +44,47 @@ let floatingWebCam: BrowserWindow | null; // Webcam window
  * - Set to be visible on all workspaces including fullscreen apps
  */
 function createWindow() {
+  // Get primary display dimensions
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+  
+  const margin = 20; // Margin from screen edges
+  
+  // Main window dimensions
+  const mainWidth = 480;
+  const mainHeight = 400;
+  
+  // Studio window dimensions
+  const studioWidth = 320;
+  const studioHeight = 50;
+  
+  // Webcam window dimensions
+  const webcamSize = 192;
+  
+  // Calculate positions
+  // Main window - centered
+  const mainX = Math.floor((screenWidth - mainWidth) / 2);
+  const mainY = Math.floor((screenHeight - mainHeight) / 2);
+  
+  // Studio - lower right
+  const studioX = screenWidth - studioWidth - 2 * margin;
+  const studioY = screenHeight - 5 * studioHeight - 2 * margin;
+  
+  // Webcam - lower left
+  const webcamX = margin;
+  const webcamY = screenHeight - webcamSize - margin;
+  
   win = new BrowserWindow({
-    width: 600,
-    height: 600,
-    minHeight: 600,
-    minWidth: 300,
+    width: mainWidth,
+    height: mainHeight,
+    x: mainX,
+    y: mainY,
+    minWidth: 540,
+    minHeight: 200,
     frame: false,
-    transparent: true,
+    transparent: true,  
     alwaysOnTop: true,
-    focusable: false,
+    focusable: true,
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
       nodeIntegration: false,
@@ -63,12 +95,14 @@ function createWindow() {
   });
   
   studio = new BrowserWindow({
-    width: 400,
-    height: 50,
+    width: studioWidth,
+    height: studioHeight,
+    x: studioX,
+    y: studioY,
     minHeight: 70,
     maxHeight: 400,
-    minWidth: 300,
-    maxWidth: 400,
+    minWidth: studioWidth,
+    maxWidth: studioWidth,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -83,12 +117,14 @@ function createWindow() {
   });
   
   floatingWebCam = new BrowserWindow({
-    width: 400,
-    height: 200,
-    minHeight: 70,
-    maxHeight: 400,
-    minWidth: 300,
-    maxWidth: 400,
+    width: webcamSize,
+    height: webcamSize,
+    x: webcamX,
+    y: webcamY,
+    minHeight: 192,
+    maxHeight: 192,
+    minWidth: 192,
+    maxWidth: 192,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -229,8 +265,16 @@ ipcMain.on("hide-plugin", (event, payload) => {
  * 
  * @param event - IPC event object
  */
-ipcMain.on("open-devtools", (event) => {
+ipcMain.on("open-devtools", () => {
   win?.webContents.openDevTools();
+});
+
+/**
+ * IPC handler for minimizing the main window.
+ * Minimizes the window to the taskbar/dock.
+ */
+ipcMain.on("minimize-window", () => {
+  win?.minimize();
 });
 
 app.on("activate", () => {

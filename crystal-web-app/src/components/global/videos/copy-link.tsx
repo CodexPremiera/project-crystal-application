@@ -52,7 +52,7 @@ const CopyLink = ({ videoId, className, variant }: Props) => {
 
   return (
     <Button
-      variant={variant}
+      variant={variant || "secondary"}
       onClick={onCopyClipboard}
       className={className}
     >

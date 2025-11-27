@@ -45,6 +45,7 @@ export const WebCam = () => {
   return (
     <video
       ref={camElement}
-      className="h-screen draggable object-cover rounded-lg aspect-video border-2 relative border-white"></video>
+      className="w-48 h-48 draggable object-cover rounded-full border-2 relative border-white"
+      style={{ transform: 'scaleX(-1)' }}></video>
   );
 };

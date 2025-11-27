@@ -22,6 +22,7 @@
     "fix-webm-duration": "^1.0.6",
     "hound": "^1.0.5",
     "js-cookie": "^3.0.5",
+    "multer": "^2.0.2",
     "nodemon": "^3.1.10",
     "openai": "^5.20.0",
     "socket.io": "^4.8.1",

@@ -13,6 +13,8 @@ export const useZodForm = <T extends z.ZodTypeAny>(
     handleSubmit,
     watch,
     reset,
+    control,
+    setValue,
   } = useForm({
     resolver: zodResolver(schema as any),
     defaultValues,
@@ -24,5 +26,7 @@ export const useZodForm = <T extends z.ZodTypeAny>(
     handleSubmit,
     watch,
     reset,
+    control,
+    setValue,
   };
 };

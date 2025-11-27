@@ -11,32 +11,41 @@ import GlobalHeader from "@/components/global/global-header";
  * Dashboard Workspace Layout Component
  * 
  * This layout component provides workspace-level authentication, access control,
- * and data prefetching for all workspace-specific pages. It ensures security
- * and performance by handling authentication, workspace access verification,
- * and data preparation before rendering child components.
+ * and non-blocking data prefetching for all workspace-specific pages. It ensures
+ * security while optimizing for fast initial render by not blocking on data loading.
  * 
- * Purpose: Provide secure workspace access with data prefetching and layout structure
+ * Purpose: Provide secure workspace access with optimized loading performance
  * 
  * How it works:
- * 1. Authenticates user and retrieves user data
- * 2. Verifies user has workspaces and redirects if none exist
- * 3. Checks user access to the requested workspace
- * 4. Redirects to default workspace if access denied
- * 5. Prefetches workspace data for performance
- * 6. Renders sidebar and header with workspace context
- * 7. Provides hydrated data to child components
+ * 1. Authenticates user and retrieves user data (blocking, for security)
+ * 2. Verifies user has workspaces and redirects if none exist (blocking, for security)
+ * 3. Checks user access to the requested workspace (blocking, for security)
+ * 4. Redirects to default workspace if access denied (blocking, for security)
+ * 5. Starts non-blocking data prefetching in background
+ * 6. Renders layout immediately - no waiting for data!
+ * 7. Components show loading states while data loads
+ * 8. Provides hydrated data to child components as it becomes available
  * 
  * Security Features:
- * - User authentication verification
- * - Workspace access control
+ * - User authentication verification (blocks render for security)
+ * - Workspace access control (blocks render for security)
  * - Automatic redirection for unauthorized access
  * - Workspace ownership and membership validation
  * 
  * Performance Features:
- * - Data prefetching with React Query
+ * - Non-blocking data prefetching for instant render
+ * - Progressive loading with skeleton states
  * - Hydration boundary for SSR optimization
- * - Query client setup for caching
- * - Efficient data loading patterns
+ * - Component-level loading indicators
+ * - Streaming data delivery
+ * - Fast Time to First Byte (TTFB)
+ * 
+ * Loading Behavior:
+ * - Security checks complete first (required)
+ * - Layout renders immediately after security passes
+ * - loading.tsx shows during initial navigation
+ * - Components display their own loading states
+ * - Data progressively loads in background
  * 
  * Layout Structure:
  * - Sidebar navigation with workspace context
@@ -83,36 +92,32 @@ const Layout = async ({ params, children }: Props) => {
   const query = new QueryClient()
   
   /**
-   * Server-Side Data Prefetching with React Query
+   * Optimized Data Prefetching with React Query
    * 
-   * This section prefetches all essential data on the server before rendering
-   * the workspace layout. This approach provides several benefits:
+   * This section uses a hybrid approach to data prefetching:
+   * - Critical layout data (sidebar/navigation): Awaited for immediate render
+   * - Page content data (folders/videos): Non-blocking background fetch
    * 
-   * 1. Performance: Data is available immediately when components mount
-   * 2. SEO: Server-rendered content with actual data
-   * 3. User Experience: No loading states for critical data
-   * 4. Caching: Data is cached and shared across components
+   * Benefits:
+   * 1. Fast Render: Only waits for critical sidebar/navigation data
+   * 2. Progressive Loading: Content loads in background with skeleton states
+   * 3. Better UX: Layout appears quickly, content streams in progressively
+   * 4. No Errors: Critical components have data they need on first render
    * 
-   * How prefetchQuery works:
-   * - Executes server actions on the server before component rendering
-   * - Stores fetched data in React Query cache
-   * - Makes data immediately available to client components
-   * - Eliminates the need for client-side data fetching
+   * How it works:
+   * - Waits for user-workspaces and notifications (needed by Sidebar)
+   * - Starts folders and videos fetch in background (used by page content)
+   * - Layout renders immediately after critical data loads
+   * - Page content shows loading states while data fetches
    * 
-   * Data Prefetched:
-   * - Workspace folders: For navigation and organization
-   * - User videos: For video display and management
-   * - User workspaces: For workspace switching and navigation
-   * - User notifications: For notification display and management
+   * Data Strategy:
+   * - User workspaces (BLOCKING): Required by Sidebar for workspace list
+   * - User notifications (BLOCKING): Required by Sidebar for notification count
+   * - Workspace folders (NON-BLOCKING): Used by page content, can load progressively
+   * - User videos (NON-BLOCKING): Used by page content, can load progressively
    */
-  await query.prefetchQuery({
-    queryKey:['workspace-folders'],
-    queryFn: () => getWorkspaceFolders(workspaceid),
-  })
-  await query.prefetchQuery({
-    queryKey:['user-videos'],
-    queryFn: () => getAllUserVideos(workspaceid),
-  })
+  
+  // Critical data for Sidebar - must await to prevent errors
   await query.prefetchQuery({
     queryKey:['user-workspaces'],
     queryFn: () => getWorkSpaces(),
@@ -120,6 +125,16 @@ const Layout = async ({ params, children }: Props) => {
   await query.prefetchQuery({
     queryKey:['user-notifications'],
     queryFn: () => getNotifications(),
+  })
+  
+  // Non-critical content data - fetch in background for faster render
+  query.prefetchQuery({
+    queryKey:['workspace-folders'],
+    queryFn: () => getWorkspaceFolders(workspaceid),
+  })
+  query.prefetchQuery({
+    queryKey:['user-videos'],
+    queryFn: () => getAllUserVideos(workspaceid),
   })
   
   return (

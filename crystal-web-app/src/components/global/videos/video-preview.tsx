@@ -3,17 +3,29 @@
 import React, {useEffect} from 'react';
 import {useRouter} from "next/navigation";
 import { useQueryData } from '@/hooks/useQueryData';
-import {getPreviewVideo, sendEmailForFirstView} from "@/actions/workspace";
+import {getPreviewVideo, sendEmailForFirstView, toggleVideoLike} from "@/actions/workspace";
 import {VideoProps} from "@/types/index.type";
-import EditVideo from "@/components/forms/edit-video";
+import { useMutationData } from '@/hooks/useMutationData';
+import EditVideoTitle from "@/components/global/videos/edit/edit-video-title";
+import EditVideoDesc from "@/components/global/videos/edit/edit-video-desc";
 import CopyLink from "@/components/global/videos/copy-link";
 import RichLink from "@/components/global/videos/rich-link";
 import {truncateString} from "@/lib/utils";
-import {Download} from "lucide-react";
 import TabMenu from "@/components/global/tab-menu";
 import AiTools from "@/components/global/video-tools/ai-tools";
 import Activities from "@/components/global/video-tools/activities";
 import VideoTranscript from "@/components/global/video-tools/video-transcript";
+import {Button} from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {Like} from "@/components/icons/like";
+import {Download, MoreHorizontal} from "lucide-react";
+import DeleteVideoConfirmation from './delete-video-confirmation'
+import { useDownloadVideo } from '@/hooks/useDownloadVideo'
 
 /**
  * Video Preview Component
@@ -63,6 +75,20 @@ function VideoPreview({ videoId }: Props) {
   const { data: video, status, author } = data as VideoProps
   if (status !== 200) router.push('/')
   
+  // Download functionality
+  const { downloadVideo, isDownloading } = useDownloadVideo(
+    video.source,
+    video.title,
+    videoId
+  )
+  
+  // Like functionality
+  const { mutate: toggleLike, isPending: isLiking } = useMutationData(
+    ['toggle-video-like'],
+    async () => await toggleVideoLike(videoId),
+    'preview-video'
+  )
+  
   // Calculate days since video creation for display
   const daysAgo = Math.floor(
     (new Date().getTime() - video.createdAt.getTime()) / (24 * 60 * 60 * 1000)
@@ -84,17 +110,15 @@ function VideoPreview({ videoId }: Props) {
       <div className="flex flex-col lg:col-span-2 gap-y-10">
         {/* Video header with title and edit controls */}
         <div>
-          <div className="flex gap-x-5 items-start justify-between">
+          <div className="flex gap-x-5 items-center">
             <h2 className="text-white text-4xl font-bold">{video.title}</h2>
             {/* Show edit button only for video author */}
-            {author ? (
-              <EditVideo
+            {author && (
+              <EditVideoTitle
                 videoId={videoId}
                 title={video.title as string}
                 description={video.description as string}
               />
-            ) : (
-              <></>
             )}
           </div>
           {/* Creator info and creation date */}
@@ -124,14 +148,12 @@ function VideoPreview({ videoId }: Props) {
           <div className="flex gap-x-5 items-center justify-between">
             <p className="text-[#BDBDBD] text-semibold">Description</p>
             {/* Show edit button only for video author */}
-            {author ? (
-              <EditVideo
+            {author && (
+              <EditVideoDesc
                 videoId={videoId}
                 title={video.title as string}
                 description={video.description as string}
               />
-            ) : (
-              <></>
             )}
           </div>
           <p className="text-[#9D9D9D] text-lg text-medium">
@@ -142,19 +164,60 @@ function VideoPreview({ videoId }: Props) {
       
       {/* Sidebar with sharing and download options */}
       <div className="lg:col-span-1 flex flex-col gap-y-16">
-        <div className="flex justify-end gap-x-3 items-center">
+        <div className="flex justify-end gap-2 items-center">
+          {/* Like button with count in a chip */}
+          <Button
+            variant="secondary"
+            className="rounded-full pl-3 pr-6 flex"
+            onClick={() => toggleLike(undefined)}
+            disabled={isLiking}
+          >
+            <Like />
+            <span>{video.likes ?? 0}</span>
+          </Button>
+          
+          {/* Download button */}
+          <Button
+            variant="secondary"
+            className="rounded-full pl-3 pr-6 flex"
+            onClick={downloadVideo}
+            disabled={isDownloading}
+          >
+            <Download className="h-4 w-4" />
+            <span>{isDownloading ? 'Downloading...' : 'Download'}</span>
+          </Button>
+          
           <CopyLink
-            variant="outline"
-            className="rounded-full bg-transparent px-10"
+            className="rounded-full"
             videoId={videoId}
+            variant="secondary"
           />
-          <RichLink
-            description={truncateString(video.description as string, 150)}
-            id={videoId}
-            source={video.source}
-            title={video.title as string}
-          />
-          <Download className="text-[#4d4c4c]" />
+          
+          {/* More options dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className='rounded-full' variant="secondary" size="icon">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="gap-1">
+              <DropdownMenuItem>
+                <RichLink
+                  description={truncateString(video.description as string, 150)}
+                  id={videoId}
+                  source={video.source}
+                  title={video.title as string}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DeleteVideoConfirmation
+                  videoId={videoId}
+                  videoTitle={video.title as string}
+                  redirectPath="/dashboard"
+                />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div>
           <TabMenu

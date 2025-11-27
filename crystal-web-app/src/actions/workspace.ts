@@ -516,6 +516,7 @@ export const getPreviewVideo = async (videoId: string) => {
         description: true,
         processing: true,
         views: true,
+        likes: true,
         summary: true,
         User: {
           select: {
@@ -545,6 +546,105 @@ export const getPreviewVideo = async (videoId: string) => {
   } catch (error) {
     console.log(error)
     return { status: 400 }
+  }
+}
+
+/**
+ * Toggles like status for a video (like if not liked, unlike if already liked)
+ * 
+ * Database Operation: POST/DELETE + UPDATE (INSERT/DELETE + UPDATE operations)
+ * Tables: VideoLike (create/delete), Video (update counter)
+ * 
+ * What it does:
+ * - Creates VideoLike entry if user hasn't liked the video
+ * - Deletes VideoLike entry if user has already liked the video
+ * - Increments or decrements Video.likes counter atomically
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Checks if VideoLike entry exists for (videoId, userId)
+ * 4. If exists: deletes entry and decrements Video.likes
+ * 5. If not exists: creates entry and increments Video.likes
+ * 6. Returns updated like count for optimistic UI updates
+ * 7. Handles errors gracefully
+ * 
+ * @param videoId - The unique identifier of the video to toggle like for
+ * @returns Promise with status and updated like count
+ */
+export const toggleVideoLike = async (videoId: string) => {
+  try {
+    const clerkUser = await currentUser()
+    if (!clerkUser) return { status: 401, data: { likes: 0 } }
+    
+    const user = await client.user.findUnique({
+      where: { clerkId: clerkUser.id },
+    })
+    
+    if (!user) return { status: 404, data: { likes: 0 } }
+    
+    const existingLike = await client.videoLike.findUnique({
+      where: {
+        videoId_userId: {
+          videoId,
+          userId: user.id,
+        },
+      },
+    })
+    
+    if (existingLike) {
+      await client.$transaction([
+        client.videoLike.delete({
+          where: {
+            id: existingLike.id,
+          },
+        }),
+        client.video.update({
+          where: { id: videoId },
+          data: {
+            likes: { decrement: 1 },
+          },
+        }),
+      ])
+      
+      const updatedVideo = await client.video.findUnique({
+        where: { id: videoId },
+        select: { likes: true },
+      })
+      
+      return {
+        status: 200,
+        data: { likes: updatedVideo?.likes ?? 0, liked: false },
+      }
+    } else {
+      await client.$transaction([
+        client.videoLike.create({
+          data: {
+            videoId,
+            userId: user.id,
+          },
+        }),
+        client.video.update({
+          where: { id: videoId },
+          data: {
+            likes: { increment: 1 },
+          },
+        }),
+      ])
+      
+      const updatedVideo = await client.video.findUnique({
+        where: { id: videoId },
+        select: { likes: true },
+      })
+      
+      return {
+        status: 200,
+        data: { likes: updatedVideo?.likes ?? 0, liked: true },
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return { status: 400, data: { likes: 0 } }
   }
 }
 
@@ -774,5 +874,464 @@ export const howToPost = async () => {
     }
   } catch (error) {
     return { status: 400 }
+  }
+}
+
+/**
+ * Deletes a video and all its associated data
+ * 
+ * Database Operation: DELETE (DELETE operation)
+ * Tables: Video (primary), Comment (cascade delete)
+ * 
+ * What it deletes:
+ * - Video record and all associated data
+ * - All comments and replies associated with the video (cascade)
+ * - Video file from storage (if implemented)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user owns the video (authorization check)
+ * 3. Deletes video record from database
+ * 4. Prisma cascade deletes all related comments
+ * 5. Returns success status with confirmation message
+ * 6. Handles database errors gracefully
+ * 
+ * Security:
+ * - Only video author can delete their videos
+ * - Prevents unauthorized deletion attempts
+ * - Validates user ownership before deletion
+ * 
+ * @param videoId - ID of the video to delete
+ * @returns Promise with deletion status and confirmation message
+ */
+export const deleteVideo = async (videoId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // First verify the video exists and user owns it
+    const video = await client.video.findUnique({
+      where: { id: videoId },
+      select: { 
+        id: true,
+        User: {
+          select: { clerkId: true }
+        }
+      }
+    })
+    
+    if (!video) return { status: 404, data: 'Video not found' }
+    
+    // Verify user owns the video
+    if (video.User?.clerkId !== user.id) {
+      return { status: 403, data: 'You can only delete your own videos' }
+    }
+    
+    // Delete the video (cascade will handle comments)
+    const deletedVideo = await client.video.delete({
+      where: { id: videoId }
+    })
+    
+    if (deletedVideo) {
+      return { status: 200, data: 'Video deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Video not found' }
+  } catch (error) {
+    console.log('Error deleting video:', error)
+    return { status: 500, data: 'Failed to delete video' }
+  }
+}
+
+/**
+ * Retrieves the member count for a specific workspace
+ * 
+ * Database Operation: GET (SELECT query with aggregation)
+ * Tables: Member (primary), WorkSpace
+ * 
+ * What it retrieves:
+ * - Total count of members in the specified workspace
+ * - Includes both workspace owner and invited members
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace (owner or member)
+ * 3. Counts all members in the workspace using Prisma's _count
+ * 4. Returns the member count for UI display
+ * 
+ * @param workspaceId - The UUID of the workspace to get member count for
+ * @returns Promise with member count or error status
+ */
+export const getWorkspaceMemberCount = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // First verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        id: true,
+        _count: {
+          select: {
+            members: true, // Count all members
+          },
+        },
+      },
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 0 } // No access to workspace
+    }
+    
+    // Return member count (add 1 for the workspace owner)
+    const memberCount = workspace._count.members + 1
+    return { status: 200, data: memberCount }
+  } catch (error) {
+    console.log('Error getting workspace member count:', error)
+    return { status: 500, data: 0 }
+  }
+}
+
+/**
+ * Retrieves workspace owner information for member display
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: WorkSpace (primary), User
+ * 
+ * What it retrieves:
+ * - Workspace owner's profile information
+ * - Owner's name, image, and Clerk ID
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace
+ * 3. Queries WorkSpace table with related User data
+ * 4. Returns owner information for member display
+ * 
+ * @param workspaceId - The UUID of the workspace to get owner info for
+ * @returns Promise with workspace owner data or error status
+ */
+export const getWorkspaceOwner = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // Verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+            clerkId: true,
+          }
+        }
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: null } // No access to workspace
+    }
+    
+    return { status: 200, data: workspace }
+  } catch (error) {
+    console.log('Error getting workspace owner:', error)
+    return { status: 500, data: null }
+  }
+}
+
+/**
+ * Retrieves workspace members (excluding the owner)
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: WorkSpace (primary), Member, User
+ * 
+ * What it retrieves:
+ * - All workspace members (invited users, not the owner)
+ * - Member profile information (name, image, Clerk ID)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies user has access to the workspace
+ * 3. Queries WorkSpace table with members relation
+ * 4. Includes related User data for each member
+ * 5. Returns members array for UI display
+ * 
+ * @param workspaceId - The UUID of the workspace to get members for
+ * @returns Promise with workspace members data or error status
+ */
+export const getWorkspaceMembers = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    // Verify user has access to the workspace
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } }, // Workspace owner
+          { members: { some: { User: { clerkId: user.id } } } }, // Workspace member
+        ],
+      },
+      select: {
+        members: {
+          select: {
+            User: {
+              select: {
+                firstname: true,
+                lastname: true,
+                image: true,
+                clerkId: true,
+              }
+            }
+          }
+        }
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: [] } // No access to workspace
+    }
+    
+    // Extract members from the nested structure
+    const members = workspace.members.map(member => ({
+      User: member.User
+    }))
+    
+    return { status: 200, data: members }
+  } catch (error) {
+    console.log('Error getting workspace members:', error)
+    return { status: 500, data: [] }
+  }
+}
+
+/**
+ * Removes a user from a workspace
+ * 
+ * Database Operation: DELETE (DELETE operation)
+ * Tables: Member (primary), WorkSpace, User
+ * 
+ * What it removes:
+ * - Member record linking user to workspace
+ * - User loses access to workspace content
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is workspace owner (only owners can remove members)
+ * 3. Finds the member record to delete
+ * 4. Deletes the member record from database
+ * 5. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can remove members
+ * - Prevents users from removing themselves
+ * - Validates workspace ownership before deletion
+ * 
+ * @param workspaceId - The UUID of the workspace
+ * @param memberClerkId - The Clerk ID of the member to remove
+ * @returns Promise with removal status and confirmation/error message
+ */
+export const removeUserFromWorkspace = async (workspaceId: string, memberClerkId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can remove members' }
+    }
+    
+    // Prevent users from removing themselves
+    if (user.id === memberClerkId) {
+      return { status: 400, data: 'You cannot remove yourself from the workspace' }
+    }
+    
+    // Find and delete the member record
+    const deletedMember = await client.member.deleteMany({
+      where: {
+        workSpaceId: workspaceId,
+        User: { clerkId: memberClerkId }
+      }
+    })
+    
+    if (deletedMember.count > 0) {
+      return { status: 200, data: 'User removed from workspace successfully' }
+    }
+    
+    return { status: 404, data: 'User not found in workspace' }
+  } catch (error) {
+    console.log('Error removing user from workspace:', error)
+    return { status: 500, data: 'Failed to remove user from workspace' }
+  }
+}
+
+/**
+ * Updates the name of a workspace
+ * 
+ * Database Operation: PUT (UPDATE operation)
+ * Table: WorkSpace
+ * 
+ * What it updates:
+ * - Workspace name in the database
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is the workspace owner
+ * 3. Updates workspace name using Prisma update
+ * 4. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can edit workspace name
+ * - Validates workspace ownership before update
+ * - Prevents unauthorized name changes
+ * 
+ * @param workspaceId - The UUID of the workspace to update
+ * @param newName - The new name for the workspace
+ * @returns Promise with update status and confirmation/error message
+ */
+export const editWorkspaceName = async (workspaceId: string, newName: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Validate input
+    if (!newName || newName.trim().length === 0) {
+      return { status: 400, data: 'Workspace name cannot be empty' }
+    }
+    
+    if (newName.trim().length > 100) {
+      return { status: 400, data: 'Workspace name must be less than 100 characters' }
+    }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can edit workspace name' }
+    }
+    
+    // Update the workspace name
+    const updatedWorkspace = await client.workSpace.update({
+      where: {
+        id: workspaceId
+      },
+      data: {
+        name: newName.trim()
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (updatedWorkspace) {
+      return { status: 200, data: 'Workspace name updated successfully' }
+    }
+    
+    return { status: 404, data: 'Workspace not found' }
+  } catch (error) {
+    console.log('Error editing workspace name:', error)
+    return { status: 500, data: 'Failed to update workspace name' }
+  }
+}
+
+/**
+ * Deletes a workspace and all its associated data
+ * 
+ * Database Operation: DELETE (DELETE operation with cascade)
+ * Tables: WorkSpace (primary), Member, Folder, Video, Comment
+ * 
+ * What it deletes:
+ * - Workspace record and all associated data
+ * - All members of the workspace
+ * - All folders in the workspace
+ * - All videos in the workspace and folders
+ * - All comments on workspace videos (cascade delete)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Verifies current user is the workspace owner
+ * 3. Deletes workspace record (cascade handles related data)
+ * 4. Returns success/error status with confirmation message
+ * 
+ * Security:
+ * - Only workspace owners can delete workspaces
+ * - Validates workspace ownership before deletion
+ * - Prevents unauthorized workspace deletion
+ * 
+ * @param workspaceId - The UUID of the workspace to delete
+ * @returns Promise with deletion status and confirmation/error message
+ */
+export const deleteWorkspace = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Verify current user is the workspace owner
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        User: { clerkId: user.id } // Only workspace owner
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: 'Only workspace owners can delete workspaces' }
+    }
+    
+    // Delete the workspace (cascade will handle related data)
+    const deletedWorkspace = await client.workSpace.delete({
+      where: {
+        id: workspaceId
+      }
+    })
+    
+    if (deletedWorkspace) {
+      return { status: 200, data: 'Workspace deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Workspace not found' }
+  } catch (error) {
+    console.log('Error deleting workspace:', error)
+    return { status: 500, data: 'Failed to delete workspace' }
   }
 }

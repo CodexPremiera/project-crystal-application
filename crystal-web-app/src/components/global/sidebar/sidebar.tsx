@@ -2,23 +2,12 @@
 
 import React from 'react';
 import Image from "next/image";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
 import {usePathname, useRouter} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
 import {useQueryData} from "@/hooks/useQueryData";
 import {getWorkSpaces} from "@/actions/workspace";
 import {NotificationProps, WorkSpaceProps} from "@/types/index.type";
-import Modal from "@/components/global/modal";
-import {Menu, PlusCircle} from "lucide-react";
-import Search from "@/components/global/search";
+import {Menu} from "lucide-react";
 import {MENU_ITEMS} from "@/constants/constants";
 import SidebarItem from "@/components/global/sidebar/sidebar-item";
 import {getNotifications} from "@/actions/user";
@@ -30,6 +19,7 @@ import Infobar from "@/components/global/infobar";
 import {useDispatch} from "react-redux";
 import {WORKSPACES} from "@/redux/slices/workspaces";
 import PaymentButton from "@/components/global/payment-button";
+import CreateWorkspace from "@/components/global/create-workspace";
 
 type Props = {
   activeWorkspaceId: string;
@@ -79,7 +69,7 @@ type Props = {
  */
 export default function Sidebar({ activeWorkspaceId }: Props) {
   // TODO: Add the upgrade functionality
-  const router = useRouter();
+  // const router = useRouter();
   const pathName = usePathname();
   const dispatch = useDispatch()
   
@@ -98,23 +88,19 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
    */
   const {data, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces);
   
-  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId});
-  
   const {data: notifications} = useQueryData(
     ["user-notifications"],
     getNotifications
   )
   
-  const {data: workspace} = data as WorkSpaceProps;
-  const {data: count} = notifications as NotificationProps;
-  
-  const onChangeActiveWorkspace = (value: string) => {
-    router.push(`/dashboard/${value}`);
-  }
+  const {data: workspace} = (data || { data: { workspace: [], members: [] } }) as WorkSpaceProps;
+  const {data: count} = (notifications || { data: { _count: { notification: 0 } } }) as NotificationProps;
   
   const currentWorkspace = workspace?.workspace.find(
     item => item.id === activeWorkspaceId
   );
+  
+  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId, currentWorkspace});
   
   if (isFetched && workspace) {
     dispatch(WORKSPACES({ workspaces: workspace.workspace }))
@@ -131,61 +117,8 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
         />
         <p className="text-2xl">Crystal</p>
       </div>
-      <Select
-        defaultValue={activeWorkspaceId}
-        onValueChange={onChangeActiveWorkspace}
-      >
-        <SelectTrigger className="mt-16 text-neutral-400 bg-transparent">
-          <SelectValue placeholder="Select a workspace"></SelectValue>
-        </SelectTrigger>
-        <SelectContent className="bg-[#111111] backdrop-blur-xl">
-          <SelectGroup>
-            <SelectLabel>Workspaces</SelectLabel>
-            <Separator />
-            {workspace.workspace.map((workspace) => (
-              <SelectItem
-                value={workspace.id}
-                key={workspace.id}
-              >
-                {workspace.name}
-              </SelectItem>
-            ))}
-            {workspace.members.length > 0 &&
-              workspace.members.map(
-                (workspace) =>
-                  workspace.WorkSpace && (
-                    <SelectItem
-                      value={workspace.WorkSpace.id}
-                      key={workspace.WorkSpace.id}
-                    >
-                      {workspace.WorkSpace.name}
-                    </SelectItem>
-                  )
-              )}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      {currentWorkspace?.type==="PUBLIC" && workspace.subscription?.plan === "PRO" && (
-        <Modal
-          trigger={
-            <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
-            <PlusCircle
-              size={15}
-              className="text-neutral-800/90 fill-neutral-500"
-            />
-            <span className="text-neutral-400 font-semibold text-xs">
-                Invite To Workspace
-            </span>
-        </span>
-          }
-          title="Invite To Workspace"
-          description="Invite other users to your workspace"
-        >
-          <Search workspaceId={activeWorkspaceId} />
-        </Modal>
-      )}
       
-      <p className="w-full text-[#9D9D9D] font-bold mt-4">Menu</p>
+      <p className="w-full text-[#9D9D9D] font-bold mt-16">Menu</p>
       <nav className="w-full">
         <ul>
           {menuItems.map(item => (
@@ -207,63 +140,88 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
       </nav>
       
       <Separator className="w-4/5" />
-      <p className="w-full text-[#9D9D9D] font-bold mt-4">Workspaces</p>
-      
-      {workspace.workspace.length === 1 && workspace.members.length === 0 && (
-        <div className="w-full mt-[-10px] cursor-pointer">
-          <p className="text-[#3c3c3c] font-medium text-sm">
-            {workspace.subscription?.plan === 'FREE'
-              ? 'Upgrade to create workspaces'
-              : 'No Workspaces'}
-          </p>
+      <div className="flex flex-col items-center gap-2 overflow-hidden w-full">
+        <div className="flex gap-3 items-center h-fit justify-between w-full">
+          <p className="h-fit text-[#9D9D9D] font-bold">Workspaces</p>
+          <CreateWorkspace />
         </div>
-      )}
-      
-      <nav className="w-full">
-        <ul className="h-[150px] overflow-auto overflow-x-hidden fade-layer scrollbar-minimal">
-          {workspace.workspace.length > 0 &&
-            workspace.workspace.map(
-              (item) =>
-                item.type !== "PERSONAL" && (
-                  <SidebarItem
-                    href={`/dashboard/${item.id}`}
-                    selected={pathName === `/dashboard/${item.id}`}
-                    title={item.name}
-                    notifications={0}
-                    key={item.name}
-                    icon={
-                      <WorkspacePlaceholder>
-                        {item.name.charAt(0)}
-                      </WorkspacePlaceholder>
-                    }
-                  />
-                )
-            )
-          }
-          {workspace.members.length > 0 &&
-            workspace.members.map(
-              (item) =>
-                item.WorkSpace &&
-                item.WorkSpace.type !== "PERSONAL" && (
-                  <SidebarItem
-                    href={`/dashboard/${item.WorkSpace.id}`}
-                    selected={
-                      pathName === `/dashboard/${item.WorkSpace.id}`
-                    }
-                    title={item.WorkSpace.name}
-                    notifications={0}
-                    key={item.WorkSpace.id}
-                    icon={
-                      <WorkspacePlaceholder>
-                        {item.WorkSpace.name.charAt(0)}
-                      </WorkspacePlaceholder>
-                    }
-                  />
-                )
-            )
-          }
-        </ul>
-      </nav>
+        
+        {workspace.workspace.length === 1 && workspace.members.length === 0 && (
+          <div className="w-full mt-[-10px] cursor-pointer">
+            <p className="text-[#3c3c3c] font-medium text-sm">
+              {workspace.subscription?.plan === 'FREE'
+                ? 'Upgrade to create workspaces'
+                : 'No Workspaces'}
+            </p>
+          </div>
+        )}
+        
+       
+        
+        {currentWorkspace && (
+          <div className="flex flex-col gap-2 w-full h-fit">
+            <SidebarItem
+              href={`/dashboard/${currentWorkspace.id}`}
+              selected={pathName === `/dashboard/${currentWorkspace.id}`}
+              title={currentWorkspace.name}
+              notifications={0}
+              key={currentWorkspace.name}
+              icon={
+                <WorkspacePlaceholder>
+                  {currentWorkspace.name.charAt(0)}
+                </WorkspacePlaceholder>
+              }
+            />
+          </div>
+        )}
+        
+        <nav className="w-full gap-2">
+          <hr className="w-full my-2"/>
+          <ul className="h-[300px] overflow-auto overflow-x-hidden scrollbar-minimal">
+            {workspace.workspace.length > 0 &&
+              workspace.workspace.map(
+                (item) =>
+                  item !== currentWorkspace && (
+                    <SidebarItem
+                      href={`/dashboard/${item.id}`}
+                      selected={pathName === `/dashboard/${item.id}`}
+                      title={item.name}
+                      notifications={0}
+                      key={item.id}
+                      icon={
+                        <WorkspacePlaceholder>
+                          {item.name.charAt(0)}
+                        </WorkspacePlaceholder>
+                      }
+                    />
+                  )
+              )
+            }
+            {workspace.members.length > 0 &&
+              workspace.members.map(
+                (item) =>
+                  item.WorkSpace &&
+                  item.WorkSpace.type !== "PERSONAL" && (
+                    <SidebarItem
+                      href={`/dashboard/${item.WorkSpace.id}`}
+                      selected={
+                        pathName === `/dashboard/${item.WorkSpace.id}`
+                      }
+                      title={item.WorkSpace.name}
+                      notifications={0}
+                      key={item.WorkSpace.id}
+                      icon={
+                        <WorkspacePlaceholder>
+                          {item.WorkSpace.name.charAt(0)}
+                        </WorkspacePlaceholder>
+                      }
+                    />
+                  )
+              )
+            }
+          </ul>
+        </nav>
+      </div>
       
       <Separator className="w-4/5"/>
       {workspace.subscription?.plan === 'FREE' && (

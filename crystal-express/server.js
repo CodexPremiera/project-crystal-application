@@ -5,6 +5,9 @@ const http = require('http');
 const app = express()
 const fs = require('fs');
 const axios = require('axios')
+const multer = require('multer')
+const path = require('path')
+const crypto = require('crypto')
 
 const { Readable } = require('stream');
 const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
@@ -15,11 +18,166 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-app.use(cors());
+// Configure CORS to allow both Electron and web app
+app.use(cors({
+  origin: [
+    process.env.ELECTRON_HOST || "http://localhost:5173",
+    "http://localhost:3000", // Next.js web app
+    process.env.WEB_APP_HOST || "http://localhost:3000"
+  ],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+app.use(express.json());
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'temp_upload/')
+  },
+  filename: function (req, file, cb) {
+    const uniqueId = crypto.randomUUID()
+    const ext = path.extname(file.originalname)
+    cb(null, `${uniqueId}${ext}`)
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['.mp4', '.webm', '.mov', '.avi']
+  const ext = path.extname(file.originalname).toLowerCase()
+  
+  if (allowedTypes.includes(ext)) {
+    cb(null, true)
+  } else {
+    cb(new Error('Invalid file type. Only MP4, WebM, MOV, and AVI are allowed.'), false)
+  }
+}
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB limit
+  },
+  fileFilter: fileFilter
+})
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
+
+// Helper function to process video (used by both socket and HTTP upload)
+async function processVideo(filename, userId, customTitle = null, customDescription = null) {
+  try {
+    const file = fs.readFileSync('temp_upload/' + filename)
+    
+    const processing = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/processing`, {
+      filename: filename,
+    })
+
+    if(processing.data.status !== 200) {
+      console.log("Oops! something went wrong")
+      return { success: false, error: "Failed to start processing" }
+    }
+
+    // Determine content type based on file extension
+    const ext = path.extname(filename).toLowerCase()
+    let ContentType = 'video/webm'
+    if (ext === '.mp4') ContentType = 'video/mp4'
+    else if (ext === '.mov') ContentType = 'video/quicktime'
+    else if (ext === '.avi') ContentType = 'video/x-msvideo'
+
+    const Key = filename
+    const Bucket = process.env.BUCKET_NAME
+    const command = new PutObjectCommand({
+      Key,
+      Bucket,
+      ContentType,
+      Body: file
+    })
+    const fileStatus = await s3.send(command)
+
+    if(fileStatus['$metadata'].httpStatusCode === 200) {
+      console.log("video uploaded to aws")
+
+      // Start transcription for pro plan
+      if(processing.data.plan === "PRO") {
+        const stat = fs.statSync('temp_upload/' + filename)
+        
+        // Whisper is restricted to 25mb uploads
+        if(stat.size < 25000000) {
+          try {
+            const transcription = await openai.audio.transcriptions.create({
+              file: fs.createReadStream(`temp_upload/${filename}`),
+              model: "whisper-1",
+              response_format: "text"
+            })
+
+            if(transcription) {
+              // If custom title/description provided, use those; otherwise generate with AI
+              let titleAndSummaryContent
+              if (customTitle && customDescription) {
+                titleAndSummaryContent = JSON.stringify({
+                  title: customTitle,
+                  summary: customDescription
+                })
+              } else {
+                const completion = await openai.chat.completions.create({
+                  model: 'gpt-3.5-turbo',
+                  response_format: { type: "json_object" },
+                  messages: [
+                    {
+                      role: 'system',
+                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
+                    }
+                  ]
+                })
+                titleAndSummaryContent = completion.choices[0].message.content
+              }
+
+              const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/transcribe`, {
+                filename: filename,
+                content: titleAndSummaryContent,
+                transcript: transcription
+              })
+
+              if(titleAndSummaryGenerated.data.status !== 200) {
+                console.log("🔴 Error: Something went wrong when generating title and summary")
+              }
+            }
+          } catch (aiError) {
+            console.log("🔴 Error in AI processing:", aiError.message)
+          }
+        } else {
+          console.log("⚠️ File too large for AI processing (>25MB)")
+        }
+      }
+
+      const stopProcessing = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/complete`, {
+        filename: filename,
+      })
+
+      if(stopProcessing.data.status !== 200) {
+        console.log("🔴 Error: Something went wrong when stopping the process and trying to complete processing stage")
+        return { success: false, error: "Failed to complete processing" }
+      }
+
+      if(stopProcessing.status === 200) {
+        fs.unlink('temp_upload/' + filename, (err) => {
+          if(!err) console.log(`🟢 ${filename} deleted successfully!`)
+        })
+      }
+
+      return { success: true, filename: filename }
+    }
+    else {
+      console.log("Upload failed! process aborted")
+      return { success: false, error: "Upload to S3 failed" }
+    }
+  } catch (error) {
+    console.log("🔴 Error processing video:", error)
+    return { success: false, error: error.message }
+  }
+}
 
 const s3 = new S3Client({
   credentials: {
@@ -27,6 +185,50 @@ const s3 = new S3Client({
     secretAccessKey: process.env.SECRET_KEY
   },
   region: process.env.BUCKET_REGION
+})
+
+// HTTP Upload endpoint
+app.post('/upload', upload.single('video'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' })
+    }
+
+    const { userId, title, description } = req.body
+
+    if (!userId) {
+      // Clean up uploaded file
+      fs.unlinkSync(req.file.path)
+      return res.status(400).json({ success: false, error: 'userId is required' })
+    }
+
+    console.log(`🔵 Processing uploaded file: ${req.file.filename}`)
+
+    // Process the video using the same logic as socket upload
+    const result = await processVideo(req.file.filename, userId, title, description)
+
+    if (result.success) {
+      return res.status(200).json({ 
+        success: true, 
+        filename: result.filename,
+        message: 'Video uploaded and processing started'
+      })
+    } else {
+      return res.status(500).json({ success: false, error: result.error })
+    }
+  } catch (error) {
+    console.log('🔴 Upload error:', error)
+    
+    // Clean up file if it exists
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path)
+    }
+    
+    return res.status(500).json({ 
+      success: false, 
+      error: error.message || 'Upload failed' 
+    })
+  }
 })
 
 const io = new Server(server, {
@@ -59,85 +261,15 @@ io.on('connection', (socket) => {
     })
   })
 
-  socket.on('process-video', (data) => {
+  socket.on('process-video', async (data) => {
     recordedChunks = []
-    fs.readFile('temp_upload/'+ data.filename, async (err, file) => {
-
-      const processing = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/processing`, {
-        filename: data.filename,
-      })
-
-      if(processing.data.status !== 200) return console.log("Oops! something went wrong")
-
-      const Key = data.filename
-      const Bucket = process.env.BUCKET_NAME
-      const ContentType = 'video/webm'
-      const command = new PutObjectCommand({
-        Key,
-        Bucket,
-        ContentType,
-        Body: file
-      })
-      const fileStatus = await s3.send(command)
-
-      if(fileStatus['$metadata'].httpStatusCode === 200) {
-        console.log("video uploaded to aws")
-
-        // start transcription for pro plan
-        // check plan serverside to stop fake client side authorization
-        if(processing.data.plan === "PRO") {
-          fs.stat('temp_upload/' + data.filename, async (err, stat) => {
-            if(!err) {
-              // whisper is restricted to 25mb uploads to avoid errors
-              // add a check for file size before transcribing
-              if(stat.size < 25000000) {
-                const transcription = await openai.audio.transcriptions.create({
-                  file: fs.createReadStream(`temp_upload/${data.filename}`),
-                  model: "whisper-1",
-                  response_format: "text"
-                })
-
-                if(transcription) {
-                  const completion = await openai.chat.completions.create({
-                    model: 'gpt-3.5-turbo',
-                    response_format: { type: "json_object" },
-                    messages: [
-                      {
-                        role: 'system',
-                        content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
-                      }
-                    ]
-                  })
-
-                  const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/transcribe`, {
-                    filename: data.filename,
-                    content: completion.choices[0].message.content,
-                    transcript: transcription
-                  })
-
-                  if(titleAndSummaryGenerated.data.status !== 200) console.log("🔴 Error: Something went wrong when generating title and summary")
-                }
-              }
-            }
-          })
-        }
-
-        const stopProcessing = await axios.post(`${process.env.NEXT_API_HOST}recording/${data.userId}/complete`, {
-          filename: data.filename,
-        })
-
-        if(stopProcessing.data.status !== 200) return console.log("🔴 Error: Something went wrong when stopping the process and trying to complete processing stage")
-
-        if(stopProcessing.status === 200) {
-          fs.unlink('temp_upload/' + data.filename, (err) => {
-            if(!err) console.log(`🟢 ${data.filename} deleted successfully!`)
-          })
-        }
-      }
-      else {
-        console.log("Upload failed! process aborted")
-      }
-    })
+    
+    // Use the shared processVideo function
+    const result = await processVideo(data.filename, data.userId)
+    
+    if (!result.success) {
+      console.log("🔴 Error processing video:", result.error)
+    }
   })
 
   socket.on("disconnect", () => {

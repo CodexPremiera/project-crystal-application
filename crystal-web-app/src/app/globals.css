@@ -207,3 +207,22 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(115, 115, 115, 0.5) transparent;
 }
+
+/* Blurred eclipse background for hero sections */
+.bg-blurred-eclipse {
+  position: relative;
+  overflow: visible;
+  background-image: url('/blurred_eclipse.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Radial gradient for pricing cards */
+.bg-dark-radial-gradient {
+  background: radial-gradient(circle at 25% 25%, #1F1F1F 0%, #171717 100%);
+}
+
+.bg-blue-radial-gradient {
+  background: radial-gradient(circle at 25% 25%, #551C9E 0%, #16121B 100%);
+}
