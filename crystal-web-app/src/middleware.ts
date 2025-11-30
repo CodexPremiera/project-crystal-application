@@ -2,7 +2,12 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'https://crystal-bice.vercel.app', 'https://railway.com/project/49c04ecc-2c20-47aa-8780-f310d6b96922']
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:3000', 
+  'https://project-crystal-application.vercel.app/', 
+  'https://project-crystal-application-production.up.railway.app' 
+]
 
 const corsOptions = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
