@@ -100,7 +100,7 @@ export const onAuthenticateUser = async () => {
     const user = await currentUser()
     if (!user) return { status: 403 }
     
-    // Check if user exists in database
+    // Check if user exists in database by Clerk ID
     const userExist = await client.user.findUnique({
       where: { clerkId: user.id },
       include: {
@@ -109,6 +109,32 @@ export const onAuthenticateUser = async () => {
     })
     
     if (userExist) return { status: 200, user: userExist }
+    
+    // Fallback: Check if user exists by email (may have different clerkId from dev/prod switch)
+    const userByEmail = await client.user.findUnique({
+      where: { email: user.emailAddresses[0].emailAddress },
+      include: {
+        workspace: true,
+      },
+    })
+    
+    // If user exists with same email but different clerkId, update the clerkId
+    if (userByEmail) {
+      const updatedUser = await client.user.update({
+        where: { email: user.emailAddresses[0].emailAddress },
+        data: {
+          clerkId: user.id,
+          firstname: user.firstName,
+          lastname: user.lastName,
+          image: user.imageUrl,
+        },
+        include: {
+          workspace: true,
+          subscription: { select: { plan: true } },
+        },
+      })
+      return { status: 200, user: updatedUser }
+    }
     
     // Create new user with all associated data
     const newUser = await client.user.create({
@@ -135,6 +161,7 @@ export const onAuthenticateUser = async () => {
     
     return newUser ? { status: 201, user: newUser } : { status: 400, message: 'User creation failed' }
   } catch (error) {
+    console.error('Auth error:', error)
     return { status: 500, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
