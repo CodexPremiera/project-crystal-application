@@ -4,10 +4,10 @@ import type { NextRequest } from 'next/server'
 
 const allowedOrigins = [
   'http://localhost:5173', 
-  'http://localhost:3000', 
-  'https://project-crystal-application.vercel.app/', 
-  'https://project-crystal-application-production.up.railway.app' 
-]
+  'http://localhost:3000',
+  process.env.NEXT_PUBLIC_WEB_APP_URL,
+  process.env.NEXT_PUBLIC_RAILWAY_URL,
+].filter(Boolean) as string[]
 
 const corsOptions = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
