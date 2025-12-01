@@ -104,7 +104,7 @@ export const onAuthenticateUser = async () => {
     const userExist = await client.user.findUnique({
       where: { clerkId: user.id },
       include: {
-        workspace: { where: { User: { clerkId: user.id } } },
+        workspace: true,
       },
     })
     
@@ -128,7 +128,7 @@ export const onAuthenticateUser = async () => {
         },
       },
       include: {
-        workspace: { where: { User: { clerkId: user.id } } },
+        workspace: true,
         subscription: { select: { plan: true } },
       },
     })
