@@ -1,8 +1,11 @@
+"use client";
+
 import VoiceFlowAgent from "@/components/global/voice-flow-agent";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download, Monitor } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 /**
  * Website Landing Page
@@ -39,6 +42,21 @@ import Link from "next/link";
  * @returns JSX element with landing page content
  */
 export default function Home() {
+  const [platform, setPlatform] = useState<'windows' | 'mac' | 'linux'>('windows');
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.indexOf('win') !== -1) setPlatform('windows');
+    else if (userAgent.indexOf('mac') !== -1) setPlatform('mac');
+    else if (userAgent.indexOf('linux') !== -1) setPlatform('linux');
+  }, []);
+
+  const downloadLinks = {
+    windows: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Windows-0.0.1-Setup.exe',
+    mac: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Mac-0.0.1-Installer.dmg',
+    linux: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Linux-0.0.1.AppImage'
+  };
+
   return <main className="flex flex-col mt-32 gap-16 items-center w-full">
     <section className="flex flex-col gap-16 w-full h-fit pt-5 pb-10 items-center">
       <div className="flex flex-col w-full h-fit items-center bg-blurred-eclipse">
@@ -111,6 +129,78 @@ export default function Home() {
               <li>Unlimited team members</li>
               <li>All AI features</li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section className="flex flex-col gap-16 w-full h-fit pt-5 pb-10 items-center">
+      <div className="flex flex-col w-full gap-6 max-w-[960px]">
+        <div className="gap-1 flex flex-col w-full items-center text-center">
+          <h2 className="text-4xl font-extrabold">Download Desktop App</h2>
+          <span className="text-[#9D9D9D]">Record your screen with our powerful desktop application</span>
+        </div>
+        
+        <div className="flex flex-col gap-6 w-full items-center">
+          <div className="flex gap-4 w-full flex-wrap justify-center">
+            <a 
+              href={downloadLinks.windows}
+              download
+              className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'windows' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
+            >
+              <div className="flex items-center gap-3">
+                <Monitor className="w-8 h-8" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold">Windows</span>
+                  <span className="text-xs text-[#9D9D9D]">Windows 10+</span>
+                </div>
+              </div>
+              <Button className="rounded-lg w-full" variant={platform === 'windows' ? 'default' : 'secondary'}>
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+            </a>
+
+            <a 
+              href={downloadLinks.mac}
+              download
+              className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'mac' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
+            >
+              <div className="flex items-center gap-3">
+                <Monitor className="w-8 h-8" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold">macOS</span>
+                  <span className="text-xs text-[#9D9D9D]">macOS 10.15+</span>
+                </div>
+              </div>
+              <Button className="rounded-lg w-full" variant={platform === 'mac' ? 'default' : 'secondary'}>
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+            </a>
+
+            <a 
+              href={downloadLinks.linux}
+              download
+              className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'linux' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
+            >
+              <div className="flex items-center gap-3">
+                <Monitor className="w-8 h-8" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold">Linux</span>
+                  <span className="text-xs text-[#9D9D9D]">Ubuntu 18.04+</span>
+                </div>
+              </div>
+              <Button className="rounded-lg w-full" variant={platform === 'linux' ? 'default' : 'secondary'}>
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+            </a>
+          </div>
+
+          <div className="flex flex-col gap-2 text-center text-sm text-[#9D9D9D] mt-4">
+            <p>After downloading, install the application and sign in with your Crystal account.</p>
+            <p>The desktop app allows you to record your screen, webcam, or both in studio mode.</p>
           </div>
         </div>
       </div>

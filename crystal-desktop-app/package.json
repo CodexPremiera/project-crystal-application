@@ -1,8 +1,14 @@
 {
   "name": "crystal-desktop-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "description": "Crystal - AI-Driven Screen Recording Desktop Application",
+  "author": "Crystal Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodexPremiera/project-crystal-application.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
