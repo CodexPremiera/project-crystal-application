@@ -73,7 +73,7 @@ jobs:
         run: |
           $version = "${{ steps.get_version.outputs.VERSION }}"
           if ([string]::IsNullOrEmpty($version)) { $version = "0.0.1" }
-          aws s3 cp "release/$version/" "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$version/" --recursive --exclude "*" --include "*.exe" --acl public-read
+          aws s3 cp "release/$version/" "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$version/" --recursive --exclude "*" --include "*.exe"
         shell: pwsh
 
       - name: Upload Mac build to S3
@@ -82,7 +82,7 @@ jobs:
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
           if [ -z "$VERSION" ]; then VERSION="0.0.1"; fi
-          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.dmg" --acl public-read
+          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.dmg"
         shell: bash
 
       - name: Upload Linux build to S3
@@ -91,7 +91,7 @@ jobs:
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
           if [ -z "$VERSION" ]; then VERSION="0.0.1"; fi
-          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.AppImage" --acl public-read
+          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.AppImage"
         shell: bash
 
       - name: Upload artifact (for GitHub releases)
