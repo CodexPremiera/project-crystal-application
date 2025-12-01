@@ -101,7 +101,7 @@ export const onAuthenticateUser = async () => {
     if (!user) return { status: 403 }
     
     // Check if user exists in database by Clerk ID
-    let userExist = await client.user.findUnique({
+    const userExist = await client.user.findUnique({
       where: { clerkId: user.id },
       include: {
         workspace: true,
