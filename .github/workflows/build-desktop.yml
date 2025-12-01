@@ -6,6 +6,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build ${{ matrix.os }}
@@ -43,19 +46,22 @@ jobs:
         working-directory: crystal-desktop-app
         run: |
           echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > .env.production
-          echo "VITE_EXPRESS_SERVER_URL=https://project-crystal-application-production.up.railway.app" >> .env.production
-          echo "VITE_WEB_APP_URL=https://www.crystalapp.tech" >> .env.production
+          echo "VITE_HOST_URL=https://www.crystalapp.tech/api" >> .env.production
+          echo "VITE_APP_URL=https://www.crystalapp.tech" >> .env.production
+          echo "VITE_SOCKET_URL=https://project-crystal-application-production.up.railway.app" >> .env.production
+          echo "APP_ROOT=https://www.crystalapp.tech" >> .env.production
+
+      - name: Get version from package.json
+        id: get_version
+        working-directory: crystal-desktop-app
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Build Electron app
         working-directory: crystal-desktop-app
         run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-        shell: bash
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -69,8 +75,8 @@ jobs:
         working-directory: crystal-desktop-app
         run: |
           $version = "${{ steps.get_version.outputs.VERSION }}"
-          if ([string]::IsNullOrEmpty($version)) { $version = "0.0.0" }
-          aws s3 cp "release/0.0.0/" "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$version/" --recursive --exclude "*" --include "*.exe" --acl public-read
+          if ([string]::IsNullOrEmpty($version)) { $version = "0.0.1" }
+          aws s3 cp "release/$version/" "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$version/" --recursive --exclude "*" --include "*.exe"
         shell: pwsh
 
       - name: Upload Mac build to S3
@@ -78,8 +84,8 @@ jobs:
         working-directory: crystal-desktop-app
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
-          if [ -z "$VERSION" ]; then VERSION="0.0.0"; fi
-          aws s3 cp release/0.0.0/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.dmg" --acl public-read
+          if [ -z "$VERSION" ]; then VERSION="0.0.1"; fi
+          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.dmg"
         shell: bash
 
       - name: Upload Linux build to S3
@@ -87,8 +93,8 @@ jobs:
         working-directory: crystal-desktop-app
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
-          if [ -z "$VERSION" ]; then VERSION="0.0.0"; fi
-          aws s3 cp release/0.0.0/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.AppImage" --acl public-read
+          if [ -z "$VERSION" ]; then VERSION="0.0.1"; fi
+          aws s3 cp release/$VERSION/ "s3://${{ secrets.AWS_BUCKET }}/desktop-app/releases/v$VERSION/" --recursive --exclude "*" --include "*.AppImage"
         shell: bash
 
       - name: Upload artifact (for GitHub releases)
@@ -96,7 +102,7 @@ jobs:
         with:
           name: crystal-${{ matrix.platform }}
           path: |
-            crystal-desktop-app/release/0.0.0/${{ matrix.artifact }}
+            crystal-desktop-app/release/${{ steps.get_version.outputs.VERSION }}/${{ matrix.artifact }}
           retention-days: 30
 
   create-release:
