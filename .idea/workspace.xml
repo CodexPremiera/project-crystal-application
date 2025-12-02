@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add auto update for electron app">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="chore: bump version to 0.0.2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,23 +224,7 @@
       <workItem from="1764210955613" duration="13656000" />
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
-      <workItem from="1764673702469" duration="7589000" />
-    </task>
-    <task id="LOCAL-00072" summary="establish socket connection">
-      <option name="closed" value="true" />
-      <created>1757916267440</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1757916267440</updated>
-    </task>
-    <task id="LOCAL-00073" summary="handle saving chucks on temporary file">
-      <option name="closed" value="true" />
-      <created>1757918312479</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1757918312479</updated>
+      <workItem from="1764673702469" duration="9089000" />
     </task>
     <task id="LOCAL-00074" summary="handle processing chucks to database">
       <option name="closed" value="true" />
@@ -620,7 +602,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764682399814</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="add auto update for electron app">
+      <option name="closed" value="true" />
+      <created>1764684485368</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1764684485368</updated>
+    </task>
+    <task id="LOCAL-00122" summary="chore: bump version to 0.0.2">
+      <option name="closed" value="true" />
+      <created>1764684586023</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1764684586023</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -644,7 +642,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="feature/auto-update" />
                       </list>
                     </value>
                   </entry>
@@ -657,7 +655,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add edit workspace for editing workspace name" />
     <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
     <MESSAGE value="fix cascade on folder, videos, and user" />
     <MESSAGE value="interchange home and my library page" />
@@ -682,6 +679,7 @@
     <MESSAGE value="fix(electron): keep user in desktop app after Clerk sign-in" />
     <MESSAGE value="modify gitignore" />
     <MESSAGE value="add auto update for electron app" />
-    <option name="LAST_COMMIT_MESSAGE" value="add auto update for electron app" />
+    <MESSAGE value="chore: bump version to 0.0.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: bump version to 0.0.2" />
   </component>
 </project>

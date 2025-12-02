@@ -67,7 +67,7 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">3</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Run the installer</p>
-                  <p>Open the downloaded <code className="bg-white/5 px-1 rounded">Crystal-Windows-0.0.1-Setup.exe</code> file.</p>
+                  <p>Open the downloaded <code className="bg-white/5 px-1 rounded">Crystal-Windows-Setup.exe</code> file.</p>
                 </div>
               </div>
 
@@ -126,7 +126,7 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">2</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Open the DMG file</p>
-                  <p>Double-click the downloaded <code className="bg-white/5 px-1 rounded">Crystal-Mac-0.0.1-Installer.dmg</code> file to mount it.</p>
+                  <p>Double-click the downloaded <code className="bg-white/5 px-1 rounded">Crystal-Mac-Installer.dmg</code> file to mount it.</p>
                 </div>
               </div>
 
@@ -188,7 +188,7 @@ export default function InstallationGuide() {
                   <p className="font-semibold text-white mb-1">Make it executable</p>
                   <p className="mb-2">Open a terminal and run:</p>
                   <code className="block bg-black/30 p-2 rounded text-xs font-mono">
-                    chmod +x ~/Downloads/Crystal-Linux-0.0.1.AppImage
+                    chmod +x ~/Downloads/Crystal-Linux.AppImage
                   </code>
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function InstallationGuide() {
                   <p className="font-semibold text-white mb-1">Run the application</p>
                   <p className="mb-2">Double-click the AppImage file or run from terminal:</p>
                   <code className="block bg-black/30 p-2 rounded text-xs font-mono">
-                    ./Crystal-Linux-0.0.1.AppImage
+                    ./Crystal-Linux.AppImage
                   </code>
                 </div>
               </div>
