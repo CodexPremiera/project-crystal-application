@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="ready for deployment notes">
-      <change afterPath="$PROJECT_DIR$/BUILD-STATUS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build-desktop.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build-desktop.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DOWNLOAD-PAGE-IMPLEMENTATION.md" beforeDir="false" afterPath="$PROJECT_DIR$/DOWNLOAD-PAGE-IMPLEMENTATION.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,6 +225,7 @@
       <workItem from="1764210955613" duration="13656000" />
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
+      <workItem from="1764673702469" duration="1210000" />
     </task>
     <task id="LOCAL-00069" summary="remove redundant files in the ui components">
       <option name="closed" value="true" />

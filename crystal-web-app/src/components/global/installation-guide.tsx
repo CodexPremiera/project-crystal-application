@@ -7,7 +7,7 @@ import {
   AccordionTrigger 
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ShieldCheck, AlertCircle, Download, Info } from "lucide-react";
+import { ShieldCheck, AlertCircle, Info } from "lucide-react";
 
 export default function InstallationGuide() {
   return (
@@ -51,8 +51,8 @@ export default function InstallationGuide() {
                   <p className="font-semibold text-white mb-1">Bypass browser security warning</p>
                   <p className="mb-2">Your browser may block the download with a security warning. To proceed:</p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li><strong>Chrome/Edge:</strong> Click the "⋮" (three dots) next to the blocked file → Click "Keep" → Click "Keep anyway"</li>
-                    <li><strong>Firefox:</strong> Click the download arrow → Right-click the file → Select "Allow download"</li>
+                    <li><strong>Chrome/Edge:</strong> Click the &quot;⋮&quot; (three dots) next to the blocked file → Click &quot;Keep&quot; → Click &quot;Keep anyway&quot;</li>
+                    <li><strong>Firefox:</strong> Click the download arrow → Right-click the file → Select &quot;Allow download&quot;</li>
                   </ul>
                   <Alert className="mt-3 bg-yellow-500/10 border-yellow-500/50">
                     <AlertCircle className="h-4 w-4 text-yellow-500" />
@@ -75,15 +75,15 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">4</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Bypass Windows SmartScreen</p>
-                  <p className="mb-2">Windows may show a "Windows protected your PC" warning. To proceed:</p>
+                  <p className="mb-2">Windows may show a &quot;Windows protected your PC&quot; warning. To proceed:</p>
                   <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Click <strong>"More info"</strong> on the SmartScreen dialog</li>
-                    <li>Click <strong>"Run anyway"</strong> at the bottom</li>
+                    <li>Click <strong>&quot;More info&quot;</strong> on the SmartScreen dialog</li>
+                    <li>Click <strong>&quot;Run anyway&quot;</strong> at the bottom</li>
                   </ol>
                   <Alert className="mt-3 bg-yellow-500/10 border-yellow-500/50">
                     <AlertCircle className="h-4 w-4 text-yellow-500" />
                     <AlertDescription className="text-xs text-yellow-200">
-                      SmartScreen warns about unsigned applications. Crystal is safe but doesn't have an Extended Validation certificate yet.
+                      SmartScreen warns about unsigned applications. Crystal is safe but doesn&apos;t have an Extended Validation certificate yet.
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -101,7 +101,7 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">6</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Launch Crystal</p>
-                  <p>Once installed, launch the app and sign in with your Crystal account. You're ready to start recording!</p>
+                  <p>Once installed, launch the app and sign in with your Crystal account. You&apos;re ready to start recording!</p>
                 </div>
               </div>
             </div>
@@ -142,16 +142,16 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">4</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Bypass Gatekeeper warning</p>
-                  <p className="mb-2">When you first open Crystal, macOS may show "Crystal cannot be opened" warning. To proceed:</p>
+                  <p className="mb-2">When you first open Crystal, macOS may show &quot;Crystal cannot be opened&quot; warning. To proceed:</p>
                   <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Go to <strong>System Preferences → Security & Privacy</strong></li>
-                    <li>Click the <strong>"Open Anyway"</strong> button next to the Crystal message</li>
-                    <li>Confirm by clicking <strong>"Open"</strong> in the dialog</li>
+                    <li>Go to <strong>System Preferences → Security &amp; Privacy</strong></li>
+                    <li>Click the <strong>&quot;Open Anyway&quot;</strong> button next to the Crystal message</li>
+                    <li>Confirm by clicking <strong>&quot;Open&quot;</strong> in the dialog</li>
                   </ol>
                   <Alert className="mt-3 bg-yellow-500/10 border-yellow-500/50">
                     <AlertCircle className="h-4 w-4 text-yellow-500" />
                     <AlertDescription className="text-xs text-yellow-200">
-                      Gatekeeper protects against unsigned apps. Crystal is safe but isn't notarized by Apple yet.
+                      Gatekeeper protects against unsigned apps. Crystal is safe but isn&apos;t notarized by Apple yet.
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -161,7 +161,7 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">5</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Launch Crystal</p>
-                  <p>Open Crystal from your Applications folder and sign in with your account. You're ready to start recording!</p>
+                  <p>Open Crystal from your Applications folder and sign in with your account. You&apos;re ready to start recording!</p>
                 </div>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function InstallationGuide() {
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center text-xs font-bold">4</span>
                 <div>
                   <p className="font-semibold text-white mb-1">Sign in and start recording</p>
-                  <p>Launch Crystal and sign in with your account. You're ready to start recording!</p>
+                  <p>Launch Crystal and sign in with your account. You&apos;re ready to start recording!</p>
                 </div>
               </div>
 
@@ -229,7 +229,7 @@ export default function InstallationGuide() {
           Why am I seeing security warnings?
         </h4>
         <p className="text-sm text-[#9D9D9D]">
-          Crystal is a new application that doesn't yet have a code signing certificate. 
+          Crystal is a new application that doesn&apos;t yet have a code signing certificate. 
           These certificates cost hundreds of dollars per year and require extensive verification. 
           We plan to obtain one in the future to eliminate these warnings.
         </p>
@@ -249,4 +249,3 @@ export default function InstallationGuide() {
     </div>
   );
 }
-
