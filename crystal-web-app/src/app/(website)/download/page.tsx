@@ -17,10 +17,11 @@ export default function DownloadPage() {
     else if (userAgent.indexOf('linux') !== -1) setPlatform('linux');
   }, []);
 
+  // GitHub Releases - always downloads the latest version
   const downloadLinks = {
-    windows: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Windows-0.0.1-Setup.exe',
-    mac: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Mac-0.0.1-Installer.dmg',
-    linux: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Linux-0.0.1.AppImage'
+    windows: 'https://github.com/CodexPremiera/project-crystal-application/releases/latest/download/Crystal-Windows-Setup.exe',
+    mac: 'https://github.com/CodexPremiera/project-crystal-application/releases/latest/download/Crystal-Mac-Installer.dmg',
+    linux: 'https://github.com/CodexPremiera/project-crystal-application/releases/latest/download/Crystal-Linux.AppImage'
   };
 
   return (
@@ -68,7 +69,7 @@ export default function DownloadPage() {
                 Download
               </Button>
               <div className="flex flex-col gap-1 text-xs text-[#9D9D9D] text-center">
-                <span>v0.0.1 • ~90 MB</span>
+                <span>Latest • ~90 MB</span>
               </div>
             </a>
 
@@ -89,7 +90,7 @@ export default function DownloadPage() {
                 Download
               </Button>
               <div className="flex flex-col gap-1 text-xs text-[#9D9D9D] text-center">
-                <span>v0.0.1 • ~95 MB</span>
+                <span>Latest • ~95 MB</span>
               </div>
             </a>
 
@@ -110,7 +111,7 @@ export default function DownloadPage() {
                 Download
               </Button>
               <div className="flex flex-col gap-1 text-xs text-[#9D9D9D] text-center">
-                <span>v0.0.1 • ~90 MB</span>
+                <span>Latest • ~90 MB</span>
               </div>
             </a>
           </div>
