@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): keep user in desktop app after Clerk sign-in" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="add auto update for electron app">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,7 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="refinements" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -79,28 +86,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/downloadable&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.17.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.17.2&quot;,
-    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
-    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/dashboard/[workspaceid]&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/auto-update",
+    "javascript.nodejs.core.library.configured.version": "22.17.0",
+    "javascript.nodejs.core.library.typings.version": "22.17.2",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/PremieraAlpha/Self Development/opal-application/crystal-web-app/src/app/dashboard/[workspaceid]",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\PremieraAlpha\\Self Development\\opal-application\\crystal-web-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\PremieraAlpha\Self Development\opal-application\crystal-web-app\src\app\dashboard\[workspaceid]" />
@@ -219,15 +226,7 @@
       <workItem from="1764210955613" duration="13656000" />
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
-      <workItem from="1764673702469" duration="5525000" />
-    </task>
-    <task id="LOCAL-00071" summary="establish express server listening">
-      <option name="closed" value="true" />
-      <created>1757475833334</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1757475833334</updated>
+      <workItem from="1764673702469" duration="7589000" />
     </task>
     <task id="LOCAL-00072" summary="establish socket connection">
       <option name="closed" value="true" />
@@ -613,7 +612,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764682241829</updated>
     </task>
-    <option name="localTasksCounter" value="120" />
+    <task id="LOCAL-00120" summary="modify gitignore">
+      <option name="closed" value="true" />
+      <created>1764682399814</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1764682399814</updated>
+    </task>
+    <option name="localTasksCounter" value="121" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -637,7 +644,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="feature/downloadable" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -650,8 +657,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="show other workspace users in the users page" />
-    <MESSAGE value="add ability to remove user from workspace" />
     <MESSAGE value="add edit workspace for editing workspace name" />
     <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
     <MESSAGE value="fix cascade on folder, videos, and user" />
@@ -675,6 +680,8 @@
     <MESSAGE value="ready for deployment notes" />
     <MESSAGE value="fix: unused import" />
     <MESSAGE value="fix(electron): keep user in desktop app after Clerk sign-in" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): keep user in desktop app after Clerk sign-in" />
+    <MESSAGE value="modify gitignore" />
+    <MESSAGE value="add auto update for electron app" />
+    <option name="LAST_COMMIT_MESSAGE" value="add auto update for electron app" />
   </component>
 </project>

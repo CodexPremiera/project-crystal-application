@@ -4,7 +4,12 @@
   "appId": "com.crystal.app",
   "asar": true,
   "productName": "Crystal",
-  "publish": null,
+  "publish": {
+    "provider": "github",
+    "owner": "CodexPremiera",
+    "repo": "project-crystal-application",
+    "releaseType": "release"
+  },
   "directories": {
     "output": "release/${version}"
   },

@@ -25,4 +25,8 @@ dist-ssr
 .env
 .env.local
 
+# Electron build output
+release/
+dist-electron/
+
 /release/
