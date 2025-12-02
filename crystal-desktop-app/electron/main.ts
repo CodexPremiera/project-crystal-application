@@ -1,4 +1,5 @@
 import { app, BrowserWindow, desktopCapturer, ipcMain, screen } from "electron";
+import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
@@ -340,4 +341,40 @@ app.on("activate", () => {
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  
+  // Check for updates in production (not during development)
+  if (!VITE_DEV_SERVER_URL) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+});
+
+/**
+ * Auto-updater event handlers for logging update status.
+ */
+autoUpdater.on("checking-for-update", () => {
+  console.log("[AutoUpdater] Checking for updates...");
+});
+
+autoUpdater.on("update-available", (info) => {
+  console.log("[AutoUpdater] Update available:", info.version);
+});
+
+autoUpdater.on("update-not-available", () => {
+  console.log("[AutoUpdater] No updates available.");
+});
+
+autoUpdater.on("download-progress", (progress) => {
+  console.log(`[AutoUpdater] Download progress: ${progress.percent.toFixed(1)}%`);
+});
+
+autoUpdater.on("update-downloaded", (info) => {
+  console.log("[AutoUpdater] Update downloaded:", info.version);
+  // Automatically install update when the app quits
+  autoUpdater.quitAndInstall(false, true);
+});
+
+autoUpdater.on("error", (err) => {
+  console.error("[AutoUpdater] Error:", err.message);
+});
