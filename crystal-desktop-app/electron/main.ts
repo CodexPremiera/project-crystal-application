@@ -155,6 +155,61 @@ function createWindow() {
     );
   });
   
+  /**
+   * Navigation interception for authentication flow.
+   * 
+   * Monitors navigation events for debugging and blocks navigation to web app
+   * URLs (localhost:3000). Allows all other navigations including Clerk auth
+   * and desktop app URLs (localhost:5173).
+   */
+  win.webContents.on('will-navigate', (event, url) => {
+    console.log('[Navigation] Attempting to navigate to:', url);
+    
+    // Block navigation to web app URLs (localhost:3000)
+    const isWebAppUrl = url.includes('localhost:3000') || 
+                        url.includes('127.0.0.1:3000');
+    
+    // Allow desktop app URLs
+    const isDesktopAppUrl = url.includes('localhost:5173') || 
+                            url.includes('127.0.0.1:5173');
+    
+    if (isWebAppUrl) {
+      console.log('[Navigation] Blocked web app URL, reloading desktop app');
+      event.preventDefault();
+      
+      setTimeout(() => {
+        if (VITE_DEV_SERVER_URL) {
+          win?.loadURL(VITE_DEV_SERVER_URL);
+        } else {
+          win?.loadFile(path.join(RENDERER_DIST, "index.html"));
+        }
+      }, 500);
+    } else if (isDesktopAppUrl) {
+      console.log('[Navigation] Allowing desktop app URL');
+      // Allow this navigation to proceed normally
+    } else {
+      console.log('[Navigation] Allowing external URL (Clerk auth):', url);
+      // Allow Clerk and other external URLs
+    }
+  });
+  
+  /**
+   * Window open handler for controlling popup behavior.
+   * 
+   * Allows Clerk authentication popups and OAuth providers to open normally.
+   */
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    console.log('[WindowOpen] Requested:', url);
+    // Allow Clerk auth, OAuth providers (Google, etc.), and localhost
+    if (url.includes('clerk') || 
+        url.includes('accounts.dev') || 
+        url.includes('accounts.google.com') ||
+        url.includes('localhost:5173')) {
+      return { action: 'allow' };
+    }
+    return { action: 'deny' };
+  });
+  
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
     studio.loadURL("http://localhost:5173/studio.html");

@@ -16,7 +16,21 @@
     "target": [
       "dmg"
     ],
-    "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+    "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+    // CODE SIGNING (Uncomment when you have a certificate)
+    // To eliminate macOS Gatekeeper warnings, obtain an Apple Developer certificate:
+    // 1. Join Apple Developer Program ($99/year): https://developer.apple.com/programs/
+    // 2. Create a "Developer ID Application" certificate in Xcode or Apple Developer portal
+    // 3. Set environment variables in GitHub Actions:
+    //    - APPLE_ID: Your Apple ID email
+    //    - APPLE_APP_SPECIFIC_PASSWORD: App-specific password for notarization
+    //    - APPLE_TEAM_ID: Your team ID from Apple Developer account
+    // 4. Uncomment the following lines:
+    // "identity": "Developer ID Application: Your Name (TEAM_ID)",
+    // "hardenedRuntime": true,
+    // "gatekeeperAssess": false,
+    // "entitlements": "build/entitlements.mac.plist",
+    // "entitlementsInherit": "build/entitlements.mac.plist"
   },
   "win": {
     "target": [
@@ -27,7 +41,34 @@
         ]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    // CODE SIGNING (Uncomment when you have a certificate)
+    // To eliminate Windows SmartScreen and browser warnings, obtain a code signing certificate:
+    // 
+    // STANDARD CERTIFICATE (~$75-200/year):
+    // - Providers: SSL.com, Sectigo, DigiCert
+    // - Eliminates browser download warnings immediately
+    // - SmartScreen warnings decrease after ~3,000+ installs (2-6 months)
+    // 
+    // EV CERTIFICATE (~$300-500/year, RECOMMENDED):
+    // - Providers: SSL.com EV, DigiCert EV
+    // - Eliminates ALL warnings immediately (instant trust)
+    // - Requires hardware USB token and identity verification
+    // - Best option for production apps
+    // 
+    // Setup Instructions:
+    // 1. Purchase certificate from provider (e.g., SSL.com: https://www.ssl.com/certificates/code-signing/)
+    // 2. Export certificate as .pfx file with password
+    // 3. Convert to base64: certutil -encode certificate.pfx certificate.txt (Windows)
+    // 4. Add to GitHub Secrets:
+    //    - WIN_CSC_LINK: Base64-encoded .pfx certificate
+    //    - WIN_CSC_KEY_PASSWORD: Certificate password
+    // 5. Uncomment the following line:
+    // "certificateFile": "certificate.pfx",
+    // "certificatePassword": "your-password"
+    // 
+    // Note: In CI/CD, electron-builder will automatically use CSC_LINK and CSC_KEY_PASSWORD
+    // environment variables, so you don't need to specify certificateFile in config.
   },
   "nsis": {
     "oneClick": false,
