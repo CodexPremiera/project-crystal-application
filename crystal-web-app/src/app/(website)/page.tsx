@@ -51,12 +51,6 @@ export default function Home() {
     else if (userAgent.indexOf('linux') !== -1) setPlatform('linux');
   }, []);
 
-  const downloadLinks = {
-    windows: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Windows-0.0.1-Setup.exe',
-    mac: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Mac-0.0.1-Installer.dmg',
-    linux: 'https://crystalappbucket.s3.ap-southeast-2.amazonaws.com/desktop-app/releases/v0.0.1/Crystal-Linux-0.0.1.AppImage'
-  };
-
   return <main className="flex flex-col mt-32 gap-16 items-center w-full">
     <section className="flex flex-col gap-16 w-full h-fit pt-5 pb-10 items-center">
       <div className="flex flex-col w-full h-fit items-center bg-blurred-eclipse">
@@ -134,7 +128,7 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="flex flex-col gap-16 w-full h-fit pt-5 pb-10 items-center">
+    <section className="flex flex-col gap-16 w-full h-fit pt-5 pb-10 items-center" id="download">
       <div className="flex flex-col w-full gap-6 max-w-[960px]">
         <div className="gap-1 flex flex-col w-full items-center text-center">
           <h2 className="text-4xl font-extrabold">Download Desktop App</h2>
@@ -143,9 +137,8 @@ export default function Home() {
         
         <div className="flex flex-col gap-6 w-full items-center">
           <div className="flex gap-4 w-full flex-wrap justify-center">
-            <a 
-              href={downloadLinks.windows}
-              download
+            <Link 
+              href="/download"
               className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'windows' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
             >
               <div className="flex items-center gap-3">
@@ -159,11 +152,10 @@ export default function Home() {
                 <Download className="w-4 h-4" />
                 Download
               </Button>
-            </a>
+            </Link>
 
-            <a 
-              href={downloadLinks.mac}
-              download
+            <Link 
+              href="/download"
               className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'mac' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
             >
               <div className="flex items-center gap-3">
@@ -177,11 +169,10 @@ export default function Home() {
                 <Download className="w-4 h-4" />
                 Download
               </Button>
-            </a>
+            </Link>
 
-            <a 
-              href={downloadLinks.linux}
-              download
+            <Link 
+              href="/download"
               className={`flex flex-col gap-3 p-6 rounded-2xl flex-1 min-w-[200px] max-w-[280px] ${platform === 'linux' ? 'bg-blue-radial-gradient' : 'bg-dark-radial-gradient border border-white/5'} hover:scale-105 transition-transform`}
             >
               <div className="flex items-center gap-3">
@@ -195,11 +186,11 @@ export default function Home() {
                 <Download className="w-4 h-4" />
                 Download
               </Button>
-            </a>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-2 text-center text-sm text-[#9D9D9D] mt-4">
-            <p>After downloading, install the application and sign in with your Crystal account.</p>
+            <p>Click your platform above to view download options and installation instructions.</p>
             <p>The desktop app allows you to record your screen, webcam, or both in studio mode.</p>
           </div>
         </div>

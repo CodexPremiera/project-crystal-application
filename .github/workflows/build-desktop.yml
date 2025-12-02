@@ -57,11 +57,58 @@ jobs:
         run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
         shell: bash
 
+      # CODE SIGNING SETUP (Uncomment when you have certificates)
+      # 
+      # WINDOWS CODE SIGNING:
+      # 1. Purchase certificate from SSL.com, Sectigo, or DigiCert ($75-500/year)
+      # 2. Export as .pfx file with password
+      # 3. Convert to base64: certutil -encode certificate.pfx certificate.txt
+      # 4. Add GitHub Secrets:
+      #    - WIN_CSC_LINK: Base64 content of .pfx file
+      #    - WIN_CSC_KEY_PASSWORD: Certificate password
+      # 5. Uncomment these lines:
+      #
+      # - name: Setup Windows code signing
+      #   if: matrix.platform == 'win'
+      #   run: |
+      #     echo "${{ secrets.WIN_CSC_LINK }}" | base64 --decode > certificate.pfx
+      #   shell: bash
+      #
+      # MACOS CODE SIGNING & NOTARIZATION:
+      # 1. Join Apple Developer Program ($99/year)
+      # 2. Create "Developer ID Application" certificate
+      # 3. Add GitHub Secrets:
+      #    - APPLE_CERTIFICATE: Base64-encoded .p12 certificate
+      #    - APPLE_CERTIFICATE_PASSWORD: Certificate password
+      #    - APPLE_ID: Apple ID email for notarization
+      #    - APPLE_APP_SPECIFIC_PASSWORD: App-specific password
+      #    - APPLE_TEAM_ID: Your Apple team ID
+      # 4. Uncomment these lines:
+      #
+      # - name: Setup macOS code signing
+      #   if: matrix.platform == 'mac'
+      #   run: |
+      #     echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > certificate.p12
+      #     security create-keychain -p actions temp.keychain
+      #     security default-keychain -s temp.keychain
+      #     security unlock-keychain -p actions temp.keychain
+      #     security import certificate.p12 -k temp.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+      #     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k actions temp.keychain
+      #   shell: bash
+
       - name: Build Electron app
         working-directory: crystal-desktop-app
         run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # CODE SIGNING ENVIRONMENT VARIABLES (Uncomment when you have certificates)
+          # Windows:
+          # CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          # macOS:
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
