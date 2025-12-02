@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix: unused import">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/studio_main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/studio_main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): keep user in desktop app after Clerk sign-in" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -228,15 +219,7 @@
       <workItem from="1764210955613" duration="13656000" />
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
-      <workItem from="1764673702469" duration="4835000" />
-    </task>
-    <task id="LOCAL-00070" summary="remove redundant files in git tracking">
-      <option name="closed" value="true" />
-      <created>1757474712238</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1757474712238</updated>
+      <workItem from="1764673702469" duration="5525000" />
     </task>
     <task id="LOCAL-00071" summary="establish express server listening">
       <option name="closed" value="true" />
@@ -622,7 +605,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764677586338</updated>
     </task>
-    <option name="localTasksCounter" value="119" />
+    <task id="LOCAL-00119" summary="fix(electron): keep user in desktop app after Clerk sign-in">
+      <option name="closed" value="true" />
+      <created>1764682241829</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1764682241829</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -659,7 +650,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="show workspace owner in the users page" />
     <MESSAGE value="show other workspace users in the users page" />
     <MESSAGE value="add ability to remove user from workspace" />
     <MESSAGE value="add edit workspace for editing workspace name" />
@@ -684,6 +674,7 @@
     <MESSAGE value="fix deployment errors 8" />
     <MESSAGE value="ready for deployment notes" />
     <MESSAGE value="fix: unused import" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: unused import" />
+    <MESSAGE value="fix(electron): keep user in desktop app after Clerk sign-in" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): keep user in desktop app after Clerk sign-in" />
   </component>
 </project>
