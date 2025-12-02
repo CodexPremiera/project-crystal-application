@@ -99,6 +99,33 @@ function createWindow() {
       (/* @__PURE__ */ new Date()).toLocaleString()
     );
   });
+  win.webContents.on("will-navigate", (event, url) => {
+    console.log("[Navigation] Attempting to navigate to:", url);
+    const isWebAppUrl = url.includes("localhost:3000") || url.includes("127.0.0.1:3000");
+    const isDesktopAppUrl = url.includes("localhost:5173") || url.includes("127.0.0.1:5173");
+    if (isWebAppUrl) {
+      console.log("[Navigation] Blocked web app URL, reloading desktop app");
+      event.preventDefault();
+      setTimeout(() => {
+        if (VITE_DEV_SERVER_URL) {
+          win == null ? void 0 : win.loadURL(VITE_DEV_SERVER_URL);
+        } else {
+          win == null ? void 0 : win.loadFile(path.join(RENDERER_DIST, "index.html"));
+        }
+      }, 500);
+    } else if (isDesktopAppUrl) {
+      console.log("[Navigation] Allowing desktop app URL");
+    } else {
+      console.log("[Navigation] Allowing external URL (Clerk auth):", url);
+    }
+  });
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    console.log("[WindowOpen] Requested:", url);
+    if (url.includes("clerk") || url.includes("accounts.dev") || url.includes("accounts.google.com") || url.includes("localhost:5173")) {
+      return { action: "allow" };
+    }
+    return { action: "deny" };
+  });
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
     studio.loadURL("http://localhost:5173/studio.html");

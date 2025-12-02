@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="ready for deployment notes">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix: unused import">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOWNLOAD-PAGE-IMPLEMENTATION.md" beforeDir="false" afterPath="$PROJECT_DIR$/DOWNLOAD-PAGE-IMPLEMENTATION.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/studio_main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/studio_main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/web_cam_main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,15 +228,7 @@
       <workItem from="1764210955613" duration="13656000" />
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
-      <workItem from="1764673702469" duration="1210000" />
-    </task>
-    <task id="LOCAL-00069" summary="remove redundant files in the ui components">
-      <option name="closed" value="true" />
-      <created>1757473631178</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1757473631178</updated>
+      <workItem from="1764673702469" duration="4835000" />
     </task>
     <task id="LOCAL-00070" summary="remove redundant files in git tracking">
       <option name="closed" value="true" />
@@ -619,7 +614,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764599591072</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="fix: unused import">
+      <option name="closed" value="true" />
+      <created>1764677586337</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1764677586338</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -656,7 +659,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="prevent access for personal workspaces to user workspace page" />
     <MESSAGE value="show workspace owner in the users page" />
     <MESSAGE value="show other workspace users in the users page" />
     <MESSAGE value="add ability to remove user from workspace" />
@@ -681,6 +683,7 @@
     <MESSAGE value="fix deployment errors 7" />
     <MESSAGE value="fix deployment errors 8" />
     <MESSAGE value="ready for deployment notes" />
-    <option name="LAST_COMMIT_MESSAGE" value="ready for deployment notes" />
+    <MESSAGE value="fix: unused import" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: unused import" />
   </component>
 </project>
