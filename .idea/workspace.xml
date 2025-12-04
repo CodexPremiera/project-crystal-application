@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="chore: bump version to 0.0.2">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): add error handling for backend connection failures">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,14 +222,6 @@
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
       <workItem from="1764673702469" duration="9089000" />
-    </task>
-    <task id="LOCAL-00074" summary="handle processing chucks to database">
-      <option name="closed" value="true" />
-      <created>1757923797490</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1757923797490</updated>
     </task>
     <task id="LOCAL-00075" summary="establish aws and express server routes">
       <option name="closed" value="true" />
@@ -623,7 +607,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764684586023</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="fix(electron): add error handling for backend connection failures">
+      <option name="closed" value="true" />
+      <created>1764840828802</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1764840828802</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -660,7 +652,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add delete workspace with cascade on folder, videos, and user" />
     <MESSAGE value="fix cascade on folder, videos, and user" />
     <MESSAGE value="interchange home and my library page" />
     <MESSAGE value="add landing page" />
@@ -685,6 +676,7 @@
     <MESSAGE value="modify gitignore" />
     <MESSAGE value="add auto update for electron app" />
     <MESSAGE value="chore: bump version to 0.0.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: bump version to 0.0.2" />
+    <MESSAGE value="fix(electron): add error handling for backend connection failures" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): add error handling for backend connection failures" />
   </component>
 </project>
