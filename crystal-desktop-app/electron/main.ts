@@ -166,9 +166,10 @@ function createWindow() {
   win.webContents.on('will-navigate', (event, url) => {
     console.log('[Navigation] Attempting to navigate to:', url);
     
-    // Block navigation to web app URLs (localhost:3000)
+    // Block navigation to web app URLs (localhost:3000 and production)
     const isWebAppUrl = url.includes('localhost:3000') || 
-                        url.includes('127.0.0.1:3000');
+                        url.includes('127.0.0.1:3000') ||
+                        url.includes('crystalapp.tech');
     
     // Allow desktop app URLs
     const isDesktopAppUrl = url.includes('localhost:5173') || 
