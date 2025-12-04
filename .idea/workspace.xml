@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): add error handling for backend connection failures">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): again">
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -222,14 +227,6 @@
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
       <workItem from="1764673702469" duration="9089000" />
-    </task>
-    <task id="LOCAL-00075" summary="establish aws and express server routes">
-      <option name="closed" value="true" />
-      <created>1757947111110</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1757947111117</updated>
     </task>
     <task id="LOCAL-00076" summary="display videos in home page via wix cms">
       <option name="closed" value="true" />
@@ -615,7 +612,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764840828802</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="fix(electron): again">
+      <option name="closed" value="true" />
+      <created>1764842156218</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1764842156218</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -652,7 +657,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix cascade on folder, videos, and user" />
     <MESSAGE value="interchange home and my library page" />
     <MESSAGE value="add landing page" />
     <MESSAGE value="add basic search" />
@@ -677,6 +681,7 @@
     <MESSAGE value="add auto update for electron app" />
     <MESSAGE value="chore: bump version to 0.0.2" />
     <MESSAGE value="fix(electron): add error handling for backend connection failures" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): add error handling for backend connection failures" />
+    <MESSAGE value="fix(electron): again" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): again" />
   </component>
 </project>

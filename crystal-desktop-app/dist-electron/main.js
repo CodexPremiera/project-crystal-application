@@ -1,4 +1,4 @@
-import require$$1$4, { app, ipcMain, desktopCapturer, BrowserWindow, screen } from "electron";
+import require$$1$4, { app, ipcMain, desktopCapturer, BrowserWindow, session, screen } from "electron";
 import require$$1 from "fs";
 import require$$0 from "constants";
 import require$$0$1 from "stream";
@@ -16,6 +16,8 @@ import require$$14 from "zlib";
 import require$$4$2 from "http";
 import { fileURLToPath } from "node:url";
 import path$m from "node:path";
+import { createServer } from "node:http";
+import { existsSync, readFileSync as readFileSync$1 } from "node:fs";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var main$1 = {};
 var fs$i = {};
@@ -13776,11 +13778,102 @@ process.env.APP_ROOT = path$m.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const MAIN_DIST = path$m.join(process.env.APP_ROOT, "dist-electron");
 const RENDERER_DIST = path$m.join(process.env.APP_ROOT, "dist");
+let localServer = null;
+const LOCAL_SERVER_PORT = 45789;
+const MIME_TYPES = {
+  ".html": "text/html",
+  ".js": "application/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".ttf": "font/ttf",
+  ".eot": "application/vnd.ms-fontobject",
+  ".webm": "video/webm",
+  ".mp4": "video/mp4",
+  ".webp": "image/webp"
+};
+function startLocalServer() {
+  return new Promise((resolve, reject) => {
+    if (VITE_DEV_SERVER_URL) {
+      resolve(VITE_DEV_SERVER_URL);
+      return;
+    }
+    localServer = createServer((req, res) => {
+      let urlPath = req.url || "/";
+      urlPath = urlPath.split("?")[0];
+      if (urlPath === "/") {
+        urlPath = "/index.html";
+      }
+      let filePath = path$m.join(RENDERER_DIST, urlPath);
+      if (!existsSync(filePath)) {
+        if (urlPath.endsWith(".html")) {
+          filePath = path$m.join(RENDERER_DIST, urlPath);
+        } else {
+          filePath = path$m.join(RENDERER_DIST, "index.html");
+        }
+      }
+      if (!existsSync(filePath)) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not Found");
+        return;
+      }
+      const ext = path$m.extname(filePath).toLowerCase();
+      const mimeType = MIME_TYPES[ext] || "application/octet-stream";
+      try {
+        const content = readFileSync$1(filePath);
+        res.writeHead(200, {
+          "Content-Type": mimeType,
+          "Cache-Control": "no-cache"
+        });
+        res.end(content);
+      } catch (err) {
+        console.error("[LocalServer] Error reading file:", err);
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Internal Server Error");
+      }
+    });
+    localServer.on("error", (err) => {
+      console.error("[LocalServer] Server error:", err);
+      reject(err);
+    });
+    localServer.listen(LOCAL_SERVER_PORT, "127.0.0.1", () => {
+      const baseUrl = `http://127.0.0.1:${LOCAL_SERVER_PORT}`;
+      console.log(`[LocalServer] Started at ${baseUrl}`);
+      resolve(baseUrl);
+    });
+  });
+}
+function configureSession() {
+  const ses = session.defaultSession;
+  ses.webRequest.onHeadersReceived((details, callback) => {
+    const responseHeaders = { ...details.responseHeaders };
+    if (details.url.includes("clerk") || details.url.includes("accounts.dev")) {
+      delete responseHeaders["x-frame-options"];
+      delete responseHeaders["X-Frame-Options"];
+    }
+    callback({ responseHeaders });
+  });
+  ses.cookies.on("changed", (_event, cookie, _cause, removed) => {
+    var _a;
+    if ((_a = cookie.domain) == null ? void 0 : _a.includes("clerk")) {
+      console.log(`[Cookies] Clerk cookie ${removed ? "removed" : "set"}: ${cookie.name}`);
+    }
+  });
+}
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$m.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
 let studio;
 let floatingWebCam;
-function createWindow() {
+let appBaseUrl = "";
+function createWindow(baseUrl) {
+  appBaseUrl = baseUrl;
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
   const margin = 20;
@@ -13811,7 +13904,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       devTools: true,
-      preload: path$m.join(__dirname, "preload.mjs")
+      preload: path$m.join(__dirname, "preload.mjs"),
+      partition: "persist:crystal-main"
     }
   });
   studio = new BrowserWindow({
@@ -13832,7 +13926,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       devTools: true,
-      preload: path$m.join(__dirname, "preload.mjs")
+      preload: path$m.join(__dirname, "preload.mjs"),
+      partition: "persist:crystal-main"
     }
   });
   floatingWebCam = new BrowserWindow({
@@ -13853,7 +13948,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       devTools: true,
-      preload: path$m.join(__dirname, "preload.mjs")
+      preload: path$m.join(__dirname, "preload.mjs"),
+      partition: "persist:crystal-main"
     }
   });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
@@ -13871,42 +13967,45 @@ function createWindow() {
   });
   win.webContents.on("will-navigate", (event, url) => {
     console.log("[Navigation] Attempting to navigate to:", url);
-    const isWebAppUrl = url.includes("localhost:3000") || url.includes("127.0.0.1:3000") || url.includes("crystalapp.tech");
-    const isDesktopAppUrl = url.includes("localhost:5173") || url.includes("127.0.0.1:5173");
-    if (isWebAppUrl) {
+    const isClerkAuth = url.includes("clerk") || url.includes("accounts.dev") || url.includes("accounts.google.com") || url.includes(".clerk.");
+    if (isClerkAuth) {
+      console.log("[Navigation] Allowing Clerk auth URL");
+      return;
+    }
+    const isLocalAppUrl = url.includes("localhost:5173") || url.includes("127.0.0.1:5173") || url.includes(`127.0.0.1:${LOCAL_SERVER_PORT}`) || url.includes(`localhost:${LOCAL_SERVER_PORT}`);
+    if (isLocalAppUrl) {
+      console.log("[Navigation] Allowing local app URL");
+      return;
+    }
+    const isWebAppUrl = url.includes("localhost:3000") || url.includes("127.0.0.1:3000");
+    const isWebAppDashboard = url.includes("crystalapp.tech/dashboard") || url.includes("crystalapp.tech/auth/callback");
+    if (isWebAppUrl || isWebAppDashboard) {
       console.log("[Navigation] Blocked web app URL, reloading desktop app");
       event.preventDefault();
       setTimeout(() => {
-        if (VITE_DEV_SERVER_URL) {
-          win == null ? void 0 : win.loadURL(VITE_DEV_SERVER_URL);
-        } else {
-          win == null ? void 0 : win.loadFile(path$m.join(RENDERER_DIST, "index.html"));
-        }
+        win == null ? void 0 : win.loadURL(appBaseUrl);
       }, 500);
-    } else if (isDesktopAppUrl) {
-      console.log("[Navigation] Allowing desktop app URL");
     } else {
-      console.log("[Navigation] Allowing external URL (Clerk auth):", url);
+      console.log("[Navigation] Allowing external URL:", url);
     }
   });
   win.webContents.setWindowOpenHandler(({ url }) => {
     console.log("[WindowOpen] Requested:", url);
-    if (url.includes("clerk") || url.includes("accounts.dev") || url.includes("accounts.google.com") || url.includes("localhost:5173")) {
+    if (url.includes("clerk") || url.includes("accounts.dev") || url.includes("accounts.google.com") || url.includes(".clerk.") || url.includes("localhost") || url.includes("127.0.0.1")) {
       return { action: "allow" };
     }
     return { action: "deny" };
   });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-    studio.loadURL("http://localhost:5173/studio.html");
-    floatingWebCam.loadURL("http://localhost:5173/webcam.html");
-  } else {
-    win.loadFile(path$m.join(RENDERER_DIST, "index.html"));
-    studio.loadFile(path$m.join(RENDERER_DIST, "studio.html"));
-    floatingWebCam.loadFile(path$m.join(RENDERER_DIST, "webcam.html"));
-  }
+  console.log(`[App] Loading from: ${baseUrl}`);
+  win.loadURL(baseUrl);
+  studio.loadURL(`${baseUrl}/studio.html`);
+  floatingWebCam.loadURL(`${baseUrl}/webcam.html`);
 }
 app.on("window-all-closed", () => {
+  if (localServer) {
+    localServer.close();
+    localServer = null;
+  }
   if (process.platform !== "darwin") {
     app.quit();
     win = null;
@@ -13953,12 +14052,14 @@ ipcMain.on("minimize-window", () => {
   win == null ? void 0 : win.minimize();
 });
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+  if (BrowserWindow.getAllWindows().length === 0 && appBaseUrl) {
+    createWindow(appBaseUrl);
   }
 });
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(async () => {
+  configureSession();
+  const baseUrl = await startLocalServer();
+  createWindow(baseUrl);
   if (!VITE_DEV_SERVER_URL) {
     main$1.autoUpdater.checkForUpdatesAndNotify();
   }

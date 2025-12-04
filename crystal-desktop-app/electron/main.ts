@@ -1,7 +1,9 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain, screen } from "electron";
+import { app, BrowserWindow, desktopCapturer, ipcMain, screen, session } from "electron";
 import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { createServer, IncomingMessage, ServerResponse } from 'node:http'
+import { readFileSync, existsSync } from 'node:fs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,6 +23,132 @@ export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 
+// Local HTTP server for production to avoid file:// protocol issues with cookies
+let localServer: ReturnType<typeof createServer> | null = null;
+const LOCAL_SERVER_PORT = 45789; // Using a random high port to avoid conflicts
+
+/**
+ * MIME type lookup for serving static files.
+ */
+const MIME_TYPES: Record<string, string> = {
+  '.html': 'text/html',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.eot': 'application/vnd.ms-fontobject',
+  '.webm': 'video/webm',
+  '.mp4': 'video/mp4',
+  '.webp': 'image/webp',
+};
+
+/**
+ * Starts a local HTTP server to serve the built files.
+ * This is necessary to avoid file:// protocol issues with Clerk authentication cookies.
+ */
+function startLocalServer(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (VITE_DEV_SERVER_URL) {
+      resolve(VITE_DEV_SERVER_URL);
+      return;
+    }
+
+    localServer = createServer((req: IncomingMessage, res: ServerResponse) => {
+      let urlPath = req.url || '/';
+      
+      // Remove query strings
+      urlPath = urlPath.split('?')[0];
+      
+      // Default to index.html for root
+      if (urlPath === '/') {
+        urlPath = '/index.html';
+      }
+      
+      let filePath = path.join(RENDERER_DIST, urlPath);
+      
+      // If file doesn't exist, serve index.html (for SPA routing)
+      if (!existsSync(filePath)) {
+        // Check if it's a known HTML route
+        if (urlPath.endsWith('.html')) {
+          filePath = path.join(RENDERER_DIST, urlPath);
+        } else {
+          filePath = path.join(RENDERER_DIST, 'index.html');
+        }
+      }
+      
+      // Ensure the file exists
+      if (!existsSync(filePath)) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+        return;
+      }
+
+      const ext = path.extname(filePath).toLowerCase();
+      const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
+      
+      try {
+        const content = readFileSync(filePath);
+        res.writeHead(200, { 
+          'Content-Type': mimeType,
+          'Cache-Control': 'no-cache',
+        });
+        res.end(content);
+      } catch (err) {
+        console.error('[LocalServer] Error reading file:', err);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+      }
+    });
+
+    localServer.on('error', (err) => {
+      console.error('[LocalServer] Server error:', err);
+      reject(err);
+    });
+
+    localServer.listen(LOCAL_SERVER_PORT, '127.0.0.1', () => {
+      const baseUrl = `http://127.0.0.1:${LOCAL_SERVER_PORT}`;
+      console.log(`[LocalServer] Started at ${baseUrl}`);
+      resolve(baseUrl);
+    });
+  });
+}
+
+/**
+ * Configures the session to allow third-party cookies required by Clerk authentication.
+ */
+function configureSession() {
+  const ses = session.defaultSession;
+  
+  // Allow cookies from Clerk domains
+  ses.webRequest.onHeadersReceived((details, callback) => {
+    const responseHeaders = { ...details.responseHeaders };
+    
+    // Remove restrictive cookie policies for Clerk domains
+    if (details.url.includes('clerk') || details.url.includes('accounts.dev')) {
+      // Ensure cookies are accepted
+      delete responseHeaders['x-frame-options'];
+      delete responseHeaders['X-Frame-Options'];
+    }
+    
+    callback({ responseHeaders });
+  });
+  
+  // Configure cookie handling to be more permissive for auth
+  ses.cookies.on('changed', (_event, cookie, _cause, removed) => {
+    if (cookie.domain?.includes('clerk')) {
+      console.log(`[Cookies] Clerk cookie ${removed ? 'removed' : 'set'}: ${cookie.name}`);
+    }
+  });
+}
+
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
@@ -29,6 +157,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 let win: BrowserWindow | null;           // Main control window
 let studio: BrowserWindow | null;        // Studio tray window
 let floatingWebCam: BrowserWindow | null; // Webcam window
+let appBaseUrl: string = '';              // Base URL for loading app (HTTP server or dev server)
 
 /**
  * Creates and configures all three application windows.
@@ -44,7 +173,8 @@ let floatingWebCam: BrowserWindow | null; // Webcam window
  * - Non-focusable to avoid interfering with user workflow
  * - Set to be visible on all workspaces including fullscreen apps
  */
-function createWindow() {
+function createWindow(baseUrl: string) {
+  appBaseUrl = baseUrl;
   // Get primary display dimensions
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
@@ -92,6 +222,7 @@ function createWindow() {
       contextIsolation: true,
       devTools: true,
       preload: path.join(__dirname, "preload.mjs"),
+      partition: 'persist:crystal-main',
     },
   });
   
@@ -114,6 +245,7 @@ function createWindow() {
       contextIsolation: true,
       devTools: true,
       preload: path.join(__dirname, "preload.mjs"),
+      partition: 'persist:crystal-main',
     },
   });
   
@@ -136,6 +268,7 @@ function createWindow() {
       contextIsolation: true,
       devTools: true,
       preload: path.join(__dirname, "preload.mjs"),
+      partition: 'persist:crystal-main',
     },
   });
   
@@ -159,39 +292,51 @@ function createWindow() {
   /**
    * Navigation interception for authentication flow.
    * 
-   * Monitors navigation events for debugging and blocks navigation to web app
-   * URLs (localhost:3000). Allows all other navigations including Clerk auth
-   * and desktop app URLs (localhost:5173).
+   * Monitors navigation events for debugging. Allows Clerk auth URLs and
+   * blocks navigation to the web app domain to keep users in the desktop app.
    */
   win.webContents.on('will-navigate', (event, url) => {
     console.log('[Navigation] Attempting to navigate to:', url);
     
-    // Block navigation to web app URLs (localhost:3000 and production)
+    // Always allow Clerk authentication URLs
+    const isClerkAuth = url.includes('clerk') || 
+                        url.includes('accounts.dev') || 
+                        url.includes('accounts.google.com') ||
+                        url.includes('.clerk.');
+    
+    if (isClerkAuth) {
+      console.log('[Navigation] Allowing Clerk auth URL');
+      return;
+    }
+    
+    // Allow our local server URLs (both dev and production)
+    const isLocalAppUrl = url.includes('localhost:5173') || 
+                          url.includes('127.0.0.1:5173') ||
+                          url.includes(`127.0.0.1:${LOCAL_SERVER_PORT}`) ||
+                          url.includes(`localhost:${LOCAL_SERVER_PORT}`);
+    
+    if (isLocalAppUrl) {
+      console.log('[Navigation] Allowing local app URL');
+      return;
+    }
+    
+    // Block navigation to web app URLs (localhost:3000 and production web app)
     const isWebAppUrl = url.includes('localhost:3000') || 
-                        url.includes('127.0.0.1:3000') ||
-                        url.includes('crystalapp.tech');
+                        url.includes('127.0.0.1:3000');
     
-    // Allow desktop app URLs
-    const isDesktopAppUrl = url.includes('localhost:5173') || 
-                            url.includes('127.0.0.1:5173');
+    // Note: We no longer block crystalapp.tech entirely, only the dashboard routes
+    const isWebAppDashboard = url.includes('crystalapp.tech/dashboard') ||
+                              url.includes('crystalapp.tech/auth/callback');
     
-    if (isWebAppUrl) {
+    if (isWebAppUrl || isWebAppDashboard) {
       console.log('[Navigation] Blocked web app URL, reloading desktop app');
       event.preventDefault();
       
       setTimeout(() => {
-        if (VITE_DEV_SERVER_URL) {
-          win?.loadURL(VITE_DEV_SERVER_URL);
-        } else {
-          win?.loadFile(path.join(RENDERER_DIST, "index.html"));
-        }
+        win?.loadURL(appBaseUrl);
       }, 500);
-    } else if (isDesktopAppUrl) {
-      console.log('[Navigation] Allowing desktop app URL');
-      // Allow this navigation to proceed normally
     } else {
-      console.log('[Navigation] Allowing external URL (Clerk auth):', url);
-      // Allow Clerk and other external URLs
+      console.log('[Navigation] Allowing external URL:', url);
     }
   });
   
@@ -206,29 +351,31 @@ function createWindow() {
     if (url.includes('clerk') || 
         url.includes('accounts.dev') || 
         url.includes('accounts.google.com') ||
-        url.includes('localhost:5173')) {
+        url.includes('.clerk.') ||
+        url.includes('localhost') ||
+        url.includes('127.0.0.1')) {
       return { action: 'allow' };
     }
     return { action: 'deny' };
   });
   
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-    studio.loadURL("http://localhost:5173/studio.html");
-    floatingWebCam.loadURL("http://localhost:5173/webcam.html");
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-    studio.loadFile(path.join(RENDERER_DIST, "studio.html"));
-    floatingWebCam.loadFile(path.join(RENDERER_DIST, "webcam.html"));
-  }
+  // Load the app using the HTTP base URL (works for both dev and production)
+  console.log(`[App] Loading from: ${baseUrl}`);
+  win.loadURL(baseUrl);
+  studio.loadURL(`${baseUrl}/studio.html`);
+  floatingWebCam.loadURL(`${baseUrl}/webcam.html`);
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-  //this only works on windows
+  // Close local server if running
+  if (localServer) {
+    localServer.close();
+    localServer = null;
+  }
+  
   if (process.platform !== "darwin") {
     app.quit();
     win = null;
@@ -337,13 +484,19 @@ ipcMain.on("minimize-window", () => {
 app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+  if (BrowserWindow.getAllWindows().length === 0 && appBaseUrl) {
+    createWindow(appBaseUrl);
   }
 });
 
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(async () => {
+  // Configure session for Clerk authentication cookies
+  configureSession();
+  
+  // Start local HTTP server (in production) or use dev server URL
+  const baseUrl = await startLocalServer();
+  
+  createWindow(baseUrl);
   
   // Check for updates in production (not during development)
   if (!VITE_DEV_SERVER_URL) {

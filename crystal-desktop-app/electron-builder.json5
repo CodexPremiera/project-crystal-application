@@ -47,6 +47,7 @@
       }
     ],
     "artifactName": "${productName}-Windows-Setup.${ext}",
+    "signAndEditExecutable": false,
     // CODE SIGNING (Uncomment when you have a certificate)
     // To eliminate Windows SmartScreen and browser warnings, obtain a code signing certificate:
     // 
