@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="chore: bump version to 0.0.2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/widget/widget.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/app/(website)/download/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-web-app/src/components/global/installation-guide.tsx" afterDir="false" />
     </list>
@@ -90,7 +95,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/auto-update",
+    "git-widget-placeholder": "flx/electron-app",
     "javascript.nodejs.core.library.configured.version": "22.17.0",
     "javascript.nodejs.core.library.typings.version": "22.17.2",
     "js.debugger.nextJs.config.created.client": "true",
