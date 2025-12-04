@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): again">
+    <list default="true" id="55a19fcb-959d-43e4-9b83-5c1726eeb13a" name="Changes" comment="fix(electron): fix sign-in loop again">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/dist-electron/preload.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron-builder.json5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/electron/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crystal-desktop-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crystal-desktop-app/src/components/global/auth-button.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,14 +226,6 @@
       <workItem from="1764404844186" duration="1551000" />
       <workItem from="1764640378470" duration="2783000" />
       <workItem from="1764673702469" duration="9089000" />
-    </task>
-    <task id="LOCAL-00076" summary="display videos in home page via wix cms">
-      <option name="closed" value="true" />
-      <created>1758222807996</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1758222807996</updated>
     </task>
     <task id="LOCAL-00077" summary="display developer notes in home page from cloudways">
       <option name="closed" value="true" />
@@ -620,7 +611,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764842156218</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="fix(electron): fix sign-in loop">
+      <option name="closed" value="true" />
+      <created>1764844328204</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1764844328204</updated>
+    </task>
+    <option name="localTasksCounter" value="126" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -657,8 +656,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="interchange home and my library page" />
-    <MESSAGE value="add landing page" />
     <MESSAGE value="add basic search" />
     <MESSAGE value="quick fix" />
     <MESSAGE value="add video like functionality" />
@@ -682,6 +679,8 @@
     <MESSAGE value="chore: bump version to 0.0.2" />
     <MESSAGE value="fix(electron): add error handling for backend connection failures" />
     <MESSAGE value="fix(electron): again" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): again" />
+    <MESSAGE value="fix(electron): fix sign-in loop" />
+    <MESSAGE value="fix(electron): fix sign-in loop again" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(electron): fix sign-in loop again" />
   </component>
 </project>

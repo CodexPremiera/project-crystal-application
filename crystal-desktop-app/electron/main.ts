@@ -122,30 +122,65 @@ function startLocalServer(): Promise<string> {
 }
 
 /**
- * Configures the session to allow third-party cookies required by Clerk authentication.
+ * Configures the session to allow third-party cookies and fix Origin headers for Clerk authentication.
+ * 
+ * Clerk's production API keys are domain-locked, so we need to:
+ * 1. Modify the Origin header for Clerk requests to match the allowed domain
+ * 2. Handle CORS and cookie policies appropriately
  */
 function configureSession() {
-  const ses = session.defaultSession;
+  // Configure both the default session and our custom partition session
+  const sessions = [
+    session.defaultSession,
+    session.fromPartition('persist:crystal-main')
+  ];
   
-  // Allow cookies from Clerk domains
-  ses.webRequest.onHeadersReceived((details, callback) => {
-    const responseHeaders = { ...details.responseHeaders };
-    
-    // Remove restrictive cookie policies for Clerk domains
-    if (details.url.includes('clerk') || details.url.includes('accounts.dev')) {
-      // Ensure cookies are accepted
-      delete responseHeaders['x-frame-options'];
-      delete responseHeaders['X-Frame-Options'];
-    }
-    
-    callback({ responseHeaders });
-  });
+  const ALLOWED_ORIGIN = 'https://www.crystalapp.tech';
   
-  // Configure cookie handling to be more permissive for auth
-  ses.cookies.on('changed', (_event, cookie, _cause, removed) => {
-    if (cookie.domain?.includes('clerk')) {
-      console.log(`[Cookies] Clerk cookie ${removed ? 'removed' : 'set'}: ${cookie.name}`);
-    }
+  sessions.forEach(ses => {
+    // Intercept requests to Clerk and modify the Origin header
+    ses.webRequest.onBeforeSendHeaders(
+      { urls: ['*://*.clerk.com/*', '*://*.clerk.dev/*', '*://clerk.*/*', '*://*.accounts.dev/*', '*://*clerk*/*'] },
+      (details, callback) => {
+        const requestHeaders = { ...details.requestHeaders };
+        
+        // Set the Origin header to the allowed domain for Clerk requests
+        if (details.url.includes('clerk')) {
+          requestHeaders['Origin'] = ALLOWED_ORIGIN;
+          requestHeaders['Referer'] = ALLOWED_ORIGIN + '/';
+          console.log(`[Clerk] Modified Origin header for: ${details.url}`);
+        }
+        
+        callback({ requestHeaders });
+      }
+    );
+    
+    // Allow cookies from Clerk domains and handle CORS
+    ses.webRequest.onHeadersReceived((details, callback) => {
+      const responseHeaders = { ...details.responseHeaders };
+      
+      // Handle Clerk domain responses
+      if (details.url.includes('clerk') || details.url.includes('accounts.dev')) {
+        // Remove restrictive headers
+        delete responseHeaders['x-frame-options'];
+        delete responseHeaders['X-Frame-Options'];
+        
+        // Allow CORS from our app
+        responseHeaders['Access-Control-Allow-Origin'] = ['*'];
+        responseHeaders['Access-Control-Allow-Credentials'] = ['true'];
+        responseHeaders['Access-Control-Allow-Methods'] = ['GET, POST, PUT, DELETE, OPTIONS'];
+        responseHeaders['Access-Control-Allow-Headers'] = ['*'];
+      }
+      
+      callback({ responseHeaders });
+    });
+    
+    // Configure cookie handling to be more permissive for auth
+    ses.cookies.on('changed', (_event, cookie, _cause, removed) => {
+      if (cookie.domain?.includes('clerk')) {
+        console.log(`[Cookies] Clerk cookie ${removed ? 'removed' : 'set'}: ${cookie.name}`);
+      }
+    });
   });
 }
 
