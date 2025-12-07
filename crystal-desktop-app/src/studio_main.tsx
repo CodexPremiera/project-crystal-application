@@ -13,14 +13,20 @@ if (!PUBLISHABLE_KEY) {
 const safeRouterNavigate = (to: string) => {
   try {
     const target = new URL(to, window.location.origin);
-    if (target.origin !== window.location.origin) {
-      window.location.href = "/";
+    const sameOrigin = target.origin === window.location.origin;
+    const isClerkHost =
+      target.hostname.includes("clerk") ||
+      target.hostname.includes("accounts.dev") ||
+      target.hostname.includes("accounts.google.com");
+
+    if (sameOrigin || isClerkHost) {
+      window.location.href = `${target.pathname}${target.search}${target.hash}`;
       return;
     }
-    window.location.href = `${target.pathname}${target.search}${target.hash}`;
   } catch {
-    window.location.href = "/";
+    // fall through to safety redirect
   }
+  window.location.href = "/";
 };
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
