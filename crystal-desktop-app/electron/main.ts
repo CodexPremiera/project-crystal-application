@@ -132,30 +132,19 @@ function createWindow() {
     // Handle navigation
     win.webContents.on('will-navigate', (event, url) => {
       console.log('[Navigation] Attempting to navigate to:', url);
-      
-      const isClerkAuth = url.includes('clerk') || 
-                          url.includes('accounts.dev') || 
+
+      const isClerkAuth = url.includes('clerk') ||
+                          url.includes('accounts.dev') ||
                           url.includes('accounts.google.com') ||
                           url.includes('.clerk.');
-      
-      if (isClerkAuth) {
-        return;
-      }
-      
-      const isLocalAppUrl = url.includes('localhost:5173') || 
-                            url.includes('127.0.0.1:5173');
-      
-      if (isLocalAppUrl) {
-        return;
-      }
-      
-      const isWebAppUrl = url.includes('localhost:3000') || 
-                          url.includes('127.0.0.1:3000');
-      
-      const isWebAppDashboard = url.includes('crystalapp.tech/dashboard') ||
-                                url.includes('crystalapp.tech/auth/callback');
-      
-      if (isWebAppUrl || isWebAppDashboard) {
+
+      // Allow Clerk-hosted pages and dev server navigations
+      const isDevServer = Boolean(VITE_DEV_SERVER_URL && url.startsWith(VITE_DEV_SERVER_URL));
+      const isInternalFile = url.startsWith('file://');
+
+      const isAllowed = isClerkAuth || isDevServer || isInternalFile;
+
+      if (!isAllowed) {
         event.preventDefault();
         setTimeout(() => {
           if (VITE_DEV_SERVER_URL) {
@@ -163,17 +152,19 @@ function createWindow() {
           } else {
             win?.loadFile(path.join(RENDERER_DIST, "index.html"));
           }
-        }, 500);
+        }, 200);
       }
     });
     
     win.webContents.setWindowOpenHandler(({ url }) => {
-      if (url.includes('clerk') || 
-          url.includes('accounts.dev') || 
-          url.includes('accounts.google.com') ||
-          url.includes('.clerk.') ||
-          url.includes('localhost') ||
-          url.includes('127.0.0.1')) {
+      const isClerkAuth = url.includes('clerk') ||
+                          url.includes('accounts.dev') ||
+                          url.includes('accounts.google.com') ||
+                          url.includes('.clerk.');
+
+      const isDevServer = Boolean(VITE_DEV_SERVER_URL && url.startsWith(VITE_DEV_SERVER_URL));
+
+      if (isClerkAuth || isDevServer) {
         return { action: 'allow' };
       }
       return { action: 'deny' };

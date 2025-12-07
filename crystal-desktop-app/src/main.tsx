@@ -10,13 +10,31 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+const handleClerkNavigate = (to: string) => {
+  try {
+    const target = new URL(to, window.location.origin);
+    if (target.origin !== window.location.origin) {
+      window.location.href = "/";
+      return;
+    }
+    window.location.href = `${target.pathname}${target.search}${target.hash}`;
+  } catch {
+    window.location.href = "/";
+  }
+};
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider 
       publishableKey={PUBLISHABLE_KEY} 
+      afterSignInUrl="/"
+      afterSignUpUrl="/"
       afterSignOutUrl="/"
+      signInUrl="/"
+      signUpUrl="/"
       signInForceRedirectUrl="/"
       signUpForceRedirectUrl="/"
+      navigate={handleClerkNavigate}
     >
       <App />
     </ClerkProvider>
