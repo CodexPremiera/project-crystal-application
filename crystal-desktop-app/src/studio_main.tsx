@@ -10,7 +10,7 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
-const handleClerkNavigate = (to: string) => {
+const safeRouterNavigate = (to: string) => {
   try {
     const target = new URL(to, window.location.origin);
     if (target.origin !== window.location.origin) {
@@ -34,7 +34,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       signUpUrl="/"
       signInForceRedirectUrl="/"
       signUpForceRedirectUrl="/"
-      navigate={handleClerkNavigate}
+      routerPush={safeRouterNavigate}
+      routerReplace={safeRouterNavigate}
     >
       <App />
     </ClerkProvider>
