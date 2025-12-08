@@ -20,44 +20,44 @@ const httpClient = axios.create({
   baseURL: import.meta.env.VITE_HOST_URL,
 });
 
-console.log("[HTTP:init] axios client configured", {
-  baseURL: httpClient.defaults.baseURL,
-});
-
-httpClient.interceptors.request.use((config) => {
-  console.log("[HTTP:request]", {
-    url: `${config.baseURL ?? ""}${config.url ?? ""}`,
-    method: config.method,
-    hasData: Boolean(config.data),
-    headers: config.headers,
-  });
-  return config;
-});
-
-httpClient.interceptors.response.use(
-  (response) => {
-    console.log("[HTTP:response]", {
-      url: `${response.config.baseURL ?? ""}${response.config.url ?? ""}`,
-      status: response.status,
-      statusText: response.statusText,
-      data: response.data,
-    });
-    return response;
-  },
-  (error) => {
-    const status = error?.response?.status;
-    const data = error?.response?.data;
-    const config = error?.config;
-    console.error("[HTTP:error]", {
-      url: `${config?.baseURL ?? ""}${config?.url ?? ""}`,
-      method: config?.method,
-      status,
-      data,
-      message: error?.message,
-    });
-    return Promise.reject(error);
-  }
-);
+// console.log("[HTTP:init] axios client configured", {
+//   baseURL: httpClient.defaults.baseURL,
+// });
+//
+// httpClient.interceptors.request.use((config) => {
+//   console.log("[HTTP:request]", {
+//     url: `${config.baseURL ?? ""}${config.url ?? ""}`,
+//     method: config.method,
+//     hasData: Boolean(config.data),
+//     headers: config.headers,
+//   });
+//   return config;
+// });
+//
+// httpClient.interceptors.response.use(
+//   (response) => {
+//     console.log("[HTTP:response]", {
+//       url: `${response.config.baseURL ?? ""}${response.config.url ?? ""}`,
+//       status: response.status,
+//       statusText: response.statusText,
+//       data: response.data,
+//     });
+//     return response;
+//   },
+//   (error) => {
+//     const status = error?.response?.status;
+//     const data = error?.response?.data;
+//     const config = error?.config;
+//     console.error("[HTTP:error]", {
+//       url: `${config?.baseURL ?? ""}${config?.url ?? ""}`,
+//       method: config?.method,
+//       status,
+//       data,
+//       message: error?.message,
+//     });
+//     return Promise.reject(error);
+//   }
+// );
 
 /**
  * Fetches user profile data from the backend API.

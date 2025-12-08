@@ -9,8 +9,6 @@ import tailwindcss from "@tailwindcss/vite"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Use relative asset paths so file:// loads in packaged Electron
-  base: "./",
   build: {
     emptyOutDir: false,
     manifest: true,
