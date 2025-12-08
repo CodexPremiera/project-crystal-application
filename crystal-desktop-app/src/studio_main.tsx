@@ -6,12 +6,22 @@ import App from "./studio_app.tsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const APP_URL = import.meta.env.VITE_APP_URL || "https://www.crystalapp.tech";
+const API_HOST = import.meta.env.VITE_HOST_URL;
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+console.log("[Studio:init]", {
+  href: window.location.href,
+  origin: window.location.origin,
+  appUrl: APP_URL,
+  apiHost: API_HOST,
+  hasPublishableKey: Boolean(PUBLISHABLE_KEY),
+});
+
 const safeRouterNavigate = (to: string) => {
+  console.log("[Studio:safeRouterNavigate] requested", { from: window.location.href, to });
   try {
     const target = new URL(to, window.location.href);
     const sameOrigin = target.origin === window.location.origin;
@@ -44,6 +54,14 @@ const safeRouterNavigate = (to: string) => {
 
   window.location.href = "/";
 };
+
+console.log("[Studio:ClerkProvider] configuring", {
+  signInUrl: "/",
+  signUpUrl: "/",
+  signInFallbackRedirectUrl: APP_URL,
+  signUpFallbackRedirectUrl: APP_URL,
+  afterSignOutUrl: APP_URL,
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

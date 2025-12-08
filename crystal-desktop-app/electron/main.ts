@@ -25,6 +25,14 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
 
+console.log("[Main:init]", {
+  appRoot: process.env.APP_ROOT,
+  mainDist: MAIN_DIST,
+  rendererDist: RENDERER_DIST,
+  viteDevServer: VITE_DEV_SERVER_URL,
+  isPackaged: app.isPackaged,
+});
+
 // Global window references for the three main windows
 let win: BrowserWindow | null;
 let studio: BrowserWindow | null;
@@ -37,6 +45,7 @@ function createWindow() {
   try {
     const primaryDisplay = screen.getPrimaryDisplay();
     const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+    console.log("[Main:createWindow] sizing", { screenWidth, screenHeight });
     
     const margin = 20;
     const mainWidth = 480;
@@ -123,10 +132,12 @@ function createWindow() {
     
     win.webContents.on("did-finish-load", () => {
       win?.webContents.send("main-process-message", new Date().toLocaleString());
+      console.log("[Main:createWindow] main window loaded");
     });
     
     studio.webContents.on("did-finish-load", () => {
       studio?.webContents.send("main-process-message", new Date().toLocaleString());
+      console.log("[Main:createWindow] studio window loaded");
     });
     
     // Handle navigation
@@ -147,6 +158,7 @@ function createWindow() {
       
       if (!isAllowed) {
         event.preventDefault();
+        console.warn("[Navigation] blocked external navigation", { url });
         setTimeout(() => {
           if (VITE_DEV_SERVER_URL) {
             win?.loadURL(VITE_DEV_SERVER_URL);
@@ -177,10 +189,20 @@ function createWindow() {
       win.loadURL(VITE_DEV_SERVER_URL);
       studio.loadURL("http://localhost:5173/studio.html");
       floatingWebCam.loadURL("http://localhost:5173/webcam.html");
+      console.log("[Main:createWindow] loading dev URLs", {
+        main: VITE_DEV_SERVER_URL,
+        studio: "http://localhost:5173/studio.html",
+        webcam: "http://localhost:5173/webcam.html",
+      });
     } else {
       win.loadFile(path.join(RENDERER_DIST, "index.html"));
       studio.loadFile(path.join(RENDERER_DIST, "studio.html"));
       floatingWebCam.loadFile(path.join(RENDERER_DIST, "webcam.html"));
+      console.log("[Main:createWindow] loading packaged files", {
+        main: path.join(RENDERER_DIST, "index.html"),
+        studio: path.join(RENDERER_DIST, "studio.html"),
+        webcam: path.join(RENDERER_DIST, "webcam.html"),
+      });
     }
     
     // Handle window errors

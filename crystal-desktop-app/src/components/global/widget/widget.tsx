@@ -49,6 +49,12 @@ export const Widget = () => {
   const loadProfile = async () => {
     if (!user?.id) return;
     
+    console.log("[Auth] loadProfile start", {
+      clerkId: user.id,
+      email: user.primaryEmailAddress?.emailAddress,
+      fullName: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
+    });
+    
     setIsLoading(true);
     setError(null);
     
@@ -56,8 +62,16 @@ export const Widget = () => {
       const p = await fetchUserProfile(user.id);
       setProfile(p);
       fetchMediaResources();
-    } catch (err) {
+      console.log("[Auth] profile + media loaded", {
+        hasProfile: Boolean(p?.user),
+        displays: state.displays?.length,
+        audioInputs: state.audioInputs?.length,
+      });
+    } catch (err: any) {
       console.error("Failed to fetch profile:", err);
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      console.error("[Auth] profile fetch error detail", { status, data });
       setError("Unable to connect to server. Please check your internet connection or try again later.");
     } finally {
       setIsLoading(false);
@@ -68,6 +82,15 @@ export const Widget = () => {
     if (user && user.id) {
       loadProfile();
     }
+  }, [user]);
+  
+  useEffect(() => {
+    console.log("[Auth] user state changed", {
+      isSignedIn: Boolean(user?.id),
+      clerkId: user?.id,
+      email: user?.primaryEmailAddress?.emailAddress,
+      lastSignIn: user?.lastSignInAt,
+    });
   }, [user]);
   
   return (

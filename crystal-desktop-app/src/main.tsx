@@ -6,12 +6,23 @@ import {ClerkProvider} from "@clerk/clerk-react";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const APP_URL = import.meta.env.VITE_APP_URL || "https://www.crystalapp.tech";
+const API_HOST = import.meta.env.VITE_HOST_URL;
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+// Log early environment signals helpful for auth debugging without exposing secrets
+console.log("[Renderer:init]", {
+  href: window.location.href,
+  origin: window.location.origin,
+  appUrl: APP_URL,
+  apiHost: API_HOST,
+  hasPublishableKey: Boolean(PUBLISHABLE_KEY),
+});
+
 const safeRouterNavigate = (to: string) => {
+  console.log("[Renderer:safeRouterNavigate] requested", { from: window.location.href, to });
   try {
     // Use full href as base so file:// origins keep their path
     const target = new URL(to, window.location.href);
@@ -46,6 +57,14 @@ const safeRouterNavigate = (to: string) => {
 
   window.location.href = "/";
 };
+
+console.log("[Renderer:ClerkProvider] configuring", {
+  signInUrl: "/",
+  signUpUrl: "/",
+  signInFallbackRedirectUrl: APP_URL,
+  signUpFallbackRedirectUrl: APP_URL,
+  afterSignOutUrl: APP_URL,
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
