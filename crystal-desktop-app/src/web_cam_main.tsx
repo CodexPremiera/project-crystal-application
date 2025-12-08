@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./web_cam_app";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const APP_URL = import.meta.env.VITE_APP_URL || "https://www.crystalapp.tech";
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
@@ -18,8 +19,10 @@ const safeRouterNavigate = (to: string) => {
       target.hostname.includes("clerk") ||
       target.hostname.includes("accounts.dev") ||
       target.hostname.includes("accounts.google.com");
+    const isAppHost =
+      target.hostname.includes("crystalapp.tech");
 
-    if (isClerkHost) {
+    if (isClerkHost || isAppHost) {
       window.location.href = target.href;
       return;
     }
@@ -48,9 +51,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       publishableKey={PUBLISHABLE_KEY} 
       signInUrl="/"
       signUpUrl="/"
-      afterSignInUrl="/"
-      afterSignUpUrl="/"
-      afterSignOutUrl="/"
+      signInFallbackRedirectUrl={APP_URL}
+      signUpFallbackRedirectUrl={APP_URL}
+      afterSignOutUrl={APP_URL}
       routerPush={safeRouterNavigate}
       routerReplace={safeRouterNavigate}
     >

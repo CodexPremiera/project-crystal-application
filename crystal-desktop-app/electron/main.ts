@@ -132,18 +132,19 @@ function createWindow() {
     // Handle navigation
     win.webContents.on('will-navigate', (event, url) => {
       console.log('[Navigation] Attempting to navigate to:', url);
-
-      const isClerkAuth = url.includes('clerk') ||
-                          url.includes('accounts.dev') ||
+      
+      const isClerkAuth = url.includes('clerk') || 
+                          url.includes('accounts.dev') || 
                           url.includes('accounts.google.com') ||
                           url.includes('.clerk.');
-
+      const isAppDomain = url.includes('crystalapp.tech');
+      
       // Allow Clerk-hosted pages and dev server navigations
       const isDevServer = Boolean(VITE_DEV_SERVER_URL && url.startsWith(VITE_DEV_SERVER_URL));
       const isInternalFile = url.startsWith('file://');
-
-      const isAllowed = isClerkAuth || isDevServer || isInternalFile;
-
+      
+      const isAllowed = isClerkAuth || isDevServer || isInternalFile || isAppDomain;
+      
       if (!isAllowed) {
         event.preventDefault();
         setTimeout(() => {
@@ -158,13 +159,14 @@ function createWindow() {
     
     win.webContents.setWindowOpenHandler(({ url }) => {
       const isClerkAuth = url.includes('clerk') ||
-                          url.includes('accounts.dev') ||
-                          url.includes('accounts.google.com') ||
+          url.includes('accounts.dev') || 
+          url.includes('accounts.google.com') ||
                           url.includes('.clerk.');
+      const isAppDomain = url.includes('crystalapp.tech');
 
       const isDevServer = Boolean(VITE_DEV_SERVER_URL && url.startsWith(VITE_DEV_SERVER_URL));
 
-      if (isClerkAuth || isDevServer) {
+      if (isClerkAuth || isDevServer || isAppDomain) {
         return { action: 'allow' };
       }
       return { action: 'deny' };
