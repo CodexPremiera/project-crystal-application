@@ -48,13 +48,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider 
       publishableKey={PUBLISHABLE_KEY} 
+      signInUrl="/"
+      signUpUrl="/"
       afterSignInUrl="/"
       afterSignUpUrl="/"
       afterSignOutUrl="/"
-      signInUrl="/"
-      signUpUrl="/"
-      signInForceRedirectUrl="/"
-      signUpForceRedirectUrl="/"
       routerPush={safeRouterNavigate}
       routerReplace={safeRouterNavigate}
     >
