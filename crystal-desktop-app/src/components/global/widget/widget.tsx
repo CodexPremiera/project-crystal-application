@@ -11,14 +11,14 @@ import { MediaConfiguration } from "./media-configuration";
  * This component serves as the central hub for user configuration and media setup.
  * It handles user authentication, profile fetching, and media source management,
  * providing a seamless interface for users to configure their recording settings.
- *
+ * 
  * Key Features:
  * - User authentication integration with Clerk
  * - Automatic profile fetching from backend
  * - Media source detection and management
  * - Loading states and error handling
  * - Integration with MediaConfiguration component
- *
+ * 
  * The component coordinates between the authentication system, backend API,
  * and media source detection to provide a complete configuration experience.
  */
@@ -26,6 +26,7 @@ export const Widget = () => {
   const { user } = useUser();
   const { state, fetchMediaResources } = useMediaSources();
   
+  // User profile state with subscription and studio settings
   const [profile, setProfile] = useState<{
     status: number;
     user:
@@ -57,6 +58,7 @@ export const Widget = () => {
    * Fetches user data from the backend using Clerk ID and initializes media sources.
    */
   useEffect(() => {
+    console.log("fetching");
     if (user && user.id) {
       fetchUserProfile(user.id).then((p) => setProfile(p));
       fetchMediaResources();
