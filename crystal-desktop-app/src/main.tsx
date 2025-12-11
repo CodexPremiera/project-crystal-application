@@ -70,8 +70,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider
       publishableKey={PUBLISHABLE_KEY}
-      // signInUrl="/"
-      // signUpUrl="/"
+      signInUrl="https://clerk.crystalapp.tech"
+      signUpUrl="https://clerk.crystalapp.tech"
       signInFallbackRedirectUrl={APP_URL}
       signUpFallbackRedirectUrl={APP_URL}
       afterSignOutUrl={APP_URL}
