@@ -1,22 +1,106 @@
 import { Button } from "@/components/ui/button";
-import { SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { SignedOut, useSignIn, useClerk } from "@clerk/clerk-react";
+import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
+/**
+ * Authentication Button Component for Desktop App
+ * 
+ * This component provides browser-based authentication for the Electron desktop app.
+ * Instead of using Clerk's built-in sign-in flow (which has issues with cookies in
+ * the file:// context), it implements an OAuth-style flow:
+ * 
+ * 1. User clicks "Sign In" button
+ * 2. Button opens the user's default browser to the web app's desktop-signin page
+ * 3. User authenticates on the web app and clicks "Allow Sign In"
+ * 4. Web app generates a sign-in ticket and redirects to crystalapp://auth/callback
+ * 5. Electron receives the deep link and sends the ticket to this component via IPC
+ * 6. Component exchanges the ticket for a Clerk session
+ * 
+ * This approach bypasses cookie/session issues in Electron by delegating
+ * authentication to a proper browser context.
+ */
 export const AuthButton = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { signIn } = useSignIn();
+  const { setActive } = useClerk();
+
+  /**
+   * Opens the user's default browser to the Crystal web app's desktop sign-in page.
+   * The web app handles authentication and redirects back via deep link.
+   */
+  const handleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await window.ipcRenderer.invoke('open-browser-signin');
+    } catch (err) {
+      console.error('[Auth] Failed to open browser:', err);
+      setError('Failed to open browser');
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    /**
+     * Handles the authentication callback from the Electron main process.
+     * Exchanges the sign-in ticket for a Clerk session.
+     */
+    const handleAuthCallback = async (_event: Electron.IpcRendererEvent, data: { ticket: string }) => {
+      console.log('[Auth] Received auth callback with ticket');
+      if (!signIn) {
+        setError('Sign-in service not available');
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const result = await signIn.create({
+          strategy: 'ticket',
+          ticket: data.ticket,
+        });
+
+        if (result.status === 'complete' && result.createdSessionId) {
+          await setActive({ session: result.createdSessionId });
+          console.log('[Auth] Session established successfully');
+        } else {
+          throw new Error('Sign-in incomplete');
+        }
+      } catch (err) {
+        console.error('[Auth] Failed to exchange ticket:', err);
+        setError('Sign-in failed. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    window.ipcRenderer.on('auth-callback', handleAuthCallback);
+    return () => {
+      window.ipcRenderer.off('auth-callback', handleAuthCallback);
+    };
+  }, [signIn, setActive]);
+
   return (
     <SignedOut>
-      <div className="flex gap-x-3 h-[120px] pt-12 justify-center items-center">
-        <SignInButton>
-          <Button
-            variant="secondary"
-            className="px-10 rounded-full hover:bg-[#D0D0D0]">
-            Sign In
-          </Button>
-        </SignInButton>
-        <SignUpButton>
-          <Button variant="default" className="px-10 rounded-full border-1 hover:bg-[#262626]">
-            Sign Up
-          </Button>
-        </SignUpButton>
+      <div className="flex flex-col gap-y-2 h-[120px] pt-12 justify-center items-center">
+        <Button
+          variant="secondary"
+          className="px-10 rounded-full hover:bg-[#D0D0D0]"
+          onClick={handleSignIn}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="size-4 animate-spin mr-2" />
+              Waiting for browser...
+            </>
+          ) : (
+            'Sign In with Browser'
+          )}
+        </Button>
+        {error && (
+          <p className="text-xs text-red-500">{error}</p>
+        )}
       </div>
     </SignedOut>
   );

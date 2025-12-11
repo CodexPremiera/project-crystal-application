@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain, screen, dialog } from "electron";
+import { app, BrowserWindow, desktopCapturer, ipcMain, screen, dialog, shell } from "electron";
 import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -25,10 +25,75 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
 
+// Custom protocol for browser-based authentication
+const PROTOCOL = 'crystalapp';
+const DESKTOP_SIGNIN_URL = 'https://www.crystalapp.tech/auth/desktop-signin';
+
 // Global window references for the three main windows
 let win: BrowserWindow | null;           // Main control window
 let studio: BrowserWindow | null;        // Studio tray window
 let floatingWebCam: BrowserWindow | null; // Webcam window
+
+/**
+ * Handles authentication callback from browser-based sign-in flow.
+ * 
+ * This function parses the deep link URL from the browser redirect,
+ * extracts the sign-in ticket, and sends it to the renderer process
+ * to complete the authentication flow.
+ * 
+ * @param url - The crystalapp:// deep link URL containing the auth ticket
+ */
+function handleAuthCallback(url: string) {
+  console.log('[Auth] Received deep link:', url);
+  try {
+    const parsed = new URL(url);
+    if (parsed.pathname === '/auth/callback' || parsed.pathname === '//auth/callback') {
+      const ticket = parsed.searchParams.get('ticket');
+      if (ticket && win) {
+        console.log('[Auth] Sending ticket to renderer');
+        win.webContents.send('auth-callback', { ticket });
+        win.show();
+        win.focus();
+      }
+    }
+  } catch (error) {
+    console.error('[Auth] Failed to parse callback URL:', error);
+  }
+}
+
+// Register custom protocol handler for browser-based authentication
+// This must be called before app.whenReady()
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient(PROTOCOL);
+}
+
+// Handle single instance lock for Windows/Linux deep link handling
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (_event, commandLine) => {
+    const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`));
+    if (url) {
+      handleAuthCallback(url);
+    }
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.show();
+      win.focus();
+    }
+  });
+}
+
+// Handle deep links on macOS
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  handleAuthCallback(url);
+});
 
 /**
  * Creates and configures all three application windows.
@@ -265,6 +330,21 @@ ipcMain.on("open-devtools", () => {
  */
 ipcMain.on("minimize-window", () => {
   win?.minimize();
+});
+
+/**
+ * IPC handler for opening browser-based sign-in page.
+ * 
+ * This handler opens the user's default browser to the Crystal web app's
+ * desktop sign-in page, initiating the OAuth-style authentication flow.
+ * After authentication, the browser redirects back to the desktop app
+ * via the crystalapp:// protocol.
+ * 
+ * @returns Promise that resolves when the browser is opened
+ */
+ipcMain.handle('open-browser-signin', async () => {
+  console.log('[Auth] Opening browser for sign-in');
+  await shell.openExternal(DESKTOP_SIGNIN_URL);
 });
 
 app.on("activate", () => {

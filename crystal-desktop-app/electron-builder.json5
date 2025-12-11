@@ -4,6 +4,11 @@
   "appId": "com.crystal.app",
   "asar": true,
   "productName": "Crystal",
+  // Custom protocol for browser-based authentication (crystalapp://)
+  "protocols": {
+    "name": "Crystal App",
+    "schemes": ["crystalapp"]
+  },
   "publish": {
     "provider": "github",
     "owner": "CodexPremiera",
