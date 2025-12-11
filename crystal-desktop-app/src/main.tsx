@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import {ClerkProvider, useClerk} from "@clerk/clerk-react";
+import {ClerkProvider, useSignIn} from "@clerk/clerk-react";
 import {useEffect} from "react";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -20,14 +20,14 @@ if (!PUBLISHABLE_KEY) {
  * authentication flow initiated by clicking Sign In in the desktop app.
  */
 function AuthCallbackHandler({ children }: { children: React.ReactNode }) {
-  const { signIn, setActive } = useClerk();
+  const { isLoaded, signIn, setActive } = useSignIn();
 
   useEffect(() => {
     const handleAuthCallback = async (_event: unknown, payload: { ticket: string }) => {
       console.log("[Auth] Received auth callback from main process");
       
       try {
-        if (!signIn) {
+        if (!isLoaded || !signIn) {
           console.error("[Auth] signIn not available yet");
           return;
         }
@@ -55,7 +55,7 @@ function AuthCallbackHandler({ children }: { children: React.ReactNode }) {
     return () => {
       window.ipcRenderer.off("auth-callback", handleAuthCallback);
     };
-  }, [signIn, setActive]);
+  }, [isLoaded, signIn, setActive]);
 
   return <>{children}</>;
 }
