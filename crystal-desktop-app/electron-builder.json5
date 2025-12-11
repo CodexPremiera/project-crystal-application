@@ -86,6 +86,11 @@
     "target": [
       "AppImage"
     ],
-    "artifactName": "${productName}-Linux.${ext}"
+    "artifactName": "${productName}-Linux.${ext}",
+    "mimeTypes": ["x-scheme-handler/crystalapp"]
+  },
+  "protocols": {
+    "name": "Crystal Desktop Auth",
+    "schemes": ["crystalapp"]
   }
 }
