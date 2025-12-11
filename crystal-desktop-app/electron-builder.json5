@@ -4,6 +4,11 @@
   "appId": "com.crystal.app",
   "asar": true,
   "productName": "Crystal",
+  // Custom protocol for browser-based authentication (crystalapp://)
+  "protocols": {
+    "name": "Crystal App",
+    "schemes": ["crystalapp"]
+  },
   "publish": {
     "provider": "github",
     "owner": "CodexPremiera",
@@ -47,6 +52,7 @@
       }
     ],
     "artifactName": "${productName}-Windows-Setup.${ext}",
+    "signAndEditExecutable": false,
     // CODE SIGNING (Uncomment when you have a certificate)
     // To eliminate Windows SmartScreen and browser warnings, obtain a code signing certificate:
     // 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain, screen } from "electron";
+import { app, BrowserWindow, desktopCapturer, ipcMain, screen, dialog, shell } from "electron";
 import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -25,24 +25,78 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
 
+// Custom protocol for browser-based authentication
+const PROTOCOL = 'crystalapp';
+const DESKTOP_SIGNIN_URL = 'https://www.crystalapp.tech/auth/desktop-signin';
+
 // Global window references for the three main windows
 let win: BrowserWindow | null;           // Main control window
 let studio: BrowserWindow | null;        // Studio tray window
 let floatingWebCam: BrowserWindow | null; // Webcam window
 
 /**
+ * Handles authentication callback from browser-based sign-in flow.
+ * 
+ * This function parses the deep link URL from the browser redirect,
+ * extracts the sign-in ticket, and sends it to the renderer process
+ * to complete the authentication flow.
+ * 
+ * @param url - The crystalapp:// deep link URL containing the auth ticket
+ */
+function handleAuthCallback(url: string) {
+  console.log('[Auth] Received deep link:', url);
+  try {
+    const parsed = new URL(url);
+    if (parsed.pathname === '/auth/callback' || parsed.pathname === '//auth/callback') {
+      const ticket = parsed.searchParams.get('ticket');
+      if (ticket && win) {
+        console.log('[Auth] Sending ticket to renderer');
+        win.webContents.send('auth-callback', { ticket });
+        win.show();
+        win.focus();
+      }
+    }
+  } catch (error) {
+    console.error('[Auth] Failed to parse callback URL:', error);
+  }
+}
+
+// Register custom protocol handler for browser-based authentication
+// This must be called before app.whenReady()
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient(PROTOCOL);
+}
+
+// Handle single instance lock for Windows/Linux deep link handling
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (_event, commandLine) => {
+    const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`));
+    if (url) {
+      handleAuthCallback(url);
+    }
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.show();
+      win.focus();
+    }
+  });
+}
+
+// Handle deep links on macOS
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  handleAuthCallback(url);
+});
+
+/**
  * Creates and configures all three application windows.
- * 
- * This function sets up the main Electron windows for the Crystal Desktop App:
- * 1. Main Control Window (600x600px) - Primary configuration interface
- * 2. Studio Tray Window (400x50px) - Recording controls and preview
- * 3. Webcam Window (160x160px) - Optional camera feed
- * 
- * All windows are configured as:
- * - Frameless and transparent for modern appearance
- * - Always on top for easy access during recording
- * - Non-focusable to avoid interfering with user workflow
- * - Set to be visible on all workspaces including fullscreen apps
  */
 function createWindow() {
   // Get primary display dimensions
@@ -154,62 +208,6 @@ function createWindow() {
       "main-process-message",
       new Date().toLocaleString()
     );
-  });
-  
-  /**
-   * Navigation interception for authentication flow.
-   * 
-   * Monitors navigation events for debugging and blocks navigation to web app
-   * URLs (localhost:3000). Allows all other navigations including Clerk auth
-   * and desktop app URLs (localhost:5173).
-   */
-  win.webContents.on('will-navigate', (event, url) => {
-    console.log('[Navigation] Attempting to navigate to:', url);
-    
-    // Block navigation to web app URLs (localhost:3000 and production)
-    const isWebAppUrl = url.includes('localhost:3000') || 
-                        url.includes('127.0.0.1:3000') ||
-                        url.includes('crystalapp.tech');
-    
-    // Allow desktop app URLs
-    const isDesktopAppUrl = url.includes('localhost:5173') || 
-                            url.includes('127.0.0.1:5173');
-    
-    if (isWebAppUrl) {
-      console.log('[Navigation] Blocked web app URL, reloading desktop app');
-      event.preventDefault();
-      
-      setTimeout(() => {
-        if (VITE_DEV_SERVER_URL) {
-          win?.loadURL(VITE_DEV_SERVER_URL);
-        } else {
-          win?.loadFile(path.join(RENDERER_DIST, "index.html"));
-        }
-      }, 500);
-    } else if (isDesktopAppUrl) {
-      console.log('[Navigation] Allowing desktop app URL');
-      // Allow this navigation to proceed normally
-    } else {
-      console.log('[Navigation] Allowing external URL (Clerk auth):', url);
-      // Allow Clerk and other external URLs
-    }
-  });
-  
-  /**
-   * Window open handler for controlling popup behavior.
-   * 
-   * Allows Clerk authentication popups and OAuth providers to open normally.
-   */
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    console.log('[WindowOpen] Requested:', url);
-    // Allow Clerk auth, OAuth providers (Google, etc.), and localhost
-    if (url.includes('clerk') || 
-        url.includes('accounts.dev') || 
-        url.includes('accounts.google.com') ||
-        url.includes('localhost:5173')) {
-      return { action: 'allow' };
-    }
-    return { action: 'deny' };
   });
   
   if (VITE_DEV_SERVER_URL) {
@@ -334,6 +332,21 @@ ipcMain.on("minimize-window", () => {
   win?.minimize();
 });
 
+/**
+ * IPC handler for opening browser-based sign-in page.
+ * 
+ * This handler opens the user's default browser to the Crystal web app's
+ * desktop sign-in page, initiating the OAuth-style authentication flow.
+ * After authentication, the browser redirects back to the desktop app
+ * via the crystalapp:// protocol.
+ * 
+ * @returns Promise that resolves when the browser is opened
+ */
+ipcMain.handle('open-browser-signin', async () => {
+  console.log('[Auth] Opening browser for sign-in');
+  await shell.openExternal(DESKTOP_SIGNIN_URL);
+});
+
 app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -343,17 +356,19 @@ app.on("activate", () => {
 });
 
 app.whenReady().then(() => {
-  createWindow();
-  
-  // Check for updates in production (not during development)
-  if (!VITE_DEV_SERVER_URL) {
-    autoUpdater.checkForUpdatesAndNotify();
+  try {
+    createWindow();
+    
+    if (!VITE_DEV_SERVER_URL) {
+      autoUpdater.checkForUpdatesAndNotify();
+    }
+  } catch (error) {
+    console.error('[App] Startup error:', error);
+    dialog.showErrorBox('Crystal Error', `Failed to start: ${error}`);
   }
 });
 
-/**
- * Auto-updater event handlers for logging update status.
- */
+// Auto-updater events
 autoUpdater.on("checking-for-update", () => {
   console.log("[AutoUpdater] Checking for updates...");
 });
@@ -372,10 +387,19 @@ autoUpdater.on("download-progress", (progress) => {
 
 autoUpdater.on("update-downloaded", (info) => {
   console.log("[AutoUpdater] Update downloaded:", info.version);
-  // Automatically install update when the app quits
   autoUpdater.quitAndInstall(false, true);
 });
 
 autoUpdater.on("error", (err) => {
   console.error("[AutoUpdater] Error:", err.message);
+});
+
+// Global error handlers to prevent silent crashes
+process.on('uncaughtException', (error) => {
+  console.error('[Process] Uncaught exception:', error);
+  dialog.showErrorBox('Crystal Error', `Unexpected error: ${error.message}`);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Process] Unhandled rejection:', reason);
 });
