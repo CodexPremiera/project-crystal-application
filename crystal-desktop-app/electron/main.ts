@@ -29,6 +29,9 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 const PROTOCOL = 'crystalapp';
 const DESKTOP_SIGNIN_URL = 'https://www.crystalapp.tech/auth/desktop-signin';
 
+// Store pending deep link URL when app is launched via protocol
+let pendingDeepLinkUrl: string | null = null;
+
 // Global window references for the three main windows
 let win: BrowserWindow | null;           // Main control window
 let studio: BrowserWindow | null;        // Studio tray window
@@ -42,22 +45,61 @@ let floatingWebCam: BrowserWindow | null; // Webcam window
  * to complete the authentication flow.
  * 
  * @param url - The crystalapp:// deep link URL containing the auth ticket
+ * @param immediate - If true, send immediately; if false, store for later
  */
-function handleAuthCallback(url: string) {
+function handleAuthCallback(url: string, immediate: boolean = true) {
   console.log('[Auth] Received deep link:', url);
+  
+  // DEBUG: Show dialog to confirm deep link was received
+  dialog.showMessageBox({ 
+    type: 'info', 
+    title: 'Deep Link Received', 
+    message: `URL: ${url}\nImmediate: ${immediate}\nWindow ready: ${win && !win.isDestroyed()}` 
+  });
+  
   try {
     const parsed = new URL(url);
-    if (parsed.pathname === '/auth/callback' || parsed.pathname === '//auth/callback') {
+    // For crystalapp://auth/callback, 'auth' becomes the host, '/callback' is the pathname
+    const fullPath = `${parsed.host}${parsed.pathname}`;
+    console.log('[Auth] Parsed URL - host:', parsed.host, 'pathname:', parsed.pathname, 'fullPath:', fullPath);
+    
+    if (fullPath === 'auth/callback' || parsed.pathname === '/auth/callback' || parsed.pathname === '//auth/callback') {
       const ticket = parsed.searchParams.get('ticket');
-      if (ticket && win) {
-        console.log('[Auth] Sending ticket to renderer');
-        win.webContents.send('auth-callback', { ticket });
-        win.show();
-        win.focus();
+      console.log('[Auth] Extracted ticket:', ticket ? 'present' : 'missing');
+      
+      if (ticket) {
+        if (immediate && win && !win.isDestroyed()) {
+          console.log('[Auth] Sending ticket to renderer immediately');
+          win.webContents.send('auth-callback', { ticket });
+          win.show();
+          win.focus();
+          
+          // DEBUG: Confirm ticket was sent
+          dialog.showMessageBox({ type: 'info', title: 'Auth', message: 'Ticket sent to renderer!' });
+        } else {
+          console.log('[Auth] Window not ready, storing URL for later');
+          pendingDeepLinkUrl = url;
+        }
+      } else {
+        dialog.showErrorBox('Auth Error', 'No ticket found in URL');
       }
+    } else {
+      dialog.showErrorBox('Auth Error', `Unknown path: ${fullPath}`);
     }
   } catch (error) {
     console.error('[Auth] Failed to parse callback URL:', error);
+    dialog.showErrorBox('Auth Error', `Failed to parse URL: ${error}`);
+  }
+}
+
+/**
+ * Process any pending deep link URL after window is ready.
+ */
+function processPendingDeepLink() {
+  if (pendingDeepLinkUrl && win && !win.isDestroyed()) {
+    console.log('[Auth] Processing pending deep link');
+    handleAuthCallback(pendingDeepLinkUrl, true);
+    pendingDeepLinkUrl = null;
   }
 }
 
@@ -71,15 +113,48 @@ if (process.defaultApp) {
   app.setAsDefaultProtocolClient(PROTOCOL);
 }
 
+// Check if app was launched via deep link (Windows)
+// Store the URL to process after window is ready
+console.log('[Auth] Launch args:', process.argv);
+const launchUrl = process.argv.find(arg => arg.startsWith(`${PROTOCOL}://`));
+if (launchUrl) {
+  console.log('[Auth] App launched with deep link:', launchUrl);
+  pendingDeepLinkUrl = launchUrl;
+}
+
+// DEBUG: Show launch args on startup (will show after app is ready)
+app.whenReady().then(() => {
+  if (process.argv.length > 1) {
+    dialog.showMessageBox({ 
+      type: 'info', 
+      title: 'Launch Args', 
+      message: `App launched with args:\n${process.argv.join('\n')}\n\nDeep link found: ${launchUrl || 'none'}` 
+    });
+  }
+});
+
 // Handle single instance lock for Windows/Linux deep link handling
 const gotTheLock = app.requestSingleInstanceLock();
+console.log('[Auth] Single instance lock:', gotTheLock ? 'acquired' : 'failed');
+
 if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', (_event, commandLine) => {
+    console.log('[Auth] Second instance detected, commandLine:', commandLine);
+    
+    // DEBUG: Show what we received
+    dialog.showMessageBox({ 
+      type: 'info', 
+      title: 'Second Instance', 
+      message: `Args received:\n${commandLine.join('\n')}` 
+    });
+    
     const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`));
     if (url) {
-      handleAuthCallback(url);
+      handleAuthCallback(url, true);
+    } else {
+      dialog.showMessageBox({ type: 'warning', title: 'No URL', message: 'No crystalapp:// URL found in args' });
     }
     if (win) {
       if (win.isMinimized()) win.restore();
@@ -92,7 +167,12 @@ if (!gotTheLock) {
 // Handle deep links on macOS
 app.on('open-url', (event, url) => {
   event.preventDefault();
-  handleAuthCallback(url);
+  console.log('[Auth] macOS open-url event:', url);
+  if (app.isReady() && win && !win.isDestroyed()) {
+    handleAuthCallback(url, true);
+  } else {
+    pendingDeepLinkUrl = url;
+  }
 });
 
 /**
@@ -201,6 +281,9 @@ function createWindow() {
   // Test active push message to Renderer-process.
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
+    
+    // Process any pending deep link after window is ready
+    processPendingDeepLink();
   });
   
   studio.webContents.on("did-finish-load", () => {
