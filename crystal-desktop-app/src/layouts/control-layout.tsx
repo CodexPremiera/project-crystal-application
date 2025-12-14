@@ -1,5 +1,5 @@
 import { cn, onCloseApp } from "@/lib/utils";
-import { UserButton } from "@clerk/clerk-react";
+import { DesktopUserButton } from "@/components/global/desktop-user-button";
 import { X, Bug, Minus } from "lucide-react";
 import React, { useState } from "react";
 
@@ -23,7 +23,7 @@ export const ControlLayout = ({ children, className }: ControlLayoutProps) => {
       )}>
       <div className="flex justify-between items-center p-5 draggable">
         <span className="non-draggable">
-          <UserButton />
+          <DesktopUserButton />
         </span>
         <div className="flex items-center gap-x-4 non-draggable">
           <div title="Open DevTools (Debug Console)">
