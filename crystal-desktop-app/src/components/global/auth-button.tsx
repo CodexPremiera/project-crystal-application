@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { SignedOut, useSignIn, useClerk } from "@clerk/clerk-react";
+import { useSignIn, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { saveDesktopUser, isDesktopAuthenticated } from "@/lib/desktop-auth";
 
 /**
  * Authentication Button Component for Desktop App
@@ -23,8 +24,10 @@ import { Loader2 } from "lucide-react";
 export const AuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => isDesktopAuthenticated());
   const { signIn } = useSignIn();
   const { setActive } = useClerk();
+  const { user } = useUser();
 
   /**
    * Opens the user's default browser to the Crystal web app's desktop sign-in page.
@@ -42,11 +45,23 @@ export const AuthButton = () => {
     }
   };
 
+  // Save user to localStorage whenever Clerk user changes (after sign-in)
   useEffect(() => {
-    /**
-     * Handles the authentication callback from the Electron main process.
-     * Exchanges the sign-in ticket for a Clerk session.
-     */
+    if (user && !isAuthenticated) {
+      console.log('[Auth] Saving user to localStorage:', user.id);
+      saveDesktopUser({
+        clerkId: user.id,
+        email: user.primaryEmailAddress?.emailAddress || null,
+        name: user.fullName || user.firstName || null,
+        imageUrl: user.imageUrl || null,
+        timestamp: Date.now(),
+      });
+      setIsAuthenticated(true);
+    }
+  }, [user, isAuthenticated]);
+
+  // Handle auth callback from Electron
+  useEffect(() => {
     const handleAuthCallback = async (_event: Electron.IpcRendererEvent, data: { ticket: string }) => {
       console.log('[Auth] Received auth callback with ticket');
       if (!signIn) {
@@ -63,13 +78,17 @@ export const AuthButton = () => {
         if (result.status === 'complete' && result.createdSessionId) {
           await setActive({ session: result.createdSessionId });
           console.log('[Auth] Session established successfully');
+          
+          // Wait for Clerk to update user, then reload to pick up new state
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         } else {
           throw new Error('Sign-in incomplete');
         }
       } catch (err) {
         console.error('[Auth] Failed to exchange ticket:', err);
         setError('Sign-in failed. Please try again.');
-      } finally {
         setIsLoading(false);
       }
     };
@@ -80,28 +99,31 @@ export const AuthButton = () => {
     };
   }, [signIn, setActive]);
 
+  // Don't show if authenticated via localStorage
+  if (isAuthenticated) {
+    return null;
+  }
+
   return (
-    <SignedOut>
-      <div className="flex flex-col gap-y-2 h-[120px] pt-12 justify-center items-center">
-        <Button
-          variant="secondary"
-          className="px-10 rounded-full hover:bg-[#D0D0D0]"
-          onClick={handleSignIn}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="size-4 animate-spin mr-2" />
-              Waiting for browser...
-            </>
-          ) : (
-            'Sign In with Browser'
-          )}
-        </Button>
-        {error && (
-          <p className="text-xs text-red-500">{error}</p>
+    <div className="flex flex-col gap-y-2 h-[120px] pt-12 justify-center items-center">
+      <Button
+        variant="secondary"
+        className="px-10 rounded-full hover:bg-[#D0D0D0]"
+        onClick={handleSignIn}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="size-4 animate-spin mr-2" />
+            Waiting for browser...
+          </>
+        ) : (
+          'Sign In with Browser'
         )}
-      </div>
-    </SignedOut>
+      </Button>
+      {error && (
+        <p className="text-xs text-red-500">{error}</p>
+      )}
+    </div>
   );
 };
