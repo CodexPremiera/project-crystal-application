@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain, screen, dialog, shell } from "electron";
+import { app, BrowserWindow, desktopCapturer, ipcMain, screen, dialog, shell, session } from "electron";
 import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -50,13 +50,6 @@ let floatingWebCam: BrowserWindow | null; // Webcam window
 function handleAuthCallback(url: string, immediate: boolean = true) {
   console.log('[Auth] Received deep link:', url);
   
-  // DEBUG: Show dialog to confirm deep link was received
-  dialog.showMessageBox({ 
-    type: 'info', 
-    title: 'Deep Link Received', 
-    message: `URL: ${url}\nImmediate: ${immediate}\nWindow ready: ${win && !win.isDestroyed()}` 
-  });
-  
   try {
     const parsed = new URL(url);
     // For crystalapp://auth/callback, 'auth' becomes the host, '/callback' is the pathname
@@ -73,22 +66,14 @@ function handleAuthCallback(url: string, immediate: boolean = true) {
           win.webContents.send('auth-callback', { ticket });
           win.show();
           win.focus();
-          
-          // DEBUG: Confirm ticket was sent
-          dialog.showMessageBox({ type: 'info', title: 'Auth', message: 'Ticket sent to renderer!' });
         } else {
           console.log('[Auth] Window not ready, storing URL for later');
           pendingDeepLinkUrl = url;
         }
-      } else {
-        dialog.showErrorBox('Auth Error', 'No ticket found in URL');
       }
-    } else {
-      dialog.showErrorBox('Auth Error', `Unknown path: ${fullPath}`);
     }
   } catch (error) {
     console.error('[Auth] Failed to parse callback URL:', error);
-    dialog.showErrorBox('Auth Error', `Failed to parse URL: ${error}`);
   }
 }
 
@@ -122,17 +107,6 @@ if (launchUrl) {
   pendingDeepLinkUrl = launchUrl;
 }
 
-// DEBUG: Show launch args on startup (will show after app is ready)
-app.whenReady().then(() => {
-  if (process.argv.length > 1) {
-    dialog.showMessageBox({ 
-      type: 'info', 
-      title: 'Launch Args', 
-      message: `App launched with args:\n${process.argv.join('\n')}\n\nDeep link found: ${launchUrl || 'none'}` 
-    });
-  }
-});
-
 // Handle single instance lock for Windows/Linux deep link handling
 const gotTheLock = app.requestSingleInstanceLock();
 console.log('[Auth] Single instance lock:', gotTheLock ? 'acquired' : 'failed');
@@ -143,18 +117,9 @@ if (!gotTheLock) {
   app.on('second-instance', (_event, commandLine) => {
     console.log('[Auth] Second instance detected, commandLine:', commandLine);
     
-    // DEBUG: Show what we received
-    dialog.showMessageBox({ 
-      type: 'info', 
-      title: 'Second Instance', 
-      message: `Args received:\n${commandLine.join('\n')}` 
-    });
-    
     const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`));
     if (url) {
       handleAuthCallback(url, true);
-    } else {
-      dialog.showMessageBox({ type: 'warning', title: 'No URL', message: 'No crystalapp:// URL found in args' });
     }
     if (win) {
       if (win.isMinimized()) win.restore();
@@ -416,9 +381,35 @@ ipcMain.on("minimize-window", () => {
 });
 
 /**
+ * IPC handler for clearing Clerk-related cookies.
+ * 
+ * This clears all cookies from Clerk domains to avoid duplicate/conflicting
+ * cookies that can cause session issues.
+ */
+ipcMain.handle('clear-auth-cookies', async () => {
+  console.log('[Auth] Clearing auth cookies');
+  const ses = session.defaultSession;
+  
+  try {
+    const cookies = await ses.cookies.get({});
+    for (const cookie of cookies) {
+      if (cookie.domain?.includes('clerk') || cookie.domain?.includes('crystalapp')) {
+        const url = `http${cookie.secure ? 's' : ''}://${cookie.domain?.startsWith('.') ? cookie.domain.slice(1) : cookie.domain}${cookie.path}`;
+        await ses.cookies.remove(url, cookie.name);
+        console.log('[Auth] Removed cookie:', cookie.name, 'from', cookie.domain);
+      }
+    }
+    console.log('[Auth] Cookies cleared');
+  } catch (error) {
+    console.error('[Auth] Failed to clear cookies:', error);
+  }
+});
+
+/**
  * IPC handler for opening browser-based sign-in page.
  * 
- * This handler opens the user's default browser to the Crystal web app's
+ * This handler clears existing auth cookies first to avoid conflicts,
+ * then opens the user's default browser to the Crystal web app's
  * desktop sign-in page, initiating the OAuth-style authentication flow.
  * After authentication, the browser redirects back to the desktop app
  * via the crystalapp:// protocol.
@@ -427,6 +418,21 @@ ipcMain.on("minimize-window", () => {
  */
 ipcMain.handle('open-browser-signin', async () => {
   console.log('[Auth] Opening browser for sign-in');
+  
+  // Clear existing cookies to avoid conflicts
+  const ses = session.defaultSession;
+  try {
+    const cookies = await ses.cookies.get({});
+    for (const cookie of cookies) {
+      if (cookie.domain?.includes('clerk') || cookie.domain?.includes('crystalapp')) {
+        const url = `http${cookie.secure ? 's' : ''}://${cookie.domain?.startsWith('.') ? cookie.domain.slice(1) : cookie.domain}${cookie.path}`;
+        await ses.cookies.remove(url, cookie.name);
+      }
+    }
+  } catch (error) {
+    console.error('[Auth] Failed to clear cookies before sign-in:', error);
+  }
+  
   await shell.openExternal(DESKTOP_SIGNIN_URL);
 });
 
