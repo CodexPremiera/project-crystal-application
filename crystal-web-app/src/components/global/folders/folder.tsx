@@ -9,6 +9,7 @@ import {useMutationData, useMutationDataState} from "@/hooks/useMutationData";
 import {renameFolders} from "@/actions/workspace";
 import {Input} from "@/components/ui/input";
 import { MutationFunction } from '@tanstack/react-query'
+import { useVideoDragSafe } from "@/components/global/videos/video-drag-context";
 
 /**
  * Folder Component
@@ -48,6 +49,8 @@ function Folder({ id, name, optimistic, count }: Props) {
   const pathName = usePathname()
   const router = useRouter()
   const [onRename, setOnRename] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
+  const dragContext = useVideoDragSafe()
   
   const Rename = () => setOnRename(true)
   const Renamed = () => setOnRename(false)
@@ -79,13 +82,43 @@ function Folder({ id, name, optimistic, count }: Props) {
       } else Renamed()
     }
   }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+  }
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    
+    const videoId = e.dataTransfer.getData('videoId')
+    if (videoId && dragContext) {
+      await dragContext.moveVideoToFolder(videoId, id)
+    }
+  }
   
   return (
     <div
       onClick={handleFolderClick}
       ref={folderCardRef}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       className={cn(
         optimistic && 'opacity-60',
+        isDragOver && 'border-primary bg-primary/10',
         'flex hover:bg-neutral-800 cursor-pointer transition duration-150 items-center gap-2 justify-between min-w-[250px] py-4 px-4 rounded-lg border-[1px]'
       )}
     >

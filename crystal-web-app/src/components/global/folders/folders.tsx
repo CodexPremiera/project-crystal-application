@@ -11,6 +11,7 @@ import {useDispatch} from "react-redux";
 import {FOLDERS} from "@/redux/slices/folders";
 import Videos from "@/components/global/videos/videos";
 import CreateFolders from "@/components/global/create-folders";
+import { VideoDragProvider } from "@/components/global/videos/video-drag-context";
 
 export type FoldersProps = {
   status: number
@@ -78,64 +79,66 @@ function Folders({ workspaceId }: Props) {
   }
   
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <FolderDuotone />
-          <div className="flex items-center gap-1">
-            <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
-            <CreateFolders workspaceId={workspaceId} />
+    <VideoDragProvider workspaceId={workspaceId}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <FolderDuotone />
+            <div className="flex items-center gap-1">
+              <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
+              <CreateFolders workspaceId={workspaceId} />
+            </div>
           </div>
         </div>
-      </div>
-      <section className={cn(status !== 200 && 'justify-center', 'flex items-center gap-4 overflow-x-auto w-full')}>
-        {status !== 200 ? (
-          <p className="text-neutral-300">No folders in workspace</p>
-        ) : (
-          <>
-            {/* 
-              Optimistic UI Rendering
-              
-              This section demonstrates how to display optimistic data from mutations.
-              When a user creates a new folder, it immediately appears in the UI
-              with the optimistic data while the server request is pending.
-              
-              How it works:
-              1. Checks if there's a pending mutation with optimistic data
-              2. Displays the optimistic folder with temporary data
-              3. Shows the folder with an "optimistic" flag for styling
-              4. Replaces with real data when server responds
-            */}
-            {latestVariables && latestVariables.status === 'pending' && (
-              <Folder
-                name={(latestVariables.variables as { name: string; id: string }).name}
-                id={(latestVariables.variables as { name: string; id: string }).id}
-                optimistic
-              />
-            )}
-            {/* 
-              Server Data Rendering
-              
-              This renders the actual folders from the server, including
-              the newly created folder once the server confirms the creation.
-            */}
-            {folders.map((folder) => (
-              <Folder
-                name={folder.name}
-                count={folder._count.videos}
-                id={folder.id}
-                key={folder.id}
-              />
-            ))}
-          </>
-        )}
-      </section>
-      <Videos
-        workspaceId={workspaceId}
-        folderId={workspaceId}
+        <section className={cn(status !== 200 && 'justify-center', 'flex items-center gap-4 overflow-x-auto w-full')}>
+          {status !== 200 ? (
+            <p className="text-neutral-300">No folders in workspace</p>
+          ) : (
+            <>
+              {/* 
+                Optimistic UI Rendering
+                
+                This section demonstrates how to display optimistic data from mutations.
+                When a user creates a new folder, it immediately appears in the UI
+                with the optimistic data while the server request is pending.
+                
+                How it works:
+                1. Checks if there's a pending mutation with optimistic data
+                2. Displays the optimistic folder with temporary data
+                3. Shows the folder with an "optimistic" flag for styling
+                4. Replaces with real data when server responds
+              */}
+              {latestVariables && latestVariables.status === 'pending' && (
+                <Folder
+                  name={(latestVariables.variables as { name: string; id: string }).name}
+                  id={(latestVariables.variables as { name: string; id: string }).id}
+                  optimistic
+                />
+              )}
+              {/* 
+                Server Data Rendering
+                
+                This renders the actual folders from the server, including
+                the newly created folder once the server confirms the creation.
+              */}
+              {folders.map((folder) => (
+                <Folder
+                  name={folder.name}
+                  count={folder._count.videos}
+                  id={folder.id}
+                  key={folder.id}
+                />
+              ))}
+            </>
+          )}
+        </section>
+        <Videos
+          workspaceId={workspaceId}
+          folderId={workspaceId}
           videosKey="user-videos"
-      />
-    </div>
+        />
+      </div>
+    </VideoDragProvider>
   )
 }
 

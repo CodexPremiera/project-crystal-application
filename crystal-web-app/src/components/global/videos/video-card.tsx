@@ -18,6 +18,8 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import ChangeVideoLocation from "@/components/forms/change-video-location/video-location-form";
+import { useVideoDragSafe } from "@/components/global/videos/video-drag-context";
+import { cn } from "@/lib/utils";
 
 type Props = {
   User: {
@@ -82,6 +84,8 @@ type Props = {
  */
 function VideoCard(props: Props) {
   const [moveDialogOpen, setMoveDialogOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragContext = useVideoDragSafe()
   
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt!.getTime()) / (24 * 60 * 60 * 1000)
@@ -95,6 +99,18 @@ function VideoCard(props: Props) {
       description: 'Link successfully copied',
     })
   }
+
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData('videoId', props.id)
+    e.dataTransfer.effectAllowed = 'move'
+    setIsDragging(true)
+    dragContext?.startDrag(props.id)
+  }
+
+  const handleDragEnd = () => {
+    setIsDragging(false)
+    dragContext?.endDrag()
+  }
   
   return (
     <Loader
@@ -103,7 +119,15 @@ function VideoCard(props: Props) {
     >
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <div className="group overflow-hidden cursor-pointer bg-[#171717] relative border-[1px] border-[#252525] flex flex-col rounded-xl">
+          <div
+            draggable={props.isAdvanced !== false}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            className={cn(
+              "group overflow-hidden cursor-pointer bg-[#171717] relative border-[1px] border-[#252525] flex flex-col rounded-xl",
+              isDragging && "opacity-50"
+            )}
+          >
             <Link
               href={`/dashboard/${props.workspaceId}/video/${props.id}`}
               className="hover:bg-[#252525] transition duration-150 flex flex-col justify-between h-full"

@@ -106,28 +106,26 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
 
 
 /**
- * Retrieves all videos in a workspace (both direct and in folders)
+ * Retrieves unfiled videos in a workspace (videos not in any folder)
  * 
  * Database Operation: GET (SELECT query)
  * Tables: Video (primary), Folder, User
  * 
  * What it retrieves:
- * - All videos in workspace (direct + in folders)
+ * - Only videos in workspace that are NOT in any folder
  * - Video metadata (title, source, processing status, views)
- * - Folder information for each video
+ * - Folder information for each video (will be null)
  * - User information (name, image) for each video
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries Video table with OR condition:
- *    - Videos directly in workspace (workSpaceId = workspaceId)
- *    - Videos in workspace folders (folderId = workspaceId)
+ * 2. Queries Video table for videos in workspace with no folder
  * 3. Includes related Folder and User data via Prisma relations
  * 4. Orders by creation date (oldest first)
- * 5. Returns comprehensive video data for UI display
+ * 5. Returns unfiled video data for dashboard display
  * 
  * @param workSpaceId - The workspace ID to fetch videos for
- * @returns Promise with videos data or 404 if none found
+ * @returns Promise with unfiled videos data or 404 if none found
  */
 export const getAllUserVideos = async (workSpaceId: string) => {
   try {
@@ -136,10 +134,8 @@ export const getAllUserVideos = async (workSpaceId: string) => {
     
     const videos = await client.video.findMany({
       where: {
-        OR: [
-          { workSpaceId },      // Direct workspace videos
-          { folderId: workSpaceId } // Folder videos
-        ],
+        workSpaceId,
+        folderId: null,  // Only videos not in any folder
       },
       select: {
         id: true,
