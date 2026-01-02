@@ -15,8 +15,47 @@ const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
 const server = http.createServer(app);
 const OpenAI = require("openai")
 const dotenv = require('dotenv')
+const ffmpeg = require('fluent-ffmpeg')
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 
 dotenv.config()
+
+ffmpeg.setFfmpegPath(ffmpegPath)
+
+/**
+ * Extracts audio from a video file for efficient Whisper AI transcription.
+ * 
+ * This function uses FFmpeg to extract only the audio track from a video file,
+ * dramatically reducing file size (typically 90-95% smaller). The extracted
+ * audio is optimized for speech recognition with:
+ * - MP3 format (widely supported by Whisper)
+ * - 64kbps bitrate (sufficient for speech clarity)
+ * - Mono channel (speech doesn't need stereo)
+ * 
+ * @param videoPath - Full path to the source video file
+ * @returns Promise resolving to the path of the extracted audio file
+ */
+async function extractAudio(videoPath) {
+  const audioPath = videoPath.replace(/\.[^.]+$/, '_audio.mp3')
+  
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .noVideo()
+      .audioCodec('libmp3lame')
+      .audioBitrate('64k')
+      .audioChannels(1)
+      .output(audioPath)
+      .on('end', () => {
+        console.log('🟢 Audio extracted successfully')
+        resolve(audioPath)
+      })
+      .on('error', (err) => {
+        console.log('🔴 Audio extraction failed:', err.message)
+        reject(err)
+      })
+      .run()
+  })
+}
 
 // Configure CORS to allow both Electron and web app
 app.use(cors({
@@ -101,13 +140,21 @@ async function processVideo(filename, userId, customTitle = null, customDescript
 
       // Start transcription for pro plan
       if(processing.data.plan === "PRO") {
-        const stat = fs.statSync('temp_upload/' + filename)
+        let audioPath = null
         
-        // Whisper is restricted to 25mb uploads
-        if(stat.size < 25000000) {
-          try {
+        try {
+          // Extract audio from video for efficient transcription
+          // Audio is typically 5-10% of video size, allowing much longer recordings
+          console.log('🔵 Extracting audio from video for transcription...')
+          audioPath = await extractAudio('temp_upload/' + filename)
+          
+          const audioStat = fs.statSync(audioPath)
+          console.log(`🔵 Audio size: ${(audioStat.size / 1024 / 1024).toFixed(2)}MB`)
+          
+          // Check if extracted audio is within Whisper's 25MB limit
+          if(audioStat.size < 25000000) {
             const transcription = await openai.audio.transcriptions.create({
-              file: fs.createReadStream(`temp_upload/${filename}`),
+              file: fs.createReadStream(audioPath),
               model: "whisper-1",
               response_format: "text"
             })
@@ -144,11 +191,22 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                 console.log("🔴 Error: Something went wrong when generating title and summary")
               }
             }
-          } catch (aiError) {
+          } else {
+            console.log("⚠️ Extracted audio too large for AI processing (>25MB)")
+          }
+        } catch (aiError) {
+          if (aiError.status === 400 || aiError.message?.includes('Invalid file format')) {
+            console.log("⚠️ AI transcription skipped - file format not supported or no audio track")
+          } else {
             console.log("🔴 Error in AI processing:", aiError.message)
           }
-        } else {
-          console.log("⚠️ File too large for AI processing (>25MB)")
+        } finally {
+          // Clean up temporary audio file
+          if (audioPath && fs.existsSync(audioPath)) {
+            fs.unlink(audioPath, (err) => {
+              if (!err) console.log('🟢 Temporary audio file cleaned up')
+            })
+          }
         }
       }
 
@@ -238,42 +296,57 @@ const io = new Server(server, {
   }
 });
 
-let recordedChunks = []
-
 io.on('connection', (socket) => {
   console.log('🟢 Socket is Connected: ' + socket.id)
+  
+  // Per-socket chunk storage - each recording session gets its own array
+  let recordedChunks = []
 
-  socket.on('video-chunks', async (data) => {
-    console.log("🔵 Sending video chucks... ", data);
-
-    // record and save the video chunks to a temp file
-    const writeStream = fs.createWriteStream('temp_upload/' + data.filename)
+  socket.on('video-chunks', (data) => {
+    // Only accumulate chunks in memory - no file writes during recording
+    // This prevents race conditions from concurrent file writes
     recordedChunks.push(data.chunks)
-
-    // create a blob from the recorded chunks
-    const videoBlob = new Blob(recordedChunks, {type: 'video/webm; codecs=vp9'})
-    const buffer = Buffer.from(await videoBlob.arrayBuffer())
-    const readStream = Readable.from(buffer)
-
-    // pipe the read stream to the write stream
-    readStream.pipe(writeStream).on('finish', () => {
-      console.log("🟢 Chunk saved")
-    })
+    console.log(`🔵 Chunk received (${recordedChunks.length} total)`, { filename: data.filename, chunkSize: data.chunks?.length })
   })
 
   socket.on('process-video', async (data) => {
-    recordedChunks = []
+    const chunkCount = recordedChunks.length
+    console.log(`🔵 Processing video: ${data.filename} with ${chunkCount} chunks`)
     
-    // Use the shared processVideo function
-    const result = await processVideo(data.filename, data.userId)
-    
-    if (!result.success) {
-      console.log("🔴 Error processing video:", result.error)
+    if (chunkCount === 0) {
+      console.log("🔴 No chunks to process")
+      return
+    }
+
+    try {
+      // Write complete video file ONCE from all accumulated chunks
+      const videoBlob = new Blob(recordedChunks, { type: 'video/webm; codecs=vp9' })
+      const buffer = Buffer.from(await videoBlob.arrayBuffer())
+      
+      const filePath = 'temp_upload/' + data.filename
+      fs.writeFileSync(filePath, buffer)
+      console.log(`🟢 Video file written: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`)
+      
+      // Clear chunks after successful write
+      recordedChunks = []
+      
+      // Process the video
+      const result = await processVideo(data.filename, data.userId)
+      
+      if (!result.success) {
+        console.log("🔴 Error processing video:", result.error)
+      } else {
+        console.log(`🟢 Video processed successfully: ${data.filename}`)
+      }
+    } catch (error) {
+      console.log("🔴 Error writing video file:", error.message)
+      recordedChunks = []
     }
   })
 
   socket.on("disconnect", () => {
-    console.log(`🔴 Socket disconnected: ${socket.id}`);
+    console.log(`🔴 Socket disconnected: ${socket.id}`)
+    recordedChunks = []
   })
 })
 
