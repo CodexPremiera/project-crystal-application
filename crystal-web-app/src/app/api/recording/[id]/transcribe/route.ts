@@ -21,6 +21,7 @@ export async function POST(
       title: content.title,
       description: content.summary,
       summary: body.transcript,
+      transcriptSegments: body.segments ?? null,
     },
   })
   if (transcribed) {
