@@ -15,8 +15,47 @@ const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
 const server = http.createServer(app);
 const OpenAI = require("openai")
 const dotenv = require('dotenv')
+const ffmpeg = require('fluent-ffmpeg')
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 
 dotenv.config()
+
+ffmpeg.setFfmpegPath(ffmpegPath)
+
+/**
+ * Extracts audio from a video file for efficient Whisper AI transcription.
+ * 
+ * This function uses FFmpeg to extract only the audio track from a video file,
+ * dramatically reducing file size (typically 90-95% smaller). The extracted
+ * audio is optimized for speech recognition with:
+ * - MP3 format (widely supported by Whisper)
+ * - 64kbps bitrate (sufficient for speech clarity)
+ * - Mono channel (speech doesn't need stereo)
+ * 
+ * @param videoPath - Full path to the source video file
+ * @returns Promise resolving to the path of the extracted audio file
+ */
+async function extractAudio(videoPath) {
+  const audioPath = videoPath.replace(/\.[^.]+$/, '_audio.mp3')
+  
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .noVideo()
+      .audioCodec('libmp3lame')
+      .audioBitrate('64k')
+      .audioChannels(1)
+      .output(audioPath)
+      .on('end', () => {
+        console.log('🟢 Audio extracted successfully')
+        resolve(audioPath)
+      })
+      .on('error', (err) => {
+        console.log('🔴 Audio extraction failed:', err.message)
+        reject(err)
+      })
+      .run()
+  })
+}
 
 // Configure CORS to allow both Electron and web app
 app.use(cors({
@@ -101,13 +140,21 @@ async function processVideo(filename, userId, customTitle = null, customDescript
 
       // Start transcription for pro plan
       if(processing.data.plan === "PRO") {
-        const stat = fs.statSync('temp_upload/' + filename)
+        let audioPath = null
         
-        // Whisper is restricted to 25mb uploads
-        if(stat.size < 25000000) {
-          try {
+        try {
+          // Extract audio from video for efficient transcription
+          // Audio is typically 5-10% of video size, allowing much longer recordings
+          console.log('🔵 Extracting audio from video for transcription...')
+          audioPath = await extractAudio('temp_upload/' + filename)
+          
+          const audioStat = fs.statSync(audioPath)
+          console.log(`🔵 Audio size: ${(audioStat.size / 1024 / 1024).toFixed(2)}MB`)
+          
+          // Check if extracted audio is within Whisper's 25MB limit
+          if(audioStat.size < 25000000) {
             const transcription = await openai.audio.transcriptions.create({
-              file: fs.createReadStream(`temp_upload/${filename}`),
+              file: fs.createReadStream(audioPath),
               model: "whisper-1",
               response_format: "text"
             })
@@ -144,15 +191,22 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                 console.log("🔴 Error: Something went wrong when generating title and summary")
               }
             }
-          } catch (aiError) {
-            if (aiError.status === 400 || aiError.message?.includes('Invalid file format')) {
-              console.log("⚠️ AI transcription skipped - file format not supported or no audio track")
-            } else {
-              console.log("🔴 Error in AI processing:", aiError.message)
-            }
+          } else {
+            console.log("⚠️ Extracted audio too large for AI processing (>25MB)")
           }
-        } else {
-          console.log("⚠️ File too large for AI processing (>25MB)")
+        } catch (aiError) {
+          if (aiError.status === 400 || aiError.message?.includes('Invalid file format')) {
+            console.log("⚠️ AI transcription skipped - file format not supported or no audio track")
+          } else {
+            console.log("🔴 Error in AI processing:", aiError.message)
+          }
+        } finally {
+          // Clean up temporary audio file
+          if (audioPath && fs.existsSync(audioPath)) {
+            fs.unlink(audioPath, (err) => {
+              if (!err) console.log('🟢 Temporary audio file cleaned up')
+            })
+          }
         }
       }
 
