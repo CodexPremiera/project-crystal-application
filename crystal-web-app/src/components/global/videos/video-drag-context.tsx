@@ -45,11 +45,13 @@ export function VideoDragProvider({ children, workspaceId }: VideoDragProviderPr
   const startDrag = useCallback((videoId: string) => {
     setIsDragging(true)
     setDraggedVideoId(videoId)
+    document.body.classList.add('dragging-video')
   }, [])
 
   const endDrag = useCallback(() => {
     setIsDragging(false)
     setDraggedVideoId(null)
+    document.body.classList.remove('dragging-video')
   }, [])
 
   const moveVideoToFolder = useCallback(async (videoId: string, folderId: string) => {

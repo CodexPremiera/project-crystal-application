@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Loader from '../loader/loader';
-import { User, Move, Link2 } from "lucide-react";
+import { User, Move, Link2, Video } from "lucide-react";
 import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import ChangeVideoLocation from "@/components/forms/change-video-location/video-location-form";
 import { useVideoDragSafe } from "@/components/global/videos/video-drag-context";
-import { cn } from "@/lib/utils";
+import { cn, truncateString } from "@/lib/utils";
 
 type Props = {
   User: {
@@ -86,6 +86,7 @@ function VideoCard(props: Props) {
   const [moveDialogOpen, setMoveDialogOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const dragContext = useVideoDragSafe()
+  const dragPreviewRef = useRef<HTMLDivElement>(null)
   
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt!.getTime()) / (24 * 60 * 60 * 1000)
@@ -101,6 +102,11 @@ function VideoCard(props: Props) {
   }
 
   const handleDragStart = (e: React.DragEvent) => {
+    // Set custom drag preview image
+    if (dragPreviewRef.current) {
+      e.dataTransfer.setDragImage(dragPreviewRef.current, 0, 0)
+    }
+    
     e.dataTransfer.setData('videoId', props.id)
     e.dataTransfer.effectAllowed = 'move'
     setIsDragging(true)
@@ -117,6 +123,17 @@ function VideoCard(props: Props) {
       className="bg-[#171717] flex justify-center items-center border-[1px] border-[rgb(37,37,37)] rounded-xl"
       state={false}
     >
+      {/* Custom drag preview - positioned off-screen */}
+      <div
+        ref={dragPreviewRef}
+        className="fixed -left-[9999px] flex items-center gap-2 px-3 py-2 bg-neutral-800 rounded-lg shadow-lg border border-neutral-700 max-w-[200px]"
+      >
+        <Video size={16} className="text-primary shrink-0" />
+        <span className="text-sm text-white truncate">
+          {props.title ? truncateString(props.title, 25) : 'Untitled'}
+        </span>
+      </div>
+
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <div
