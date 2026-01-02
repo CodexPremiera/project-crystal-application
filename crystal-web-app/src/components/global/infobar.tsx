@@ -67,7 +67,7 @@ function Infobar() {
   }
 
   return (
-    <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-[#171717]/80 backdrop-blur-lg">
+    <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-[#171717]/80 backdrop-blur-lg z-50">
       <form onSubmit={handleSearch} className="flex gap-4 justify-center items-center border-2 rounded-full px-4 w-full max-w-lg">
         <Search
           size={25}
