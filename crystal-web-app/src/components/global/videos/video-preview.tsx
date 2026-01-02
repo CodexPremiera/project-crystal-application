@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useRouter} from "next/navigation";
 import { useQueryData } from '@/hooks/useQueryData';
 import {getPreviewVideo, sendEmailForFirstView, toggleVideoLike} from "@/actions/workspace";
@@ -63,6 +63,7 @@ type Props = {
 
 function VideoPreview({ videoId }: Props) {
   const router = useRouter()
+  const videoRef = useRef<HTMLVideoElement>(null)
   
   // Fetch video data with React Query caching
   const { data } = useQueryData(['preview-video'], () =>
@@ -132,6 +133,7 @@ function VideoPreview({ videoId }: Props) {
         
         {/* Video player with controls */}
         <video
+          ref={videoRef}
           preload="metadata"
           className="w-full aspect-video opacity-50 rounded-xl"
           controls
@@ -227,7 +229,11 @@ function VideoPreview({ videoId }: Props) {
               trial={video.User?.trial ?? false}
               plan={video.User?.subscription?.plan ?? 'FREE'}
             />
-            <VideoTranscript transcript={video.summary!} />
+            <VideoTranscript 
+              transcript={video.summary!}
+              segments={video.transcriptSegments}
+              videoRef={videoRef}
+            />
             <Activities
               author={video.User?.firstname as string}
               videoId={videoId}

@@ -156,10 +156,18 @@ async function processVideo(filename, userId, customTitle = null, customDescript
             const transcription = await openai.audio.transcriptions.create({
               file: fs.createReadStream(audioPath),
               model: "whisper-1",
-              response_format: "text"
+              response_format: "verbose_json"
             })
 
             if(transcription) {
+              // Extract plain text and timestamped segments from verbose_json response
+              const plainTranscript = transcription.text
+              const segments = transcription.segments?.map(seg => ({
+                start: seg.start,
+                end: seg.end,
+                text: seg.text.trim()
+              })) || []
+
               // If custom title/description provided, use those; otherwise generate with AI
               let titleAndSummaryContent
               if (customTitle && customDescription) {
@@ -174,7 +182,7 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                   messages: [
                     {
                       role: 'system',
-                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${transcription}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
+                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${plainTranscript}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
                     }
                   ]
                 })
@@ -184,7 +192,8 @@ async function processVideo(filename, userId, customTitle = null, customDescript
               const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/transcribe`, {
                 filename: filename,
                 content: titleAndSummaryContent,
-                transcript: transcription
+                transcript: plainTranscript,
+                segments: segments
               })
 
               if(titleAndSummaryGenerated.data.status !== 200) {

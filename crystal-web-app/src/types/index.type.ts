@@ -57,6 +57,12 @@ export type VideosProps = {
   }[]
 }
 
+export type TranscriptSegment = {
+  start: number
+  end: number
+  text: string
+}
+
 export type VideoProps = {
   status: number
   data: {
@@ -75,6 +81,7 @@ export type VideoProps = {
     likes: number
     processing: boolean
     summary: string
+    transcriptSegments: TranscriptSegment[] | null
     createdAt: Date
     title: string | null
     source: string

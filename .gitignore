@@ -40,3 +40,4 @@ Thumbs.db
 *.temp
 /.idea/workspace.xml
 /.cursorignore
+/.cursor/

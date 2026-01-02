@@ -1,41 +1,179 @@
+'use client'
+
 import { TabsContent } from '@/components/ui/tabs'
-import React from 'react'
+import { TranscriptSegment } from '@/types/index.type'
+import React, { useEffect, useRef, useState } from 'react'
 
 /**
  * Video Transcript Component
  * 
- * Tab content for displaying video transcript text.
- * Shows transcript content in a readable format.
+ * Displays video transcripts with YouTube-style timestamped segments.
+ * Provides interactive features for enhanced video navigation.
  * 
- * Appearance:
- * - Transcript text display
- * - Rounded container with proper spacing
- * - Gray text color for readability
- * - Scrollable content area
+ * Key Features:
+ * - Timestamped segments with clickable timestamps
+ * - Auto-scrolling to follow current playback position
+ * - Visual highlighting of the active segment
+ * - Click-to-seek functionality for quick navigation
+ * - Fallback to plain text for videos without segments
  * 
- * Special Behavior:
- * - Displays video transcript text
- * - Handles empty transcript gracefully
- * - Scrollable for long transcripts
- * - Responsive text formatting
- * 
- * Used in:
- * - Video preview pages (Transcript tab)
- * - Video transcript displays
- * - Content analysis interfaces
+ * The component syncs with the video player via the videoRef,
+ * listening to timeupdate events to track playback position
+ * and automatically scrolling to keep the current segment visible.
  */
 
 type Props = {
   transcript: string
+  segments?: TranscriptSegment[] | null
+  videoRef: React.RefObject<HTMLVideoElement | null>
 }
 
-const VideoTranscript = ({ transcript }: Props) => {
+/**
+ * Formats seconds into MM:SS or H:MM:SS format for display.
+ * 
+ * @param seconds - Time in seconds to format
+ * @returns Formatted time string (e.g., "1:23" or "1:05:30")
+ */
+const formatTimestamp = (seconds: number): string => {
+  const hrs = Math.floor(seconds / 3600)
+  const mins = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+  
+  if (hrs > 0) {
+    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
+  const [currentTime, setCurrentTime] = useState(0)
+  const [activeSegmentIndex, setActiveSegmentIndex] = useState(-1)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const segmentRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  // Listen to video timeupdate events to track playback position
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime)
+    }
+    
+    video.addEventListener('timeupdate', handleTimeUpdate)
+    return () => video.removeEventListener('timeupdate', handleTimeUpdate)
+  }, [videoRef])
+
+  // Determine which segment is currently active based on playback time
+  useEffect(() => {
+    if (!segments || segments.length === 0) return
+    
+    const index = segments.findIndex(
+      (seg, i) => {
+        const nextSeg = segments[i + 1]
+        const isAfterStart = currentTime >= seg.start
+        const isBeforeEnd = nextSeg ? currentTime < nextSeg.start : currentTime <= seg.end
+        return isAfterStart && isBeforeEnd
+      }
+    )
+    
+    setActiveSegmentIndex(index)
+  }, [currentTime, segments])
+
+  // Auto-scroll to keep active segment visible
+  useEffect(() => {
+    if (activeSegmentIndex < 0 || !segmentRefs.current[activeSegmentIndex]) return
+    
+    const activeElement = segmentRefs.current[activeSegmentIndex]
+    const container = containerRef.current
+    
+    if (activeElement && container) {
+      const containerRect = container.getBoundingClientRect()
+      const elementRect = activeElement.getBoundingClientRect()
+      
+      // Only scroll if element is outside visible area
+      const isAbove = elementRect.top < containerRect.top
+      const isBelow = elementRect.bottom > containerRect.bottom
+      
+      if (isAbove || isBelow) {
+        activeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+      }
+    }
+  }, [activeSegmentIndex])
+
+  /**
+   * Handles clicking on a timestamp to seek the video to that position.
+   * 
+   * @param time - Target time in seconds to seek to
+   */
+  const handleSeek = (time: number) => {
+    const video = videoRef.current
+    if (video) {
+      video.currentTime = time
+      video.play()
+    }
+  }
+
+  // Fallback: Display plain transcript if no segments available
+  if (!segments || segments.length === 0) {
+    return (
+      <TabsContent
+        value="Transcript"
+        className="rounded-xl flex flex-col gap-y-6"
+      >
+        <p className="text-[#a7a7a7]">{transcript}</p>
+      </TabsContent>
+    )
+  }
+
   return (
     <TabsContent
       value="Transcript"
-      className="rounded-xl flex flex-col gap-y-6 "
+      className="rounded-xl flex flex-col gap-y-2"
     >
-      <p className="text-[#a7a7a7]">{transcript}</p>
+      <div 
+        ref={containerRef}
+        className="max-h-[400px] overflow-y-auto pr-2 space-y-1 scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-transparent"
+      >
+        {segments.map((segment, index) => {
+          const isActive = index === activeSegmentIndex
+          
+          return (
+            <div
+              key={index}
+              ref={(el) => { segmentRefs.current[index] = el }}
+              className={`
+                flex gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200
+                ${isActive 
+                  ? 'bg-[#252525] border-l-2 border-[#9D50BB]' 
+                  : 'hover:bg-[#1a1a1a]'
+                }
+              `}
+              onClick={() => handleSeek(segment.start)}
+            >
+              <span 
+                className={`
+                  text-sm font-mono shrink-0 min-w-[50px]
+                  ${isActive ? 'text-[#9D50BB]' : 'text-[#6e6e6e]'}
+                `}
+              >
+                {formatTimestamp(segment.start)}
+              </span>
+              <p 
+                className={`
+                  text-sm leading-relaxed
+                  ${isActive ? 'text-white' : 'text-[#a7a7a7]'}
+                `}
+              >
+                {segment.text}
+              </p>
+            </div>
+          )
+        })}
+      </div>
     </TabsContent>
   )
 }
