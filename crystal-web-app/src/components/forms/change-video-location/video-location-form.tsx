@@ -43,11 +43,13 @@ import { Controller } from 'react-hook-form';
 type Props = {
   videoId: string
   currentWorkSpace?: string
+  onSuccess?: () => void
 }
 
 const ChangeVideoLocation = ({
                                videoId,
                                currentWorkSpace,
+                               onSuccess,
                              }: Props) => {
   const {
     control,
@@ -56,7 +58,7 @@ const ChangeVideoLocation = ({
     workspaces,
     isFetching,
     isFolders,
-  } = useMoveVideos(videoId, currentWorkSpace!)
+  } = useMoveVideos(videoId, currentWorkSpace!, onSuccess)
   
   return (
     <form

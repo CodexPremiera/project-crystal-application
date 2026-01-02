@@ -44,7 +44,7 @@ import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
  * @param currentWorkspace - Current workspace ID for initial state
  * @returns Object containing form functions, data, and loading states
  */
-export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
+export const useMoveVideos = (videoId: string, currentWorkspace: string, onSuccess?: () => void) => {
   // get state redux
   const { folders } = useAppSelector((state) => state.FolderReducer)
   const { workspaces } = useAppSelector((state) => state.WorkSpaceReducer)
@@ -89,7 +89,9 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string) => {
   const { mutate, isPending } = useMutationData(
     ['change-video-location'],
     ((data: { folder_id?: string; workspace_id: string }) =>
-      moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')) as MutationFunction<unknown, unknown>
+      moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')) as MutationFunction<unknown, unknown>,
+    'workspace-folders',
+    onSuccess
   )
   // use zod form
   const { errors, onFormSubmit, watch, register, control } = useZodForm(

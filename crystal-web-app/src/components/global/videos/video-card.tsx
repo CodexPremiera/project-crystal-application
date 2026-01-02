@@ -161,6 +161,7 @@ function VideoCard(props: Props) {
           <ChangeVideoLocation
             videoId={props.id}
             currentWorkSpace={props.workspaceId}
+            onSuccess={() => setMoveDialogOpen(false)}
           />
         </DialogContent>
       </Dialog>
