@@ -302,38 +302,45 @@ io.on('connection', (socket) => {
   // Per-socket chunk storage - each recording session gets its own array
   let recordedChunks = []
 
-  socket.on('video-chunks', async (data) => {
-    console.log("🔵 Receiving video chunks... ", { filename: data.filename, chunkSize: data.chunks?.length });
-
-    // Record and save the video chunks to a temp file
-    const writeStream = fs.createWriteStream('temp_upload/' + data.filename)
+  socket.on('video-chunks', (data) => {
+    // Only accumulate chunks in memory - no file writes during recording
+    // This prevents race conditions from concurrent file writes
     recordedChunks.push(data.chunks)
-
-    // Create a blob from the recorded chunks
-    const videoBlob = new Blob(recordedChunks, {type: 'video/webm; codecs=vp9'})
-    const buffer = Buffer.from(await videoBlob.arrayBuffer())
-    const readStream = Readable.from(buffer)
-
-    // Pipe the read stream to the write stream
-    readStream.pipe(writeStream).on('finish', () => {
-      console.log("🟢 Chunk saved")
-    })
+    console.log(`🔵 Chunk received (${recordedChunks.length} total)`, { filename: data.filename, chunkSize: data.chunks?.length })
   })
 
   socket.on('process-video', async (data) => {
     const chunkCount = recordedChunks.length
     console.log(`🔵 Processing video: ${data.filename} with ${chunkCount} chunks`)
     
-    // Clear chunks immediately for this socket so a new recording can start fresh
-    recordedChunks = []
-    
-    // Use the shared processVideo function
-    const result = await processVideo(data.filename, data.userId)
-    
-    if (!result.success) {
-      console.log("🔴 Error processing video:", result.error)
-    } else {
-      console.log(`🟢 Video processed successfully: ${data.filename}`)
+    if (chunkCount === 0) {
+      console.log("🔴 No chunks to process")
+      return
+    }
+
+    try {
+      // Write complete video file ONCE from all accumulated chunks
+      const videoBlob = new Blob(recordedChunks, { type: 'video/webm; codecs=vp9' })
+      const buffer = Buffer.from(await videoBlob.arrayBuffer())
+      
+      const filePath = 'temp_upload/' + data.filename
+      fs.writeFileSync(filePath, buffer)
+      console.log(`🟢 Video file written: ${(buffer.length / 1024 / 1024).toFixed(2)}MB`)
+      
+      // Clear chunks after successful write
+      recordedChunks = []
+      
+      // Process the video
+      const result = await processVideo(data.filename, data.userId)
+      
+      if (!result.success) {
+        console.log("🔴 Error processing video:", result.error)
+      } else {
+        console.log(`🟢 Video processed successfully: ${data.filename}`)
+      }
+    } catch (error) {
+      console.log("🔴 Error writing video file:", error.message)
+      recordedChunks = []
     }
   })
 
