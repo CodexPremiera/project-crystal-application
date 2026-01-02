@@ -145,7 +145,11 @@ async function processVideo(filename, userId, customTitle = null, customDescript
               }
             }
           } catch (aiError) {
-            console.log("🔴 Error in AI processing:", aiError.message)
+            if (aiError.status === 400 || aiError.message?.includes('Invalid file format')) {
+              console.log("⚠️ AI transcription skipped - file format not supported or no audio track")
+            } else {
+              console.log("🔴 Error in AI processing:", aiError.message)
+            }
           }
         } else {
           console.log("⚠️ File too large for AI processing (>25MB)")
@@ -238,30 +242,35 @@ const io = new Server(server, {
   }
 });
 
-let recordedChunks = []
-
 io.on('connection', (socket) => {
   console.log('🟢 Socket is Connected: ' + socket.id)
+  
+  // Per-socket chunk storage - each recording session gets its own array
+  let recordedChunks = []
 
   socket.on('video-chunks', async (data) => {
-    console.log("🔵 Sending video chucks... ", data);
+    console.log("🔵 Receiving video chunks... ", { filename: data.filename, chunkSize: data.chunks?.length });
 
-    // record and save the video chunks to a temp file
+    // Record and save the video chunks to a temp file
     const writeStream = fs.createWriteStream('temp_upload/' + data.filename)
     recordedChunks.push(data.chunks)
 
-    // create a blob from the recorded chunks
+    // Create a blob from the recorded chunks
     const videoBlob = new Blob(recordedChunks, {type: 'video/webm; codecs=vp9'})
     const buffer = Buffer.from(await videoBlob.arrayBuffer())
     const readStream = Readable.from(buffer)
 
-    // pipe the read stream to the write stream
+    // Pipe the read stream to the write stream
     readStream.pipe(writeStream).on('finish', () => {
       console.log("🟢 Chunk saved")
     })
   })
 
   socket.on('process-video', async (data) => {
+    const chunkCount = recordedChunks.length
+    console.log(`🔵 Processing video: ${data.filename} with ${chunkCount} chunks`)
+    
+    // Clear chunks immediately for this socket so a new recording can start fresh
     recordedChunks = []
     
     // Use the shared processVideo function
@@ -269,11 +278,14 @@ io.on('connection', (socket) => {
     
     if (!result.success) {
       console.log("🔴 Error processing video:", result.error)
+    } else {
+      console.log(`🟢 Video processed successfully: ${data.filename}`)
     }
   })
 
   socket.on("disconnect", () => {
-    console.log(`🔴 Socket disconnected: ${socket.id}`);
+    console.log(`🔴 Socket disconnected: ${socket.id}`)
+    recordedChunks = []
   })
 })
 
