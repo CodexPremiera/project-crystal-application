@@ -1009,6 +1009,78 @@ export const deleteVideo = async (videoId: string) => {
 }
 
 /**
+ * Deletes a folder and optionally its videos
+ * 
+ * Database Operation: DELETE
+ * Tables: Folder (primary), Video (cascade or unlink)
+ * 
+ * What it does:
+ * - Verifies user authentication
+ * - Verifies user owns the folder's workspace
+ * - Unlinks videos from folder (moves them to workspace root)
+ * - Deletes the folder
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Fetches folder with workspace ownership info
+ * 3. Verifies user owns the workspace
+ * 4. Updates videos to remove folder association
+ * 5. Deletes the folder record
+ * 6. Returns success/error response
+ * 
+ * @param folderId - The folder ID to delete
+ * @returns Promise with deletion status and message
+ */
+export const deleteFolder = async (folderId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    const folder = await client.folder.findUnique({
+      where: { id: folderId },
+      select: {
+        id: true,
+        name: true,
+        WorkSpace: {
+          select: {
+            id: true,
+            User: {
+              select: { clerkId: true }
+            }
+          }
+        }
+      }
+    })
+    
+    if (!folder) return { status: 404, data: 'Folder not found' }
+    
+    if (folder.WorkSpace?.User?.clerkId !== user.id) {
+      return { status: 403, data: 'You can only delete your own folders' }
+    }
+    
+    // Unlink videos from folder (move to workspace root instead of deleting)
+    await client.video.updateMany({
+      where: { folderId },
+      data: { folderId: null }
+    })
+    
+    // Delete the folder
+    const deletedFolder = await client.folder.delete({
+      where: { id: folderId }
+    })
+    
+    if (deletedFolder) {
+      return { status: 200, data: 'Folder deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Folder not found' }
+  } catch (error) {
+    console.log('Error deleting folder:', error)
+    return { status: 500, data: 'Failed to delete folder' }
+  }
+}
+
+/**
  * Retrieves the member count for a specific workspace
  * 
  * Database Operation: GET (SELECT query with aggregation)

@@ -18,9 +18,20 @@ import {
   DialogContent,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
 import EditFolderNameForm from '@/components/forms/edit-folder/edit-folder-name'
 import { useDownloadFolder } from '@/hooks/useDownloadFolder'
+import { useDeleteFolder } from '@/hooks/useDeleteFolder'
 
 type Props = {
   folderId: string
@@ -47,6 +58,7 @@ type Props = {
  */
 function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   
   const { data: folderData } = useQueryData(
     ['folder-info'],
@@ -59,6 +71,8 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
     folderId,
     folder?.name || ''
   )
+  
+  const { deleteFolder, isDeleting } = useDeleteFolder(folderId, workspaceId)
   
   const daysAgo = folder?.createdAt
     ? Math.floor((new Date().getTime() - new Date(folder.createdAt).getTime()) / (24 * 60 * 60 * 1000))
@@ -127,8 +141,8 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
               Copy Link
             </DropdownMenuItem>
             <DropdownMenuItem 
-              disabled
-              className="text-red-500 focus:text-red-500"
+              onClick={() => setDeleteDialogOpen(true)}
+              className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
             >
               <Trash2 size={16} />
               Delete Folder
@@ -136,6 +150,36 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-[#1a1a1a] border-[#333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+              Delete Folder
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[#9D9D9D]">
+              Are you sure you want to delete &quot;{folder.name}&quot;? This action cannot be undone.
+              Videos in this folder will be moved to the workspace root.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="bg-[#333] text-white hover:bg-[#444] border-[#555]"
+              disabled={isDeleting}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteFolder(undefined)}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Folder'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
