@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import EditFolderNameForm from '@/components/forms/edit-folder/edit-folder-name'
+import { useDownloadFolder } from '@/hooks/useDownloadFolder'
 
 type Props = {
   folderId: string
@@ -53,6 +54,11 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
   )
   
   const folder = (folderData as FolderProps)?.data
+  
+  const { downloadFolder, isDownloading } = useDownloadFolder(
+    folderId,
+    folder?.name || ''
+  )
   
   const daysAgo = folder?.createdAt
     ? Math.floor((new Date().getTime() - new Date(folder.createdAt).getTime()) / (24 * 60 * 60 * 1000))
@@ -102,10 +108,11 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
         <Button
           variant="secondary"
           className="rounded-full pl-3 pr-6 flex"
-          disabled
+          onClick={downloadFolder}
+          disabled={isDownloading}
         >
           <Download className="h-4 w-4" />
-          <span>Download</span>
+          <span>{isDownloading ? 'Downloading...' : 'Download'}</span>
         </Button>
         
         <DropdownMenu>
