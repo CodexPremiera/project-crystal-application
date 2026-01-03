@@ -226,3 +226,9 @@
 .bg-blue-radial-gradient {
   background: radial-gradient(circle at 25% 25%, #551C9E 0%, #16121B 100%);
 }
+
+/* Override cursor during video drag operations */
+body.dragging-video,
+body.dragging-video * {
+  cursor: grabbing !important;
+}

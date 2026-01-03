@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {useQueryData} from "@/hooks/useQueryData";
-import {getAllUserVideos} from "@/actions/workspace";
+import {getAllUserVideos, getFolderVideos} from "@/actions/workspace";
 import {VideosProps} from "@/types/index.type";
 import VideoRecorderDuotone from "@/components/icons/video-recorder-duotone";
 import {cn} from "@/lib/utils";
@@ -12,9 +12,10 @@ type Props = {
   folderId: string
   videosKey: string
   workspaceId: string
+  isFolderView?: boolean
 }
 
-function Videos({ folderId, videosKey, workspaceId }: Props) {
+function Videos({ folderId, videosKey, workspaceId, isFolderView = false }: Props) {
   /**
    * Data Fetching with React Query (useQuery)
    * 
@@ -23,11 +24,11 @@ function Videos({ folderId, videosKey, workspaceId }: Props) {
    * same query key, providing efficient data management.
    * 
    * How it works:
-   * 1. Fetches videos using the getAllUserVideos server action
-   * 2. Caches data with the provided videosKey for component-specific caching
-   * 3. Automatically refetches when folderId or videosKey changes
-   * 4. Provides loading states and error handling
-   * 5. Shows loading state while data is being fetched
+   * 1. Fetches videos using either getFolderVideos or getAllUserVideos based on context
+   * 2. For folder views: fetches videos within the specific folder
+   * 3. For workspace views: fetches only unfiled videos (not in any folder)
+   * 4. Caches data with the provided videosKey for component-specific caching
+   * 5. Provides loading states and error handling
    * 
    * Query Key Strategy:
    * - Uses dynamic videosKey for component-specific caching
@@ -40,7 +41,7 @@ function Videos({ folderId, videosKey, workspaceId }: Props) {
    * - Prevents destructuring errors during initial load
    */
   const { data: videoData } = useQueryData([videosKey], () =>
-    getAllUserVideos(folderId)
+    isFolderView ? getFolderVideos(folderId) : getAllUserVideos(workspaceId)
   )
   
   const { status: videosStatus, data: videos } = (videoData || {

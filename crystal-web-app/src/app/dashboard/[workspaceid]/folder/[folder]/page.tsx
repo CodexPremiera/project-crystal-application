@@ -1,12 +1,13 @@
-import { getAllUserVideos, getFolderInfo } from '@/actions/workspace'
+import { getFolderVideos, getFolderInfo, getWorkSpaces } from '@/actions/workspace'
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query'
 import React from 'react'
-import FolderInfo from "@/components/global/folders/folder-info";
+import { notFound } from 'next/navigation'
 import Videos from "@/components/global/videos/videos";
+import FolderHeader from "@/components/global/folders/folder-header";
 
 type Props = {
   params: Promise<{
@@ -69,25 +70,42 @@ const page = async ({ params }: Props) => {
   const { folder, workspaceid } = await params
   const query = new QueryClient()
   
+  // Check if folder exists
+  const folderInfo = await getFolderInfo(folder)
+  if (folderInfo.status === 404 || !folderInfo.data) {
+    notFound()
+  }
+  
   // Prefetch folder videos data
   await query.prefetchQuery({
     queryKey: ['folder-videos'],
-    queryFn: () => getAllUserVideos(folder), // Use folder as folderId
+    queryFn: () => getFolderVideos(folder),
   })
   
-  // Prefetch folder info data
+  // Prefetch folder info data (already fetched, just set it)
   await query.prefetchQuery({
     queryKey: ['folder-info'],
-    queryFn: () => getFolderInfo(folder), // Use folder as folderId
+    queryFn: () => Promise.resolve(folderInfo),
   })
+  
+  // Fetch workspace name for header display
+  const workspaceData = await getWorkSpaces()
+  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string }> } | undefined
+  const currentWorkspace = workspace?.workspace.find((item) => item.id === workspaceid)
+  const workspaceName = currentWorkspace?.name || 'Workspace'
   
   return (
     <HydrationBoundary state={dehydrate(query)}>
-      <FolderInfo folderId={folder} />
+      <FolderHeader
+        folderId={folder}
+        workspaceId={workspaceid}
+        workspaceName={workspaceName}
+      />
       <Videos
         workspaceId={workspaceid}
         folderId={folder}
         videosKey="folder-videos"
+        isFolderView={true}
       />
     </HydrationBoundary>
   )

@@ -25,8 +25,8 @@ type Props = {
  * 5. Handles special cases for video and folder pages
  * 
  * Route Handling:
- * - Video pages: Shows empty title (handled by video player)
- * - Folder pages: Shows "My Library" as default
+ * - Video pages: Shows empty (handled by video player)
+ * - Folder pages: Shows empty (handled by FolderHeader component)
  * - Other pages: Capitalizes and formats route name
  * - Workspace type: Displayed for non-video pages
  * 
@@ -40,23 +40,33 @@ type Props = {
  * @returns JSX element with dynamic header content
  */
 const GlobalHeader = ({ workspace }: Props) => {
-  //Pathname
   const pathName = usePathname().split(`/dashboard/${workspace.id}`)[1]
+  
+  const isFolderPage = pathName?.includes('folder')
+  const isVideoPage = pathName?.includes('video')
+  
+  // Folder and video pages have their own headers
+  if (isFolderPage || isVideoPage) {
+    return null
+  }
+  
+  const getSubtitle = () => {
+    if (pathName) return workspace.name
+    return `${workspace.type} WORKSPACE`
+  }
+  
+  const getTitle = () => {
+    if (pathName) return pathName.charAt(1).toUpperCase() + pathName.slice(2).toLowerCase()
+    return workspace.name
+  }
+  
   return (
     <article className="flex flex-col gap-2">
       <span className="text-[#707070] text-xs">
-        {pathName && !pathName.includes('folder') && !pathName.includes('video')
-          ? workspace.name
-          : pathName.includes('video')
-            ? ''
-            : `${workspace.type.toLocaleUpperCase()} WORKSPACE`}
+        {getSubtitle().toLocaleUpperCase()}
       </span>
       <h1 className="text-4xl font-bold">
-        {pathName && !pathName.includes('folder') && !pathName.includes('video')
-          ? pathName.charAt(1).toUpperCase() + pathName.slice(2).toLowerCase()
-          : pathName.includes('video')
-          ? ''
-          : workspace.name}
+        {getTitle()}
       </h1>
     </article>
   )

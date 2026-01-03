@@ -106,28 +106,26 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
 
 
 /**
- * Retrieves all videos in a workspace (both direct and in folders)
+ * Retrieves unfiled videos in a workspace (videos not in any folder)
  * 
  * Database Operation: GET (SELECT query)
  * Tables: Video (primary), Folder, User
  * 
  * What it retrieves:
- * - All videos in workspace (direct + in folders)
+ * - Only videos in workspace that are NOT in any folder
  * - Video metadata (title, source, processing status, views)
- * - Folder information for each video
+ * - Folder information for each video (will be null)
  * - User information (name, image) for each video
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
- * 2. Queries Video table with OR condition:
- *    - Videos directly in workspace (workSpaceId = workspaceId)
- *    - Videos in workspace folders (folderId = workspaceId)
+ * 2. Queries Video table for videos in workspace with no folder
  * 3. Includes related Folder and User data via Prisma relations
  * 4. Orders by creation date (oldest first)
- * 5. Returns comprehensive video data for UI display
+ * 5. Returns unfiled video data for dashboard display
  * 
  * @param workSpaceId - The workspace ID to fetch videos for
- * @returns Promise with videos data or 404 if none found
+ * @returns Promise with unfiled videos data or 404 if none found
  */
 export const getAllUserVideos = async (workSpaceId: string) => {
   try {
@@ -136,10 +134,75 @@ export const getAllUserVideos = async (workSpaceId: string) => {
     
     const videos = await client.video.findMany({
       where: {
-        OR: [
-          { workSpaceId },      // Direct workspace videos
-          { folderId: workSpaceId } // Folder videos
-        ],
+        workSpaceId,
+        folderId: null,  // Only videos not in any folder
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        source: true,
+        processing: true,
+        Folder: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+    
+    if (videos && videos.length > 0) {
+      return { status: 200, data: videos }
+    }
+    
+    return { status: 404 }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Retrieves videos within a specific folder
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: Video (primary), Folder, User
+ * 
+ * What it retrieves:
+ * - All videos in the specified folder
+ * - Video metadata (title, source, processing status)
+ * - Folder information for each video
+ * - User information (name, image) for each video
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries Video table for videos matching the folderId
+ * 3. Includes related Folder and User data via Prisma relations
+ * 4. Orders by creation date (oldest first)
+ * 5. Returns folder video data for folder page display
+ * 
+ * @param folderId - The folder ID to fetch videos for
+ * @returns Promise with folder videos data or 404 if none found
+ */
+export const getFolderVideos = async (folderId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const videos = await client.video.findMany({
+      where: {
+        folderId,
       },
       select: {
         id: true,
@@ -403,6 +466,7 @@ export const getFolderInfo = async (folderId: string) => {
       },
       select: {
         name: true,
+        createdAt: true,
         _count: {
           select: {
             videos: true,
@@ -941,6 +1005,78 @@ export const deleteVideo = async (videoId: string) => {
   } catch (error) {
     console.log('Error deleting video:', error)
     return { status: 500, data: 'Failed to delete video' }
+  }
+}
+
+/**
+ * Deletes a folder and optionally its videos
+ * 
+ * Database Operation: DELETE
+ * Tables: Folder (primary), Video (cascade or unlink)
+ * 
+ * What it does:
+ * - Verifies user authentication
+ * - Verifies user owns the folder's workspace
+ * - Unlinks videos from folder (moves them to workspace root)
+ * - Deletes the folder
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Fetches folder with workspace ownership info
+ * 3. Verifies user owns the workspace
+ * 4. Updates videos to remove folder association
+ * 5. Deletes the folder record
+ * 6. Returns success/error response
+ * 
+ * @param folderId - The folder ID to delete
+ * @returns Promise with deletion status and message
+ */
+export const deleteFolder = async (folderId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    const folder = await client.folder.findUnique({
+      where: { id: folderId },
+      select: {
+        id: true,
+        name: true,
+        WorkSpace: {
+          select: {
+            id: true,
+            User: {
+              select: { clerkId: true }
+            }
+          }
+        }
+      }
+    })
+    
+    if (!folder) return { status: 404, data: 'Folder not found' }
+    
+    if (folder.WorkSpace?.User?.clerkId !== user.id) {
+      return { status: 403, data: 'You can only delete your own folders' }
+    }
+    
+    // Unlink videos from folder (move to workspace root instead of deleting)
+    await client.video.updateMany({
+      where: { folderId },
+      data: { folderId: null }
+    })
+    
+    // Delete the folder
+    const deletedFolder = await client.folder.delete({
+      where: { id: folderId }
+    })
+    
+    if (deletedFolder) {
+      return { status: 200, data: 'Folder deleted successfully' }
+    }
+    
+    return { status: 404, data: 'Folder not found' }
+  } catch (error) {
+    console.log('Error deleting folder:', error)
+    return { status: 500, data: 'Failed to delete folder' }
   }
 }
 

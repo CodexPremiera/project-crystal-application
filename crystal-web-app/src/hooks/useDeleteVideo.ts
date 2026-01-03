@@ -1,6 +1,7 @@
-import { useMutationData } from './useMutationData'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteVideo } from '@/actions/workspace'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 /**
  * useDeleteVideo Hook
@@ -42,6 +43,8 @@ import { useRouter } from 'next/navigation'
 export const useDeleteVideo = (videoId: string, redirectPath?: string) => {
   const router = useRouter()
   
+  const queryClient = useQueryClient()
+  
   /**
    * Mutation with Cache Invalidation and Navigation
    * 
@@ -57,21 +60,31 @@ export const useDeleteVideo = (videoId: string, redirectPath?: string) => {
    * 
    * Cache Management:
    * - Invalidates 'preview-video' for current video
-   * - Invalidates 'all-videos' for video lists
+   * - Invalidates 'user-videos' for dashboard video list
+   * - Invalidates 'folder-videos' for folder video list
    * - Triggers automatic refetch of all video data
    * - Ensures UI reflects the latest state after deletion
    */
-  const { mutate: deleteVideoMutation, isPending } = useMutationData(
-    ['delete-video'],
-    () => deleteVideo(videoId),
-    'preview-video', // Primary cache to invalidate
-    () => {
-      // Custom success callback for navigation
-      if (redirectPath) {
+  const { mutate: deleteVideoMutation, isPending } = useMutation({
+    mutationKey: ['delete-video'],
+    mutationFn: () => deleteVideo(videoId),
+    onSuccess: (data) => {
+      const response = data as { status?: number; data?: string }
+      toast(response?.status === 200 ? 'Success' : 'Error', {
+        description: response?.data,
+      })
+      
+      if (response?.status === 200 && redirectPath) {
         router.push(redirectPath)
       }
-    }
-  )
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['preview-video'] })
+      await queryClient.invalidateQueries({ queryKey: ['user-videos'] })
+      await queryClient.invalidateQueries({ queryKey: ['folder-videos'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-folders'] })
+    },
+  })
   
   return { 
     deleteVideo: deleteVideoMutation, 

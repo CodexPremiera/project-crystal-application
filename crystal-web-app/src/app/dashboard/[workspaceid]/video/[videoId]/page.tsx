@@ -7,6 +7,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import React from 'react'
+import { notFound } from 'next/navigation'
 
 
 type Props = {
@@ -72,9 +73,16 @@ const VideoPage = async ({ params }: Props) => {
   const { videoId } = await params
   const query = new QueryClient()
 
+  // Check if video exists
+  const videoData = await getPreviewVideo(videoId)
+  if (videoData.status === 404 || !videoData.data) {
+    notFound()
+  }
+
+  // Prefetch video data (already fetched, just set it)
   await query.prefetchQuery({
     queryKey: ['preview-video'],
-    queryFn: () => getPreviewVideo(videoId),
+    queryFn: () => Promise.resolve(videoData),
   })
 
   await query.prefetchQuery({
