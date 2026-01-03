@@ -174,6 +174,73 @@ export const getAllUserVideos = async (workSpaceId: string) => {
 }
 
 /**
+ * Retrieves videos within a specific folder
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: Video (primary), Folder, User
+ * 
+ * What it retrieves:
+ * - All videos in the specified folder
+ * - Video metadata (title, source, processing status)
+ * - Folder information for each video
+ * - User information (name, image) for each video
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Queries Video table for videos matching the folderId
+ * 3. Includes related Folder and User data via Prisma relations
+ * 4. Orders by creation date (oldest first)
+ * 5. Returns folder video data for folder page display
+ * 
+ * @param folderId - The folder ID to fetch videos for
+ * @returns Promise with folder videos data or 404 if none found
+ */
+export const getFolderVideos = async (folderId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const videos = await client.video.findMany({
+      where: {
+        folderId,
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        source: true,
+        processing: true,
+        Folder: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        User: {
+          select: {
+            firstname: true,
+            lastname: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+    
+    if (videos && videos.length > 0) {
+      return { status: 200, data: videos }
+    }
+    
+    return { status: 404 }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+/**
  * Retrieves all workspaces for the current user (owned + member of)
  * 
  * Database Operation: GET (SELECT query)

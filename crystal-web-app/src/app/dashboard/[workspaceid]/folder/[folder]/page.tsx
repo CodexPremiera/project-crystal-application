@@ -1,4 +1,4 @@
-import { getAllUserVideos, getFolderInfo } from '@/actions/workspace'
+import { getFolderVideos, getFolderInfo } from '@/actions/workspace'
 import {
   dehydrate,
   HydrationBoundary,
@@ -72,7 +72,7 @@ const page = async ({ params }: Props) => {
   // Prefetch folder videos data
   await query.prefetchQuery({
     queryKey: ['folder-videos'],
-    queryFn: () => getAllUserVideos(folder), // Use folder as folderId
+    queryFn: () => getFolderVideos(folder),
   })
   
   // Prefetch folder info data
@@ -88,6 +88,7 @@ const page = async ({ params }: Props) => {
         workspaceId={workspaceid}
         folderId={folder}
         videosKey="folder-videos"
+        isFolderView={true}
       />
     </HydrationBoundary>
   )
