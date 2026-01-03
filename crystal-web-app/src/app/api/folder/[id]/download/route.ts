@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { client } from '@/lib/prisma'
 import archiver from 'archiver'
-import { Readable } from 'stream'
 
 /**
  * Folder Download API Route
@@ -35,7 +34,7 @@ export async function GET(
   try {
     const { id: folderId } = await params
     
-    if (!folderId || typeof folderId !== 'string') {
+    if (!folderId) {
       return NextResponse.json(
         { status: 400, message: 'Invalid folder ID' },
         { status: 400 }
@@ -151,7 +150,7 @@ export async function GET(
     const zipFilename = `${sanitizedFolderName}.zip`
     
     // Return ZIP file with download headers
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(new Uint8Array(zipBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/zip',

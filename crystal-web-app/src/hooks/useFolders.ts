@@ -8,18 +8,18 @@ import { toast } from 'sonner'
 
 /**
  * Custom hook for moving videos between workspaces and folders
- * 
+ *
  * This hook provides comprehensive functionality for relocating videos within
  * the application's workspace structure. It handles both workspace-level and
  * folder-level moves with dynamic form updates and real-time data fetching.
- * 
+ *
  * Key Features:
  * 1. Dynamic folder fetching based on selected workspace
  * 2. Form validation for move operations
  * 3. Real-time workspace and folder selection
  * 4. Integration with Redux for global state management
  * 5. Optimistic updates with cache invalidation
- * 
+ *
  * Data Flow:
  * 1. Fetches available workspaces from Redux store
  * 2. Loads folders for the current workspace on mount
@@ -27,21 +27,23 @@ import { toast } from 'sonner'
  * 4. Validates form data before submission
  * 5. Executes move operation via server action
  * 6. Updates cache to reflect changes
- * 
+ *
  * Form Behavior:
  * - Workspace selection triggers folder refresh
  * - Folder dropdown updates based on selected workspace
  * - Form validation ensures proper data structure
  * - Loading states provide user feedback
- * 
+ *
  * Integration:
  * - Uses Redux for workspace and folder state
  * - Connects to workspace actions for data operations
  * - Integrates with form validation system
  * - Provides mutation capabilities with error handling
- * 
+ *
  * @param videoId - Unique identifier of the video to move
  * @param currentWorkspace - Current workspace ID for initial state
+ * @param currentFolderId
+ * @param onSuccess
  * @returns Object containing form functions, data, and loading states
  */
 export const useMoveVideos = (videoId: string, currentWorkspace: string, currentFolderId: string, onSuccess?: () => void) => {
@@ -110,7 +112,7 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string, current
   // use zod form
   const { errors, onFormSubmit, watch, register, control } = useZodForm(
     moveVideoSchema,
-    mutate as UseMutateFunction,
+      mutate as unknown as UseMutateFunction,
     { folder_id: currentFolderId || '', workspace_id: currentWorkspace }
   )
   
