@@ -43,12 +43,14 @@ import { Controller } from 'react-hook-form';
 type Props = {
   videoId: string
   currentWorkSpace?: string
+  currentFolderId?: string | null
   onSuccess?: () => void
 }
 
 const ChangeVideoLocation = ({
                                videoId,
                                currentWorkSpace,
+                               currentFolderId,
                                onSuccess,
                              }: Props) => {
   const {
@@ -58,7 +60,8 @@ const ChangeVideoLocation = ({
     workspaces,
     isFetching,
     isFolders,
-  } = useMoveVideos(videoId, currentWorkSpace!, onSuccess)
+    hasChanges,
+  } = useMoveVideos(videoId, currentWorkSpace!, currentFolderId || '', onSuccess)
   
   return (
     <form
@@ -95,37 +98,40 @@ const ChangeVideoLocation = ({
         ) : (
           <Label className="flex flex-col gap-y-2 w-full items-start">
             <p className="text-xs">Folder</p>
-            {isFolders && isFolders.length > 0 ? (
-              <Controller
-                name="folder_id"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a folder" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {isFolders.map((folder) => (
-                          <SelectItem key={folder.id} value={folder.id}>
-                            {folder.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            ) : (
-              <p className="text-[#a4a4a4] text-sm">
-                This workspace has no folders
-              </p>
-            )}
+            <Controller
+              name="folder_id"
+              control={control}
+              render={({ field }) => (
+                <Select 
+                  value={field.value || ''} 
+                  onValueChange={(value) => field.onChange(value === 'none' ? '' : value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="No folder" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="none" className="text-[#a4a4a4]">
+                        No folder
+                      </SelectItem>
+                      {isFolders && isFolders.map((folder) => (
+                        <SelectItem key={folder.id} value={folder.id}>
+                          {folder.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </Label>
         )}
       </div>
       <div className="flex w-full gap-3">
-        <Button className="max-w-40 flex-1">
+        <Button 
+          className="max-w-40 flex-1"
+          disabled={!hasChanges || isPending}
+        >
           <Loader
             state={isPending}
             color="#000"

@@ -1,10 +1,10 @@
 import { useAppSelector } from '@/redux/store'
 import { useEffect, useState } from 'react'
-import { useMutationData } from './useMutationData'
 import { getWorkspaceFolders, moveVideoLocation } from '@/actions/workspace'
 import useZodForm from './useZodForm'
 import { moveVideoSchema } from '@/components/forms/change-video-location/schema'
-import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
+import { useMutation, useQueryClient, UseMutateFunction } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 /**
  * Custom hook for moving videos between workspaces and folders
@@ -44,7 +44,7 @@ import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
  * @param currentWorkspace - Current workspace ID for initial state
  * @returns Object containing form functions, data, and loading states
  */
-export const useMoveVideos = (videoId: string, currentWorkspace: string, onSuccess?: () => void) => {
+export const useMoveVideos = (videoId: string, currentWorkspace: string, currentFolderId: string, onSuccess?: () => void) => {
   // get state redux
   const { folders } = useAppSelector((state) => state.FolderReducer)
   const { workspaces } = useAppSelector((state) => state.WorkSpaceReducer)
@@ -66,6 +66,8 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string, onSucce
     | undefined
   >(undefined)
   
+  const queryClient = useQueryClient()
+  
   /**
    * Data Mutation with React Query (useMutation)
    * 
@@ -82,23 +84,44 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string, onSucce
    * 
    * Mutation Features:
    * - Optimistic updates for responsive UI
-   * - Automatic cache invalidation
+   * - Automatic cache invalidation for multiple queries
    * - Error handling and user feedback
    * - Loading state management
    */
-  const { mutate, isPending } = useMutationData(
-    ['change-video-location'],
-    ((data: { folder_id?: string; workspace_id: string }) =>
-      moveVideoLocation(videoId, data.workspace_id, data.folder_id || '')) as MutationFunction<unknown, unknown>,
-    'workspace-folders',
-    onSuccess
-  )
+  const { mutate, isPending } = useMutation({
+    mutationKey: ['change-video-location'],
+    mutationFn: (data: { folder_id?: string; workspace_id: string }) =>
+      moveVideoLocation(videoId, data.workspace_id, data.folder_id || ''),
+    onSuccess: (data) => {
+      if (onSuccess) onSuccess()
+      
+      const response = data as { status?: number; data?: string }
+      toast(response?.status === 200 ? 'Success' : 'Error', {
+        description: response?.data,
+      })
+    },
+    onSettled: async () => {
+      // Invalidate all video-related queries for immediate UI update
+      await queryClient.invalidateQueries({ queryKey: ['folder-videos'] })
+      await queryClient.invalidateQueries({ queryKey: ['user-videos'] })
+      await queryClient.invalidateQueries({ queryKey: ['workspace-folders'] })
+    },
+  })
   // use zod form
   const { errors, onFormSubmit, watch, register, control } = useZodForm(
     moveVideoSchema,
     mutate as UseMutateFunction,
-    { folder_id: undefined, workspace_id: currentWorkspace }
+    { folder_id: currentFolderId || '', workspace_id: currentWorkspace }
   )
+  
+  // Track current form values to detect changes
+  const watchedWorkspace = watch('workspace_id')
+  const watchedFolder = watch('folder_id')
+  
+  // Check if there are any changes from the initial values
+  const hasChanges = 
+    watchedWorkspace !== currentWorkspace || 
+    (watchedFolder || '') !== (currentFolderId || '')
   
   // fetch folders with a use effect
   const fetchFolders = async (workspace: string) => {
@@ -129,5 +152,6 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string, onSucce
     workspaces,
     isFetching,
     isFolders,
+    hasChanges,
   }
 }
