@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Loader from '../loader/loader';
-import { User, Move, Link2, Video } from "lucide-react";
+import { User, Move, Link2, Video, Trash2 } from "lucide-react";
 import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -17,8 +17,19 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import ChangeVideoLocation from "@/components/forms/change-video-location/video-location-form";
 import { useVideoDragSafe } from "@/components/global/videos/video-drag-context";
+import { useDeleteVideo } from "@/hooks/useDeleteVideo";
 import { cn, truncateString } from "@/lib/utils";
 
 type Props = {
@@ -84,9 +95,11 @@ type Props = {
  */
 function VideoCard(props: Props) {
   const [moveDialogOpen, setMoveDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const dragContext = useVideoDragSafe()
   const dragPreviewRef = useRef<HTMLDivElement>(null)
+  const { deleteVideo, isDeleting } = useDeleteVideo(props.id)
   
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt!.getTime()) / (24 * 60 * 60 * 1000)
@@ -193,6 +206,13 @@ function VideoCard(props: Props) {
               <Link2 size={16} />
               Copy Link
             </ContextMenuItem>
+            <ContextMenuItem 
+              onClick={() => setDeleteDialogOpen(true)}
+              className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
+            >
+              <Trash2 size={16} />
+              Delete
+            </ContextMenuItem>
           </ContextMenuContent>
         )}
       </ContextMenu>
@@ -206,6 +226,36 @@ function VideoCard(props: Props) {
           />
         </DialogContent>
       </Dialog>
+      
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-[#1a1a1a] border-[#333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+              Delete Video
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[#9D9D9D]">
+              Are you sure you want to delete &quot;{props.title}&quot;? This action cannot be undone.
+              All comments and associated data will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="bg-[#333] text-white hover:bg-[#444] border-[#555]"
+              disabled={isDeleting}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteVideo(undefined)}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Video'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Loader>
   );
 }
