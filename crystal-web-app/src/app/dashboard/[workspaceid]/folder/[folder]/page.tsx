@@ -5,6 +5,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import React from 'react'
+import { notFound } from 'next/navigation'
 import Videos from "@/components/global/videos/videos";
 import FolderHeader from "@/components/global/folders/folder-header";
 
@@ -69,16 +70,22 @@ const page = async ({ params }: Props) => {
   const { folder, workspaceid } = await params
   const query = new QueryClient()
   
+  // Check if folder exists
+  const folderInfo = await getFolderInfo(folder)
+  if (folderInfo.status === 404 || !folderInfo.data) {
+    notFound()
+  }
+  
   // Prefetch folder videos data
   await query.prefetchQuery({
     queryKey: ['folder-videos'],
     queryFn: () => getFolderVideos(folder),
   })
   
-  // Prefetch folder info data
+  // Prefetch folder info data (already fetched, just set it)
   await query.prefetchQuery({
     queryKey: ['folder-info'],
-    queryFn: () => getFolderInfo(folder),
+    queryFn: () => Promise.resolve(folderInfo),
   })
   
   // Fetch workspace name for header display

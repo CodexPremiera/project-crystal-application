@@ -1,5 +1,6 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import React from 'react'
+import { notFound } from 'next/navigation'
 import Folders from "@/components/global/folders/folders";
 import {getAllUserVideos, getWorkspaceFolders, getWorkSpaces} from '@/actions/workspace';
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
@@ -90,7 +91,12 @@ const Page = async ({ params }: Props) => {
     (item) => item.id === workspaceid
   )
   
-  const workspaceName = currentWorkspace?.name || 'Unknown Workspace'
+  // Check if workspace exists
+  if (!currentWorkspace) {
+    notFound()
+  }
+  
+  const workspaceName = currentWorkspace.name
   
   return (
     <HydrationBoundary state={dehydrate(query)}>
