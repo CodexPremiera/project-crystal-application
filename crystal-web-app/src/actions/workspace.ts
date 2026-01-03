@@ -466,6 +466,7 @@ export const getFolderInfo = async (folderId: string) => {
       },
       select: {
         name: true,
+        createdAt: true,
         _count: {
           select: {
             videos: true,

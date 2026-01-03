@@ -2,9 +2,6 @@
 import { WorkSpace } from '@prisma/client'
 import React from 'react'
 import { usePathname } from "next/navigation"
-import { useQueryData } from '@/hooks/useQueryData'
-import { getFolderInfo } from '@/actions/workspace'
-import { FolderProps } from '@/types/index.type'
 
 type Props = {
   workspace: WorkSpace
@@ -28,8 +25,8 @@ type Props = {
  * 5. Handles special cases for video and folder pages
  * 
  * Route Handling:
- * - Video pages: Shows empty title (handled by video player)
- * - Folder pages: Shows "My Library" as default
+ * - Video pages: Shows empty (handled by video player)
+ * - Folder pages: Shows empty (handled by FolderHeader component)
  * - Other pages: Capitalizes and formats route name
  * - Workspace type: Displayed for non-video pages
  * 
@@ -48,28 +45,17 @@ const GlobalHeader = ({ workspace }: Props) => {
   const isFolderPage = pathName?.includes('folder')
   const isVideoPage = pathName?.includes('video')
   
-  const folderId = isFolderPage 
-    ? pathName.split('/folder/')[1]?.split('/')[0] 
-    : null
-  
-  const { data: folderData } = useQueryData(
-    ['folder-info'],
-    () => getFolderInfo(folderId!),
-    !!folderId
-  )
-  
-  const folder = (folderData as FolderProps)?.data
+  // Folder and video pages have their own headers
+  if (isFolderPage || isVideoPage) {
+    return null
+  }
   
   const getSubtitle = () => {
-    if (isVideoPage) return ''
-    if (isFolderPage) return workspace.name
     if (pathName) return workspace.name
     return `${workspace.type} WORKSPACE`
   }
   
   const getTitle = () => {
-    if (isVideoPage) return ''
-    if (isFolderPage) return folder?.name || ''
     if (pathName) return pathName.charAt(1).toUpperCase() + pathName.slice(2).toLowerCase()
     return workspace.name
   }

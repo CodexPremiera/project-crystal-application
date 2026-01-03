@@ -1,4 +1,4 @@
-import { getFolderVideos, getFolderInfo } from '@/actions/workspace'
+import { getFolderVideos, getFolderInfo, getWorkSpaces } from '@/actions/workspace'
 import {
   dehydrate,
   HydrationBoundary,
@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query'
 import React from 'react'
 import Videos from "@/components/global/videos/videos";
+import FolderHeader from "@/components/global/folders/folder-header";
 
 type Props = {
   params: Promise<{
@@ -77,11 +78,22 @@ const page = async ({ params }: Props) => {
   // Prefetch folder info data
   await query.prefetchQuery({
     queryKey: ['folder-info'],
-    queryFn: () => getFolderInfo(folder), // Use folder as folderId
+    queryFn: () => getFolderInfo(folder),
   })
+  
+  // Fetch workspace name for header display
+  const workspaceData = await getWorkSpaces()
+  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string }> } | undefined
+  const currentWorkspace = workspace?.workspace.find((item) => item.id === workspaceid)
+  const workspaceName = currentWorkspace?.name || 'Workspace'
   
   return (
     <HydrationBoundary state={dehydrate(query)}>
+      <FolderHeader
+        folderId={folder}
+        workspaceId={workspaceid}
+        workspaceName={workspaceName}
+      />
       <Videos
         workspaceId={workspaceid}
         folderId={folder}

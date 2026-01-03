@@ -31,6 +31,7 @@ export type FolderProps = {
   status: number
   data: {
     name: string
+    createdAt: Date
     _count: {
       videos: number
     }
