@@ -5,7 +5,6 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import React from 'react'
-import FolderInfo from "@/components/global/folders/folder-info";
 import Videos from "@/components/global/videos/videos";
 
 type Props = {
@@ -83,7 +82,6 @@ const page = async ({ params }: Props) => {
   
   return (
     <HydrationBoundary state={dehydrate(query)}>
-      <FolderInfo folderId={folder} />
       <Videos
         workspaceId={workspaceid}
         folderId={folder}
