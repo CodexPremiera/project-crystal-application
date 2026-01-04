@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { useRouter, usePathname } from 'next/navigation';
 import { UploadVideoDialog } from '@/components/global/upload-video-dialog';
+import { DownloadAppModal } from '@/components/global/download-app-modal';
 import { SearchDropdown } from '@/components/global/search/search-dropdown';
+import { useDesktopApp } from '@/hooks/useDesktopApp';
 
 /**
  * Infobar Component
@@ -17,7 +19,8 @@ import { SearchDropdown } from '@/components/global/search/search-dropdown';
  * - Smart search with real-time suggestions dropdown
  * - Recent searches shown on focus
  * - Fuzzy matching for better results
- * - Upload and Record buttons
+ * - Upload button for manual video uploads
+ * - Record button that launches desktop app or prompts download
  * - User authentication menu
  */
 
@@ -25,6 +28,8 @@ function Infobar() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+  
+  const { launchApp, isLaunching, showDownloadModal, closeDownloadModal } = useDesktopApp()
 
   // Extract workspace ID from current path for upload dialog navigation
   const getWorkspaceId = (): string | null => {
@@ -47,9 +52,15 @@ function Infobar() {
           <UploadIcon size={20} />
           <span className="flex items-center gap-2">Upload</span>
         </Button>
-        <Button className="bg-text-tertiary flex items-center gap-2">
+        <Button 
+          className="bg-text-tertiary flex items-center gap-2"
+          onClick={launchApp}
+          disabled={isLaunching}
+        >
           <Video />
-          <span className="flex items-center gap-2">Record</span>
+          <span className="flex items-center gap-2">
+            {isLaunching ? 'Launching...' : 'Record'}
+          </span>
         </Button>
         <UserButton />
       </div>
@@ -61,6 +72,11 @@ function Infobar() {
         onUploadComplete={() => {
           router.refresh()
         }}
+      />
+      
+      <DownloadAppModal
+        open={showDownloadModal}
+        onOpenChange={closeDownloadModal}
       />
     </header>
   )

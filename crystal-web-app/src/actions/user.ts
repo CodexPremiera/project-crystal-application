@@ -170,16 +170,19 @@ export const onAuthenticateUser = async () => {
  * Retrieves user notifications and notification count
  *
  * Database Operation: GET (SELECT query)
- * Tables: User (primary), Notification
+ * Tables: User (primary), Notification, Video, Invite
  * 
  * What it retrieves:
- * - All notifications for the current user
+ * - All notifications for the current user (all types)
  * - Notification count for UI display
+ * - Actor (user who performed the action) for video notifications
+ * - Video info for video-related notifications
+ * - Invite data for workspace invitations
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
  * 2. Queries User table by clerkId
- * 3. Includes related notifications via Prisma relations
+ * 3. Includes related notifications with type-specific data
  * 4. Uses _count aggregation to get notification count
  * 5. Returns notifications array or empty array if none found
  *
@@ -201,13 +204,31 @@ export const getNotifications = async () => {
             id: true,
             userId: true,
             content: true,
+            type: true,
             createdAt: true,
+            Actor: {
+              select: {
+                id: true,
+                image: true,
+                firstname: true,
+                lastname: true,
+              },
+            },
+            Video: {
+              select: {
+                id: true,
+                title: true,
+                source: true,
+                workSpaceId: true,
+              },
+            },
             NotificationInvite: {
               select: {
                 Invite: {
                   select: {
                     senderId: true,
                     receiverId: true,
+                    workSpaceId: true,
                     sender: {
                       select: {
                         image: true,
@@ -680,6 +701,7 @@ export const inviteMembers = async (
             notification: {
               create: {
                 content: `You invited ${receiverInfo?.firstname || ''} ${receiverInfo?.lastname || ''} into ${workspace.name}`,
+                type: 'INVITE',
                 NotificationInvite: {
                   create: {
                     inviteId: invitation.id,
@@ -698,6 +720,7 @@ export const inviteMembers = async (
             notification: {
               create: {
                 content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
+                type: 'INVITE',
                 NotificationInvite: {
                   create: {
                     inviteId: invitation.id,

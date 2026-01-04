@@ -1,5 +1,5 @@
 import React from "react";
-import {FileDuoToneBlack, Bell, CreditCard, Settings, Home} from "@/components/icons";
+import {Bell, CreditCard, Settings, Home} from "@/components/icons";
 import {Users} from "@/components/icons/user";
 
 /**
@@ -26,10 +26,10 @@ import {Users} from "@/components/icons/user";
  * 
  * Menu Items:
  * - Home: Main workspace dashboard
- * - My Library: Video and folder management
  * - Notifications: User notification center
  * - Billing: Subscription and payment management
  * - Settings: User and workspace settings
+ * - Users: Team member management (PUBLIC workspaces only)
  * 
  * Features:
  * - Dynamic workspace routing
@@ -74,11 +74,6 @@ export const MENU_ITEMS = ({
       href: `/dashboard/${workspaceId}/settings`,
       icon: <Settings />,
     },
-    {
-      title: 'Updates',
-      href: `/dashboard/${workspaceId}/updates`,
-      icon: <FileDuoToneBlack />
-    }
   ]
 
   // Add Users tab only for PUBLIC workspaces

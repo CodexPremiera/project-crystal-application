@@ -3,7 +3,7 @@
 import React, {useEffect, useRef} from 'react';
 import {useRouter} from "next/navigation";
 import { useQueryData } from '@/hooks/useQueryData';
-import {getPreviewVideo, sendEmailForFirstView, toggleVideoLike} from "@/actions/workspace";
+import {getPreviewVideo, recordVideoView, toggleVideoLike} from "@/actions/workspace";
 import {VideoProps} from "@/types/index.type";
 import { useMutationData } from '@/hooks/useMutationData';
 import EditVideoTitle from "@/components/global/videos/edit/edit-video-title";
@@ -92,16 +92,14 @@ function VideoPreview({ videoId }: Props) {
     (new Date().getTime() - video.createdAt.getTime()) / (24 * 60 * 60 * 1000)
   )
   
-  // Handle first view notification
+  // Record video view and notify owner (for public workspaces)
   useEffect(() => {
-    const notifyFirstView = async () => {
-      if (video.views === 0) {
-        await sendEmailForFirstView(videoId)
-      }
+    const trackView = async () => {
+      await recordVideoView(videoId)
     }
     
-    notifyFirstView()
-  }, [video.views, videoId])
+    trackView()
+  }, [videoId])
   
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 lg:py-10 overflow-y-auto gap-8">
