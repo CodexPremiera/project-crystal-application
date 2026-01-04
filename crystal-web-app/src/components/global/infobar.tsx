@@ -1,95 +1,42 @@
 'use client'
 import React, { useState } from 'react';
-import {Search, UploadIcon, Video} from "lucide-react";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {UserButton} from "@clerk/nextjs";
-import { useRouter, usePathname } from 'next/navigation';
+import { UploadIcon, Video } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { UserButton } from "@clerk/nextjs";
+import { useRouter } from 'next/navigation';
 import { UploadVideoDialog } from '@/components/global/upload-video-dialog';
+import { SearchDropdown } from '@/components/global/search/search-dropdown';
 
 /**
  * Infobar Component
  * 
- * Top navigation bar with search, upload/record buttons, and user menu.
- * Shows as a fixed header with search input and action buttons.
+ * Top navigation bar with smart search, upload/record buttons, and user menu.
+ * Shows as a fixed header with real-time search suggestions and action buttons.
  * 
- * Appearance:
- * - Fixed header at top of page
- * - Search input with search icon
+ * Features:
+ * - Smart search with real-time suggestions dropdown
+ * - Recent searches shown on focus
+ * - Fuzzy matching for better results
  * - Upload and Record buttons
- * - User button (Clerk authentication)
- * - Responsive layout with proper spacing
- * 
- * Special Behavior:
- * - Fixed positioning (stays at top when scrolling)
- * - Search input is currently non-functional (placeholder)
- * - Upload and Record buttons are currently non-functional
- * - User button provides authentication menu
- * 
- * Used in:
- * - All dashboard pages
- * - Main application header
+ * - User authentication menu
  */
 
 function Infobar() {
-  const [searchQuery, setSearchQuery] = useState('')
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const router = useRouter()
-  const pathname = usePathname()
-
-  // Extract workspace ID from current pathname
-  const getWorkspaceId = () => {
-    const pathSegments = pathname.split('/')
-    const dashboardIndex = pathSegments.indexOf('dashboard')
-    if (dashboardIndex !== -1 && pathSegments[dashboardIndex + 1]) {
-      return pathSegments[dashboardIndex + 1]
-    }
-    return null
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      const workspaceId = getWorkspaceId()
-      if (workspaceId) {
-        router.push(`/dashboard/${workspaceId}/search?query=${encodeURIComponent(searchQuery.trim())}`)
-      } else {
-        // Fallback to general search if no workspace context
-        router.push(`/dashboard/search?query=${encodeURIComponent(searchQuery.trim())}`)
-      }
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch(e)
-    }
-  }
 
   return (
-    <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-[#171717]/80 backdrop-blur-lg z-50">
-      <form onSubmit={handleSearch} className="flex gap-4 justify-center items-center border-2 rounded-full px-4 w-full max-w-lg">
-        <Search
-          size={25}
-          className="text-[#707070]"
-        />
-        <Input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="!bg-transparent border-none !px-0 !placeholder-neutral-500"
-          placeholder="Search for people, projects, tags & folders"
-        />
-      </form>
+    <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-surface-elevated/80 backdrop-blur-lg z-50">
+      <SearchDropdown />
       <div className="flex items-center gap-4">
         <Button 
-          className="bg-[#9D9D9D] flex items-center gap-2"
+          className="bg-text-tertiary flex items-center gap-2"
           onClick={() => setUploadDialogOpen(true)}
         >
           <UploadIcon size={20} />
           <span className="flex items-center gap-2">Upload</span>
         </Button>
-        <Button className="bg-[#9D9D9D] flex items-center gap-2">
+        <Button className="bg-text-tertiary flex items-center gap-2">
           <Video />
           <span className="flex items-center gap-2">Record</span>
         </Button>
