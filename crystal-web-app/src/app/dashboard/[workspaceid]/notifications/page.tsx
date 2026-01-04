@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useQueryData } from '@/hooks/useQueryData'
 import { User, Eye, Heart, Upload, UserPlus } from 'lucide-react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+// import { useParams } from 'next/navigation'
 import React from 'react'
 
 type NotificationType = 'INVITE' | 'VIDEO_VIEW' | 'VIDEO_LIKE' | 'VIDEO_UPLOAD'
@@ -67,8 +67,8 @@ type NotificationData = {
  * - Empty state handling
  */
 const Notifications = () => {
-  const params = useParams()
-  const workspaceId = params.workspaceid as string
+  // const params = useParams()
+  // const workspaceId = params.workspaceid as string
   
   const { data: notifications } = useQueryData(
     ['user-notifications'],
@@ -91,7 +91,7 @@ const Notifications = () => {
         <div className="text-center">
           <h3 className="text-lg font-medium text-text-primary">No notifications yet</h3>
           <p className="text-text-muted text-sm mt-1">
-            When someone views, likes, or shares your videos, you'll see it here.
+            When someone views, likes, or shares your videos, you&#39;ll see it here.
           </p>
         </div>
       </div>
@@ -200,7 +200,7 @@ const Notifications = () => {
                     <>
                       {' '}
                       <span className="font-medium text-text-primary">
-                        "{n.Video.title}"
+                        &#34;{n.Video.title}&#34;
                       </span>
                     </>
                   )}
