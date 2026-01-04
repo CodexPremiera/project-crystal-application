@@ -40,24 +40,24 @@ type Props = {
   videoId: string
 }
 
-const AiTools = ({ plan, trial }: Props) => {
+const AiTools = ({ plan }: Props) => {
   // Only show AI Tools promotional content for FREE plan users
   if (plan === 'PRO') {
     return (
       <TabsContent value="AI Tools">
-        <div className="p-5 bg-[#1D1D1D] rounded-xl flex flex-col gap-y-6">
+        <div className="p-5 bg-surface-overlay rounded-xl flex flex-col gap-y-6">
           <div className="flex items-center gap-4">
             <div className="w-full">
               <h2 className="text-3xl font-bold">AI Tools</h2>
-              <p className="text-[#BDBDBD]">
+              <p className="text-text-secondary">
                 You have full access to all AI features with your PRO plan!
               </p>
             </div>
           </div>
-          <div className="border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f]">
+          <div className="border rounded-xl p-4 gap-4 flex flex-col bg-brand-surface/50">
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold text-[#a22fe0]">Crystal Ai</h2>
-              <StarsIcon color="#a22fe0" fill="#a22fe0" />
+              <h2 className="text-2xl font-bold text-brand">Crystal Ai</h2>
+              <StarsIcon className="text-brand fill-brand" />
             </div>
             <p className="text-muted-foreground">
               AI features are automatically applied to your videos. Check the Transcript tab for AI-generated summaries.
@@ -70,17 +70,17 @@ const AiTools = ({ plan, trial }: Props) => {
   
   return (
     <TabsContent value="AI Tools">
-      <div className="p-5 bg-[#1D1D1D]  rounded-xl flex flex-col gap-y-6 ">
+      <div className="p-5 bg-surface-overlay rounded-xl flex flex-col gap-y-6">
         <div className="flex items-center gap-4">
           <div className="w-full">
-            <h2 className="text-3xl font-bold"> AI Tools</h2>
-            <p className="text-[#BDBDBD] ">
+            <h2 className="text-3xl font-bold">AI Tools</h2>
+            <p className="text-text-secondary">
               Taking your video to the next step with the power of AI!
             </p>
           </div>
           
           <div className="flex gap-4 w-full justify-end">
-            <Button className=" mt-2 text-sm">
+            <Button className="mt-2 text-sm">
               <Loader
                 state={false}
                 color="#000"
@@ -88,7 +88,6 @@ const AiTools = ({ plan, trial }: Props) => {
                 Try now
               </Loader>
             </Button>
-            {/* WIP: Pay button  */}
             <Button
               className="mt-2 text-sm"
               variant={'secondary'}
@@ -102,39 +101,36 @@ const AiTools = ({ plan, trial }: Props) => {
             </Button>
           </div>
         </div>
-        <div className=" border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f] ">
+        <div className="border rounded-xl p-4 gap-4 flex flex-col bg-brand-surface/50">
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-[#a22fe0]">Crystal Ai</h2>
-            <StarsIcon
-              color="#a22fe0"
-              fill="#a22fe0"
-            />
+            <h2 className="text-2xl font-bold text-brand">Crystal Ai</h2>
+            <StarsIcon className="text-brand fill-brand" />
           </div>
           <div className="flex gap-2 items-start">
-            <div className="p-2 rounded-full border-[#2d2d2d] border-[2px] bg-[#2b2b2b] ">
-              <Pencil color="#a22fe0" />
+            <div className="p-2 rounded-full border-surface-hover border-2 bg-surface-hover">
+              <Pencil className="text-brand" />
             </div>
             <div className="flex flex-col">
-              <h3 className="textmdg">Summary</h3>
+              <h3 className="text-md">Summary</h3>
               <p className="text-muted-foreground text-sm">
                 Generate a description for your video using AI.
               </p>
             </div>
           </div>
           <div className="flex gap-2 items-start">
-            <div className="p-2 rounded-full border-[#2d2d2d] border-[2px] bg-[#2b2b2b] ">
-              <FileTextIcon color="#a22fe0" />
+            <div className="p-2 rounded-full border-surface-hover border-2 bg-surface-hover">
+              <FileTextIcon className="text-brand" />
             </div>
             <div className="flex flex-col">
-              <h3 className="textmdg">Summary</h3>
+              <h3 className="text-md">Summary</h3>
               <p className="text-muted-foreground text-sm">
                 Generate a description for your video using AI.
               </p>
             </div>
           </div>
           <div className="flex gap-2 items-start">
-            <div className="p-2 rounded-full border-[#2d2d2d] border-[2px] bg-[#2b2b2b] ">
-              <Bot color="#a22fe0" />
+            <div className="p-2 rounded-full border-surface-hover border-2 bg-surface-hover">
+              <Bot className="text-brand" />
             </div>
             <div className="flex flex-col">
               <h3 className="text-md">AI Agent</h3>

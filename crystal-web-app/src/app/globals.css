@@ -41,6 +41,26 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Crystal custom surface colors */
+  --color-surface-base: var(--surface-base);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-border: var(--surface-border);
+  --color-surface-hover: var(--surface-hover);
+  
+  /* Crystal custom text colors */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  
+  /* Crystal brand colors */
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-border: var(--brand-border);
 }
 
 @keyframes accordion-down {
@@ -100,6 +120,26 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Crystal surface colors (light mode) */
+  --surface-base: #f5f5f5;
+  --surface-elevated: #ffffff;
+  --surface-overlay: #fafafa;
+  --surface-border: #e5e5e5;
+  --surface-hover: #f0f0f0;
+  
+  /* Crystal text colors (light mode) */
+  --text-primary: #111111;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6b6b6b;
+  --text-muted: #8b8b8b;
+  --text-disabled: #ababab;
+  
+  /* Crystal brand colors (same for both modes) */
+  --brand: #a22fe0;
+  --brand-hover: #9D50BB;
+  --brand-surface: #f5e6fb;
+  --brand-border: rgba(162, 47, 224, 0.3);
 }
 
 .dark {
@@ -134,6 +174,26 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  
+  /* Crystal surface colors (dark mode) */
+  --surface-base: #111111;
+  --surface-elevated: #171717;
+  --surface-overlay: #1D1D1D;
+  --surface-border: #252525;
+  --surface-hover: #2b2b2b;
+  
+  /* Crystal text colors (dark mode) */
+  --text-primary: #ffffff;
+  --text-secondary: #BDBDBD;
+  --text-tertiary: #9D9D9D;
+  --text-muted: #707070;
+  --text-disabled: #6e6e6e;
+  
+  /* Crystal brand colors (same for both modes) */
+  --brand: #a22fe0;
+  --brand-hover: #9D50BB;
+  --brand-surface: #1b0f1b;
+  --brand-border: rgba(162, 47, 224, 0.3);
 }
 
 @layer base {

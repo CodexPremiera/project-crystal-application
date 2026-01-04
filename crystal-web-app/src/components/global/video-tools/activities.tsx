@@ -72,14 +72,14 @@ const Comments = ({ author, videoId }: Props) => {
         ))
       ) : (
         <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <div className="p-4 rounded-full bg-[#1D1D1D]">
+          <div className="p-4 rounded-full bg-surface-overlay text-text-disabled">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#6e6e6e"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -88,8 +88,8 @@ const Comments = ({ author, videoId }: Props) => {
             </svg>
           </div>
           <div className="text-center">
-            <p className="text-[#a7a7a7] text-lg font-medium">No comments yet</p>
-            <p className="text-[#6e6e6e] text-sm mt-1">
+            <p className="text-text-tertiary text-lg font-medium">No comments yet</p>
+            <p className="text-text-disabled text-sm mt-1">
               Be the first to leave a comment
             </p>
           </div>

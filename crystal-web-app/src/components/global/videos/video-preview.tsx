@@ -122,10 +122,10 @@ function VideoPreview({ videoId }: Props) {
           </div>
           {/* Creator info and creation date */}
           <span className="flex gap-x-3 mt-2">
-            <p className="text-[#9D9D9D] capitalize">
+            <p className="text-text-tertiary capitalize">
               {video.User?.firstname} {video.User?.lastname}
             </p>
-            <p className="text-[#707070]">
+            <p className="text-text-muted">
               {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
             </p>
           </span>
@@ -146,7 +146,7 @@ function VideoPreview({ videoId }: Props) {
         {/* Video description section */}
         <div className="flex flex-col text-2xl gap-y-4">
           <div className="flex gap-x-5 items-center justify-between">
-            <p className="text-[#BDBDBD] text-semibold">Description</p>
+            <p className="text-text-secondary text-semibold">Description</p>
             {/* Show edit button only for video author */}
             {author && (
               <EditVideoDesc
@@ -156,7 +156,7 @@ function VideoPreview({ videoId }: Props) {
               />
             )}
           </div>
-          <p className="text-[#9D9D9D] text-lg text-medium">
+          <p className="text-text-tertiary text-lg text-medium">
             {video.description}
           </p>
         </div>
@@ -225,9 +225,9 @@ function VideoPreview({ videoId }: Props) {
               defaultValue="Transcript"
               triggers={['Transcript', 'Comments']}
               prefix={
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1b0f1b] border border-[#a22fe0]/30">
-                  <Crown className="h-4 w-4 text-[#a22fe0]" />
-                  <span className="text-sm font-medium text-[#a22fe0]">PRO</span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-surface border border-brand-border">
+                  <Crown className="h-4 w-4 text-brand" />
+                  <span className="text-sm font-medium text-brand">PRO</span>
                 </div>
               }
             >

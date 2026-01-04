@@ -61,7 +61,7 @@ const GlobalHeader = ({ workspace }: Props) => {
   
   return (
     <article className="flex flex-col gap-2">
-      <span className="text-[#707070] text-xs">
+      <span className="text-text-muted text-xs">
         {getSubtitle().toLocaleUpperCase()}
       </span>
       <h1 className="text-4xl font-bold">
