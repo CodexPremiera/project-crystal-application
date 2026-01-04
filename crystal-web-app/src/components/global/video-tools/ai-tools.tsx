@@ -40,15 +40,34 @@ type Props = {
   videoId: string
 }
 
-const AiTools = ({ }: Props) => {
-  //Are they on a free plan?
-  //have they already tried the AI feature?
-  //if not? Try button
+const AiTools = ({ plan, trial }: Props) => {
+  // Only show AI Tools promotional content for FREE plan users
+  if (plan === 'PRO') {
+    return (
+      <TabsContent value="AI Tools">
+        <div className="p-5 bg-[#1D1D1D] rounded-xl flex flex-col gap-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-full">
+              <h2 className="text-3xl font-bold">AI Tools</h2>
+              <p className="text-[#BDBDBD]">
+                You have full access to all AI features with your PRO plan!
+              </p>
+            </div>
+          </div>
+          <div className="border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f]">
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-[#a22fe0]">Crystal Ai</h2>
+              <StarsIcon color="#a22fe0" fill="#a22fe0" />
+            </div>
+            <p className="text-muted-foreground">
+              AI features are automatically applied to your videos. Check the Transcript tab for AI-generated summaries.
+            </p>
+          </div>
+        </div>
+      </TabsContent>
+    )
+  }
   
-  // useMutationData
-  // server action titles and description
-  
-  // TODO: setup the ai hook
   return (
     <TabsContent value="AI Tools">
       <div className="p-5 bg-[#1D1D1D]  rounded-xl flex flex-col gap-y-6 ">

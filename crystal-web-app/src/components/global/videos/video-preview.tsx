@@ -13,7 +13,7 @@ import RichLink from "@/components/global/videos/rich-link";
 import {truncateString} from "@/lib/utils";
 import TabMenu from "@/components/global/tab-menu";
 import AiTools from "@/components/global/video-tools/ai-tools";
-import Activities from "@/components/global/video-tools/activities";
+import Comments from "@/components/global/video-tools/activities";
 import VideoTranscript from "@/components/global/video-tools/video-transcript";
 import {Button} from "@/components/ui/button";
 import {
@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Like} from "@/components/icons/like";
-import {Download, MoreHorizontal} from "lucide-react";
+import {Download, MoreHorizontal, Crown} from "lucide-react";
 import DeleteVideoConfirmation from './delete-video-confirmation'
 import { useDownloadVideo } from '@/hooks/useDownloadVideo'
 
@@ -104,7 +104,7 @@ function VideoPreview({ videoId }: Props) {
   }, [video.views, videoId])
   
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 lg:py-10 overflow-y-auto gap-5">
+    <div className="grid grid-cols-1 xl:grid-cols-3 lg:py-10 overflow-y-auto gap-8">
       {/* Main content area - Video player and metadata */}
       <div className="flex flex-col lg:col-span-2 gap-y-10">
         {/* Video header with title and edit controls */}
@@ -163,7 +163,7 @@ function VideoPreview({ videoId }: Props) {
       </div>
       
       {/* Sidebar with sharing and download options */}
-      <div className="lg:col-span-1 flex flex-col gap-y-16">
+      <div className="lg:col-span-1 flex flex-col gap-y-20">
         <div className="flex justify-end gap-2 items-center">
           {/* Like button with count in a chip */}
           <Button
@@ -220,25 +220,48 @@ function VideoPreview({ videoId }: Props) {
           </DropdownMenu>
         </div>
         <div>
-          <TabMenu
-            defaultValue="AI Tools"
-            triggers={['AI Tools', 'Transcript', 'Activity']}
-          >
-            <AiTools
-              videoId={videoId}
-              trial={video.User?.trial ?? false}
-              plan={video.User?.subscription?.plan ?? 'FREE'}
-            />
-            <VideoTranscript 
-              transcript={video.summary!}
-              segments={video.transcriptSegments}
-              videoRef={videoRef}
-            />
-            <Activities
-              author={video.User?.firstname as string}
-              videoId={videoId}
-            />
-          </TabMenu>
+          {video.User?.subscription?.plan === 'PRO' ? (
+            <TabMenu
+              defaultValue="Transcript"
+              triggers={['Transcript', 'Comments']}
+              prefix={
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1b0f1b] border border-[#a22fe0]/30">
+                  <Crown className="h-4 w-4 text-[#a22fe0]" />
+                  <span className="text-sm font-medium text-[#a22fe0]">PRO</span>
+                </div>
+              }
+            >
+              <VideoTranscript 
+                transcript={video.summary!}
+                segments={video.transcriptSegments}
+                videoRef={videoRef}
+              />
+              <Comments
+                author={video.User?.firstname as string}
+                videoId={videoId}
+              />
+            </TabMenu>
+          ) : (
+            <TabMenu
+              defaultValue="Transcript"
+              triggers={['Transcript', 'Comments', 'AI Tools']}
+            >
+              <VideoTranscript 
+                transcript={video.summary!}
+                segments={video.transcriptSegments}
+                videoRef={videoRef}
+              />
+              <Comments
+                author={video.User?.firstname as string}
+                videoId={videoId}
+              />
+              <AiTools
+                videoId={videoId}
+                trial={video.User?.trial ?? false}
+                plan={video.User?.subscription?.plan ?? 'FREE'}
+              />
+            </TabMenu>
+          )}
         </div>
       </div>
     </div>
