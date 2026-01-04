@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { EditDuotone } from "@/components/icons/editDuotone";
 import { TrashBin } from "@/components/icons/trash-bin";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -32,78 +31,37 @@ function WorkspaceActions({ workspaceId, workspaceName }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsEditModalOpen(true);
-  };
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleSelectEdit = (e: Event) => {
-    e.preventDefault();
-    setIsEditModalOpen(true);
-  };
-
-  const handleSelectDelete = (e: Event) => {
-    e.preventDefault();
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
-
   return (
     <>
-      <DropdownMenuItem 
-        className="h-fit" 
-        onSelect={handleSelectEdit}
-        onPointerDown={(e) => e.preventDefault()}
-      >
-        <Button
-          variant="ghost"
-          className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
-          onClick={handleEditClick}
-        >
-          <EditDuotone />
-          <span>Edit</span>
-        </Button>
+      <DropdownMenuItem onSelect={(e) => {
+        e.preventDefault();
+        setIsEditModalOpen(true);
+      }}>
+        <EditDuotone />
+        Edit
       </DropdownMenuItem>
       
       <DropdownMenuItem 
-        className="h-fit" 
-        onSelect={handleSelectDelete}
-        onPointerDown={(e) => e.preventDefault()}
+        onSelect={(e) => {
+          e.preventDefault();
+          setIsDeleteModalOpen(true);
+        }}
+        className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
       >
-        <Button
-          variant="ghost"
-          className="rounded-full gap-3 !p-0 !pl-1 !pr-2 text-[#eeeeee] hover:text-red-500 hover:bg-red-500/10"
-          onClick={handleDeleteClick}
-        >
-          <TrashBin />
-          <span>Delete</span>
-        </Button>
+        <TrashBin />
+        Delete
       </DropdownMenuItem>
       
       <EditWorkspaceModal
         isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
+        onClose={() => setIsEditModalOpen(false)}
         workspaceId={workspaceId}
         currentName={workspaceName}
       />
       
       <DeleteWorkspaceModal
         isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
+        onClose={() => setIsDeleteModalOpen(false)}
         workspaceId={workspaceId}
         workspaceName={workspaceName}
       />
