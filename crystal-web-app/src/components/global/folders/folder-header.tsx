@@ -111,8 +111,8 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
         </div>
         
         <div className="flex items-center gap-3">
-          <span className="text-[#9D9D9D] capitalize">{workspaceName}</span>
-          <span className="text-[#707070]">
+          <span className="text-text-tertiary capitalize">{workspaceName}</span>
+          <span className="text-text-muted">
             {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
           </span>
         </div>
@@ -152,12 +152,12 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
       </div>
       
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="bg-[#1a1a1a] border-[#333]">
+        <AlertDialogContent className="bg-surface-elevated border-surface-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">
+            <AlertDialogTitle className="text-text-primary">
               Delete Folder
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[#9D9D9D]">
+            <AlertDialogDescription className="text-text-tertiary">
               Are you sure you want to delete &quot;{folder.name}&quot;? This action cannot be undone.
               Videos in this folder will be moved to the workspace root.
             </AlertDialogDescription>
@@ -165,7 +165,7 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
           
           <AlertDialogFooter>
             <AlertDialogCancel
-              className="bg-[#333] text-white hover:bg-[#444] border-[#555]"
+              className="bg-surface-border text-text-primary hover:bg-surface-hover border-surface-hover"
               disabled={isDeleting}
             >
               Cancel

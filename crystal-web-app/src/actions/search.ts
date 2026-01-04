@@ -523,3 +523,152 @@ export const searchVideos = async (query: string): Promise<SearchResponse> => {
   }
 }
 
+/**
+ * Quick Search Result (lightweight for dropdown)
+ */
+export interface QuickSearchResult {
+  id: string
+  name: string
+  type: 'workspace' | 'folder' | 'video'
+  workspaceId: string
+  thumbnail?: string
+}
+
+export interface QuickSearchResponse {
+  status: number
+  data?: QuickSearchResult[]
+  message?: string
+}
+
+/**
+ * Quick Search for Dropdown Suggestions
+ * 
+ * Lightweight search that returns max 8 results for real-time dropdown.
+ * Optimized for speed with minimal data payload.
+ * 
+ * @param query - Search query string
+ * @returns Promise<QuickSearchResponse> - Limited search results
+ */
+export const quickSearch = async (query: string): Promise<QuickSearchResponse> => {
+  try {
+    const auth = await onAuthenticateUser()
+    if (!auth.user) {
+      return { status: 401, message: 'Unauthorized' }
+    }
+
+    if (!query || query.trim().length < 2) {
+      return { status: 200, data: [] }
+    }
+
+    const searchQuery = query.trim()
+
+    // Get user's accessible workspaces
+    const userWorkspaces = await client.workSpace.findMany({
+      where: {
+        OR: [
+          { userId: auth.user.id },
+          { 
+            members: {
+              some: {
+                userId: auth.user.id,
+                member: true
+              }
+            }
+          }
+        ]
+      },
+      select: { id: true, name: true }
+    })
+
+    const workspaceIds = userWorkspaces.map(ws => ws.id)
+    const results: QuickSearchResult[] = []
+
+    // Search videos (priority)
+    const videos = await client.video.findMany({
+      where: {
+        workSpaceId: { in: workspaceIds },
+        OR: [
+          { title: { contains: searchQuery, mode: 'insensitive' } },
+          { description: { contains: searchQuery, mode: 'insensitive' } }
+        ]
+      },
+      select: {
+        id: true,
+        title: true,
+        source: true,
+        workSpaceId: true
+      },
+      take: 5
+    })
+
+    videos.forEach(video => {
+      results.push({
+        id: video.id,
+        name: video.title || 'Untitled Video',
+        type: 'video',
+        workspaceId: video.workSpaceId || '',
+        thumbnail: video.source ? `${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${video.source}` : undefined
+      })
+    })
+
+    // Search folders
+    const folders = await client.folder.findMany({
+      where: {
+        workSpaceId: { in: workspaceIds },
+        name: { contains: searchQuery, mode: 'insensitive' }
+      },
+      select: {
+        id: true,
+        name: true,
+        workSpaceId: true
+      },
+      take: 3
+    })
+
+    folders.forEach(folder => {
+      results.push({
+        id: folder.id,
+        name: folder.name,
+        type: 'folder',
+        workspaceId: folder.workSpaceId || ''
+      })
+    })
+
+    // Search workspaces (if room)
+    if (results.length < 8) {
+      const workspaces = await client.workSpace.findMany({
+        where: {
+          id: { in: workspaceIds },
+          name: { contains: searchQuery, mode: 'insensitive' }
+        },
+        select: {
+          id: true,
+          name: true
+        },
+        take: 8 - results.length
+      })
+
+      workspaces.forEach(workspace => {
+        results.push({
+          id: workspace.id,
+          name: workspace.name,
+          type: 'workspace',
+          workspaceId: workspace.id
+        })
+      })
+    }
+
+    return {
+      status: 200,
+      data: results.slice(0, 8)
+    }
+
+  } catch (error) {
+    console.error('Quick search error:', error)
+    return {
+      status: 500,
+      message: 'Internal server error'
+    }
+  }
+}
+

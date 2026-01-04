@@ -42,16 +42,16 @@ const SidebarItem = ({ href, icon, selected, title }: Props) => {
       <Link
         href={href}
         className={cn(
-          'flex items-center justify-between group rounded-lg hover:bg-[#1D1D1D]',
-          selected ? 'bg-[#1D1D1D]' : ''
+          'flex items-center justify-between group rounded-lg hover:bg-surface-overlay',
+          selected ? 'bg-surface-overlay' : ''
         )}
       >
         <div className="flex w-full items-center gap-2 transition-all py-1 px-2 cursor-pointer">
           {icon}
           <span
             className={cn(
-              'font-medium group-hover:text-[#9D9D9D] transition-all truncate flex-1 min-w-0 pr-2',
-              selected ? 'text-[#9D9D9D]' : 'text-[#545454]'
+              'font-medium group-hover:text-text-tertiary transition-all truncate flex-1 min-w-0 pr-2',
+              selected ? 'text-text-tertiary' : 'text-text-muted'
             )}
           >
             {title}

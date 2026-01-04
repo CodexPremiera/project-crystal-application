@@ -118,6 +118,10 @@ async function processVideo(filename, userId, customTitle = null, customDescript
       return { success: false, error: "Failed to start processing" }
     }
 
+    // Capture videoId and workspaceId from processing response
+    const videoId = processing.data.videoId
+    const workspaceId = processing.data.workspaceId
+
     // Determine content type based on file extension
     const ext = path.extname(filename).toLowerCase()
     let ContentType = 'video/webm'
@@ -234,7 +238,7 @@ async function processVideo(filename, userId, customTitle = null, customDescript
         })
       }
 
-      return { success: true, filename: filename }
+      return { success: true, filename: filename, videoId: videoId, workspaceId: workspaceId }
     }
     else {
       console.log("Upload failed! process aborted")
@@ -278,7 +282,9 @@ app.post('/upload', upload.single('video'), async (req, res) => {
       return res.status(200).json({ 
         success: true, 
         filename: result.filename,
-        message: 'Video uploaded and processing started'
+        videoId: result.videoId,
+        workspaceId: result.workspaceId,
+        message: 'Video uploaded and processed successfully'
       })
     } else {
       return res.status(500).json({ success: false, error: result.error })

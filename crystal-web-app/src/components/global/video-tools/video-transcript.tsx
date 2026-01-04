@@ -117,6 +117,40 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
     }
   }
 
+  // Empty state: No transcript available
+  if (!transcript && (!segments || segments.length === 0)) {
+    return (
+      <TabsContent
+        value="Transcript"
+        className="rounded-xl flex flex-col items-center justify-center py-12 gap-4"
+      >
+        <div className="p-4 rounded-full bg-surface-overlay text-text-disabled">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            <path d="M13 8H7" />
+            <path d="M17 12H7" />
+          </svg>
+        </div>
+        <div className="text-center">
+          <p className="text-text-tertiary text-lg font-medium">No transcript available</p>
+          <p className="text-text-disabled text-sm mt-1">
+            This video doesn&apos;t have a transcript yet
+          </p>
+        </div>
+      </TabsContent>
+    )
+  }
+
   // Fallback: Display plain transcript if no segments available
   if (!segments || segments.length === 0) {
     return (
@@ -124,7 +158,7 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
         value="Transcript"
         className="rounded-xl flex flex-col gap-y-6"
       >
-        <p className="text-[#a7a7a7]">{transcript}</p>
+        <p className="text-text-tertiary">{transcript}</p>
       </TabsContent>
     )
   }
@@ -136,7 +170,7 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
     >
       <div 
         ref={containerRef}
-        className="max-h-[400px] overflow-y-auto pr-2 space-y-1 scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-transparent"
+        className="max-h-[400px] overflow-y-auto pr-2 space-y-1 scrollbar-thin scrollbar-thumb-surface-hover scrollbar-track-transparent"
       >
         {segments.map((segment, index) => {
           const isActive = index === activeSegmentIndex
@@ -148,8 +182,8 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
               className={`
                 flex gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200
                 ${isActive 
-                  ? 'bg-[#252525] border-l-2 border-[#9D50BB]' 
-                  : 'hover:bg-[#1a1a1a]'
+                  ? '!bg-surface-border border-l-2 border-brand-hover' 
+                  : '!hover:bg-surface-elevated'
                 }
               `}
               onClick={() => handleSeek(segment.start)}
@@ -157,7 +191,7 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
               <span 
                 className={`
                   text-sm font-mono shrink-0 min-w-[50px]
-                  ${isActive ? 'text-[#9D50BB]' : 'text-[#6e6e6e]'}
+                  ${isActive ? 'text-brand-hover' : 'text-text-disabled'}
                 `}
               >
                 {formatTimestamp(segment.start)}
@@ -165,7 +199,7 @@ const VideoTranscript = ({ transcript, segments, videoRef }: Props) => {
               <p 
                 className={`
                   text-sm leading-relaxed
-                  ${isActive ? 'text-white' : 'text-[#a7a7a7]'}
+                  ${isActive ? 'text-text-primary' : 'text-text-tertiary'}
                 `}
               >
                 {segment.text}

@@ -1,4 +1,3 @@
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import React from 'react'
 import { notFound } from 'next/navigation'
 import Folders from "@/components/global/folders/folders";
@@ -28,11 +27,9 @@ type Props = {
  * 1. Starts non-blocking prefetch for workspace folders and videos
  * 2. Fetches workspace name (only blocking operation needed for render)
  * 3. Renders page immediately with minimal blocking
- * 4. Provides tabbed interface for content organization
- * 5. Components load progressively as data becomes available
+ * 4. Components load progressively as data becomes available
  * 
  * Page Features:
- * - Tab navigation between Videos and Archive sections
  * - Workspace actions dropdown with management options
  * - Invitation section for workspace collaboration
  * - Dynamic routing based on workspaceId parameter
@@ -85,7 +82,7 @@ const Page = async ({ params }: Props) => {
   
   // Only await workspace data needed for initial render (workspace name)
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string }> } | undefined
+  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string; type: string }> } | undefined
   
   const currentWorkspace = workspace?.workspace.find(
     (item) => item.id === workspaceid
@@ -97,57 +94,45 @@ const Page = async ({ params }: Props) => {
   }
   
   const workspaceName = currentWorkspace.name
+  const workspaceType = currentWorkspace.type
   
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div>
-        <Tabs
-          defaultValue="videos"
-          className="mt-6"
-        >
-          <div className="flex w-full justify-between items-center">
-            <TabsList className="bg-transparent gap-2 pl-0">
-              <TabsTrigger
-                className="p-[13px] px-6 rounded-full data-[state=active]:bg-[#252525]"
-                value="videos"
-              >
-                Videos
-              </TabsTrigger>
-              <TabsTrigger
-                value="archive"
-                className="p-[13px] px-6 rounded-full data-[state=active]:bg-[#252525]"
-              >
-                Archive
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex justify-end gap-2 items-center">
-              <DashboardInviteSection 
-                workspaceId={workspaceid}
-              />
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className='rounded-full' variant="secondary" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="gap-1">
-                  <WorkspaceActions 
-                    workspaceId={workspaceid}
-                    workspaceName={workspaceName}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
+        <div className="flex w-full justify-between items-end">
+          <article className="flex flex-col gap-2">
+            <span className="text-text-muted text-xs">
+              {workspaceType.toUpperCase()} WORKSPACE
+            </span>
+            <h1 className="text-4xl font-bold">
+              {workspaceName}
+            </h1>
+          </article>
           
-          <section className="py-9">
-            <TabsContent value="videos">
-              <Folders workspaceId={workspaceid} />
-            </TabsContent>
-          </section>
-        </Tabs>
+          <div className="flex justify-end gap-2 items-end">
+            <DashboardInviteSection 
+              workspaceId={workspaceid}
+            />
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className='rounded-full' variant="secondary" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="gap-1">
+                <WorkspaceActions 
+                  workspaceId={workspaceid}
+                  workspaceName={workspaceName}
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        
+        <section className="py-9">
+          <Folders workspaceId={workspaceid} />
+        </section>
       </div>
     </HydrationBoundary>
   )

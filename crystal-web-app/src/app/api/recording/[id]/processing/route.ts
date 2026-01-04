@@ -1,6 +1,13 @@
 import { client } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
+/**
+ * Processing API Route
+ * 
+ * Creates a new video record when upload processing begins.
+ * Returns the video ID, workspace ID, and user plan for the front-end
+ * to track processing status and enable navigation to the video.
+ */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -9,7 +16,8 @@ export async function POST(
     const body = await req.json()
     const { id } = await params
 
-    const personalWorkspaceId = await client.user.findUnique({
+    // Get the user's personal workspace
+    const userData = await client.user.findUnique({
       where: {
         id,
       },
@@ -25,41 +33,43 @@ export async function POST(
             createdAt: 'asc',
           },
         },
-      },
-    })
-    const startProcessingVideo = await client.workSpace.update({
-      where: {
-        id: personalWorkspaceId?.workspace[0].id,
-      },
-      data: {
-        videos: {
-          create: {
-            source: body.filename,
-            userId: id,
-          },
-        },
-      },
-      select: {
-        User: {
+        subscription: {
           select: {
-            subscription: {
-              select: {
-                plan: true,
-              },
-            },
+            plan: true,
           },
         },
       },
     })
 
-    if (startProcessingVideo) {
+    if (!userData?.workspace[0]?.id) {
+      return NextResponse.json({ status: 400, error: 'No workspace found' })
+    }
+
+    const workspaceId = userData.workspace[0].id
+
+    // Create the video record and get its ID
+    const createdVideo = await client.video.create({
+      data: {
+        source: body.filename,
+        userId: id,
+        workSpaceId: workspaceId,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (createdVideo) {
       return NextResponse.json({
         status: 200,
-        plan: startProcessingVideo.User?.subscription?.plan,
+        plan: userData.subscription?.plan,
+        videoId: createdVideo.id,
+        workspaceId: workspaceId,
       })
     }
     return NextResponse.json({ status: 400 })
   } catch (error) {
     console.log('🔴 Error in processing video', error)
+    return NextResponse.json({ status: 500, error: 'Internal server error' })
   }
 }

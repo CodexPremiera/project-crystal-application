@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from "next/image";
+import Link from "next/link";
 import {usePathname} from 'next/navigation';
 import {Separator} from "@radix-ui/react-menu";
 import {useQueryData} from "@/hooks/useQueryData";
@@ -107,8 +108,11 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
   }
   
   const SidebarSection = (
-    <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden z-100">
-      <div className="bg-[#111111] p-4 flex gap-3 justify-center items-center mb-4 absolute top-0 left-0 right-0">
+    <div className="bg-surface-base flex-none relative p-4 h-full w-[250px] flex flex-col gap-4 items-center overflow-hidden z-100">
+      <Link 
+        href={`/dashboard/${activeWorkspaceId}`}
+        className="bg-surface-base p-4 flex gap-3 justify-center items-center mb-4 absolute top-0 left-0 right-0 hover:opacity-80 transition-opacity"
+      >
         <Image
           src="/crystal-logo.svg"
           height={32}
@@ -116,9 +120,9 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           alt="logo"
         />
         <p className="text-2xl">Crystal</p>
-      </div>
+      </Link>
       
-      <p className="w-full text-[#9D9D9D] font-bold mt-16">Menu</p>
+      <p className="w-full text-text-tertiary font-bold mt-16">Menu</p>
       <nav className="w-full">
         <ul>
           {menuItems.map(item => (
@@ -142,13 +146,13 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
       <Separator className="w-4/5" />
       <div className="flex flex-col items-center gap-2 overflow-hidden w-full">
         <div className="flex gap-3 items-center h-fit justify-between w-full">
-          <p className="h-fit text-[#9D9D9D] font-bold">Workspaces</p>
+          <p className="h-fit text-text-tertiary font-bold">Workspaces</p>
           <CreateWorkspace />
         </div>
         
         {workspace.workspace.length === 1 && workspace.members.length === 0 && (
           <div className="w-full mt-[-10px] cursor-pointer">
-            <p className="text-[#3c3c3c] font-medium text-sm">
+            <p className="text-text-disabled font-medium text-sm">
               {workspace.subscription?.plan === 'FREE'
                 ? 'Upgrade to create workspaces'
                 : 'No Workspaces'}
@@ -167,7 +171,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
               notifications={0}
               key={currentWorkspace.name}
               icon={
-                <WorkspacePlaceholder>
+                <WorkspacePlaceholder type={currentWorkspace.type as 'PUBLIC' | 'PERSONAL'}>
                   {currentWorkspace.name.charAt(0)}
                 </WorkspacePlaceholder>
               }
@@ -189,7 +193,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
                       notifications={0}
                       key={item.id}
                       icon={
-                        <WorkspacePlaceholder>
+                        <WorkspacePlaceholder type={item.type as 'PUBLIC' | 'PERSONAL'}>
                           {item.name.charAt(0)}
                         </WorkspacePlaceholder>
                       }
@@ -211,7 +215,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
                       notifications={0}
                       key={item.WorkSpace.id}
                       icon={
-                        <WorkspacePlaceholder>
+                        <WorkspacePlaceholder type={item.WorkSpace.type as 'PUBLIC' | 'PERSONAL'}>
                           {item.WorkSpace.name.charAt(0)}
                         </WorkspacePlaceholder>
                       }
