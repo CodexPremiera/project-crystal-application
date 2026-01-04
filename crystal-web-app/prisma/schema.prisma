@@ -33,6 +33,8 @@ model User {
   firstView    Boolean        @default(false)
   comment      Comment[]
   videoLikes   VideoLike[]
+  videoViews   VideoView[]
+  actedNotifications Notification[] @relation("NotificationActor")
 }
 
 model Comment {
@@ -109,6 +111,8 @@ model Video {
   transcriptSegments Json?
   Comment     Comment[]
   VideoLike   VideoLike[]
+  VideoView   VideoView[]
+  Notification Notification[]
 }
 
 model Member {
@@ -122,11 +126,16 @@ model Member {
 }
 
 model Notification {
-  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  User             User?              @relation(fields: [userId], references: [id])
-  userId           String?            @db.Uuid
+  id               String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User             User?               @relation(fields: [userId], references: [id])
+  userId           String?             @db.Uuid
   content          String
-  createdAt        DateTime           @default(now())
+  type             NotificationType    @default(INVITE)
+  Video            Video?              @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId          String?             @db.Uuid
+  Actor            User?               @relation("NotificationActor", fields: [actorId], references: [id])
+  actorId          String?             @db.Uuid
+  createdAt        DateTime            @default(now())
   NotificationInvite NotificationInvite?
 }
 
@@ -167,11 +176,29 @@ enum SUBSCRIPTION_PLAN {
   FREE
 }
 
+enum NotificationType {
+  INVITE
+  VIDEO_VIEW
+  VIDEO_LIKE
+  VIDEO_UPLOAD
+}
+
 model VideoLike {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   videoId   String   @db.Uuid
   userId    String   @db.Uuid
   likedAt   DateTime @default(now())
+  Video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([videoId, userId])
+}
+
+model VideoView {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  videoId   String   @db.Uuid
+  userId    String   @db.Uuid
+  viewedAt  DateTime @default(now())
   Video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   

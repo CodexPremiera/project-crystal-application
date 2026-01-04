@@ -618,21 +618,22 @@ export const getPreviewVideo = async (videoId: string) => {
  * Toggles like status for a video (like if not liked, unlike if already liked)
  * 
  * Database Operation: POST/DELETE + UPDATE (INSERT/DELETE + UPDATE operations)
- * Tables: VideoLike (create/delete), Video (update counter)
+ * Tables: VideoLike (create/delete), Video (update counter), Notification (create on like)
  * 
  * What it does:
  * - Creates VideoLike entry if user hasn't liked the video
  * - Deletes VideoLike entry if user has already liked the video
  * - Increments or decrements Video.likes counter atomically
+ * - Creates notification for video owner on like (public workspaces only)
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
  * 2. Finds user in database by clerkId
- * 3. Checks if VideoLike entry exists for (videoId, userId)
- * 4. If exists: deletes entry and decrements Video.likes
- * 5. If not exists: creates entry and increments Video.likes
- * 6. Returns updated like count for optimistic UI updates
- * 7. Handles errors gracefully
+ * 3. Fetches video with workspace and owner info
+ * 4. Checks if VideoLike entry exists for (videoId, userId)
+ * 5. If exists: deletes entry and decrements Video.likes
+ * 6. If not exists: creates entry, increments Video.likes, creates notification
+ * 7. Returns updated like count for optimistic UI updates
  * 
  * @param videoId - The unique identifier of the video to toggle like for
  * @returns Promise with status and updated like count
@@ -644,9 +645,31 @@ export const toggleVideoLike = async (videoId: string) => {
     
     const user = await client.user.findUnique({
       where: { clerkId: clerkUser.id },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+      },
     })
     
     if (!user) return { status: 404, data: { likes: 0 } }
+    
+    const video = await client.video.findUnique({
+      where: { id: videoId },
+      select: {
+        id: true,
+        title: true,
+        userId: true,
+        likes: true,
+        WorkSpace: {
+          select: {
+            type: true,
+          },
+        },
+      },
+    })
+    
+    if (!video) return { status: 404, data: { likes: 0 } }
     
     const existingLike = await client.videoLike.findUnique({
       where: {
@@ -696,6 +719,23 @@ export const toggleVideoLike = async (videoId: string) => {
           },
         }),
       ])
+      
+      const isPublicWorkspace = video.WorkSpace?.type === 'PUBLIC'
+      const isNotOwner = video.userId !== user.id
+      
+      if (isPublicWorkspace && isNotOwner && video.userId) {
+        const likerName = [user.firstname, user.lastname].filter(Boolean).join(' ') || 'Someone'
+        
+        await client.notification.create({
+          data: {
+            userId: video.userId,
+            actorId: user.id,
+            videoId: video.id,
+            type: 'VIDEO_LIKE',
+            content: `${likerName} liked your video "${video.title}"`,
+          },
+        })
+      }
       
       const updatedVideo = await client.video.findUnique({
         where: { id: videoId },
@@ -848,6 +888,114 @@ export const sendEmailForFirstView = async (videoId: string) => {
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+/**
+ * Records a unique video view and creates notification for video owner
+ * 
+ * Database Operation: GET + POST + UPDATE
+ * Tables: VideoView (create), Video (update), Notification (create)
+ * 
+ * What it does:
+ * - Checks if the user has already viewed this video
+ * - Records the first view per user in VideoView table
+ * - Increments the video's view counter
+ * - Creates a notification for the video owner (public workspaces only)
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Fetches video with workspace and owner info
+ * 4. Checks if VideoView record already exists for this user/video
+ * 5. If no existing view: creates VideoView, increments counter
+ * 6. If public workspace and viewer is not owner: creates notification
+ * 
+ * @param videoId - The unique identifier of the video being viewed
+ * @returns Promise with status and whether view was recorded
+ */
+export const recordVideoView = async (videoId: string) => {
+  try {
+    const clerkUser = await currentUser()
+    if (!clerkUser) return { status: 401, data: { recorded: false } }
+    
+    const user = await client.user.findUnique({
+      where: { clerkId: clerkUser.id },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+      },
+    })
+    
+    if (!user) return { status: 404, data: { recorded: false } }
+    
+    const video = await client.video.findUnique({
+      where: { id: videoId },
+      select: {
+        id: true,
+        title: true,
+        userId: true,
+        WorkSpace: {
+          select: {
+            id: true,
+            type: true,
+          },
+        },
+      },
+    })
+    
+    if (!video) return { status: 404, data: { recorded: false } }
+    
+    const existingView = await client.videoView.findUnique({
+      where: {
+        videoId_userId: {
+          videoId,
+          userId: user.id,
+        },
+      },
+    })
+    
+    if (existingView) {
+      return { status: 200, data: { recorded: false, alreadyViewed: true } }
+    }
+    
+    await client.$transaction([
+      client.videoView.create({
+        data: {
+          videoId,
+          userId: user.id,
+        },
+      }),
+      client.video.update({
+        where: { id: videoId },
+        data: {
+          views: { increment: 1 },
+        },
+      }),
+    ])
+    
+    const isPublicWorkspace = video.WorkSpace?.type === 'PUBLIC'
+    const isNotOwner = video.userId !== user.id
+    
+    if (isPublicWorkspace && isNotOwner && video.userId) {
+      const viewerName = [user.firstname, user.lastname].filter(Boolean).join(' ') || 'Someone'
+      
+      await client.notification.create({
+        data: {
+          userId: video.userId,
+          actorId: user.id,
+          videoId: video.id,
+          type: 'VIDEO_VIEW',
+          content: `${viewerName} viewed your video "${video.title}"`,
+        },
+      })
+    }
+    
+    return { status: 200, data: { recorded: true } }
+  } catch (error) {
+    console.log(error)
+    return { status: 400, data: { recorded: false } }
   }
 }
 
