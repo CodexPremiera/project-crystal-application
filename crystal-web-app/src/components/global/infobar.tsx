@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { UploadIcon, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { UploadVideoDialog } from '@/components/global/upload-video-dialog';
 import { SearchDropdown } from '@/components/global/search/search-dropdown';
 
@@ -24,6 +24,17 @@ import { SearchDropdown } from '@/components/global/search/search-dropdown';
 function Infobar() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+
+  // Extract workspace ID from current path for upload dialog navigation
+  const getWorkspaceId = (): string | null => {
+    const pathSegments = pathname.split('/')
+    const dashboardIndex = pathSegments.indexOf('dashboard')
+    if (dashboardIndex !== -1 && pathSegments[dashboardIndex + 1]) {
+      return pathSegments[dashboardIndex + 1]
+    }
+    return null
+  }
 
   return (
     <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-surface-elevated/80 backdrop-blur-lg z-50">
@@ -46,6 +57,7 @@ function Infobar() {
       <UploadVideoDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
+        workspaceId={getWorkspaceId()}
         onUploadComplete={() => {
           router.refresh()
         }}

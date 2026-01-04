@@ -1,59 +1,61 @@
 'use client'
 
 import { useState, useRef, ChangeEvent, FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
-import { UploadIcon } from 'lucide-react'
+import { UploadIcon, CheckCircle2, Video } from 'lucide-react'
 import { getUserProfile } from '@/actions/user'
+
+type UploadPhase = 'idle' | 'uploading' | 'processing' | 'complete'
 
 type UploadVideoDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onUploadComplete?: () => void
+  workspaceId?: string | null
 }
 
 /**
  * Upload Video Dialog Component
  * 
  * Dialog component for uploading video files to the Crystal platform.
- * Supports optional title/description metadata, progress tracking, and file validation.
+ * Provides a multi-phase upload experience with distinct visual states
+ * for uploading, processing, and completion.
  * 
  * Features:
  * - File type validation (MP4, WebM, MOV, AVI)
  * - File size validation (100MB limit)
- * - Upload progress bar with percentage
- * - Optional title and description fields
- * - Error handling and user feedback
- * - Automatic video list refresh on success
+ * - Multi-phase progress: Upload -> Processing -> Complete
+ * - Indeterminate progress bar during server processing
+ * - Success state with navigation to uploaded video
  * 
- * Upload Flow:
- * 1. User selects video file
- * 2. Optional metadata entry (title/description)
- * 3. File validation (type and size)
- * 4. Upload to Express server with progress tracking
- * 5. Server processes video (S3 upload, AI processing)
- * 6. Success toast and list refresh
- * 
- * AI Processing:
- * - Files under 25MB: Full AI processing (transcription, title, description)
- * - Files over 25MB: Upload only, no AI processing
- * - User-provided metadata is used when available
+ * Upload Phases:
+ * - idle: File selection and metadata entry
+ * - uploading: Determinate progress bar showing upload percentage
+ * - processing: Indeterminate progress bar while server processes
+ * - complete: Success message with "View Video" button
  */
-export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: UploadVideoDialogProps) {
+export function UploadVideoDialog({ open, onOpenChange, onUploadComplete, workspaceId: propWorkspaceId }: UploadVideoDialogProps) {
+  const router = useRouter()
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [uploading, setUploading] = useState(false)
+  const [phase, setPhase] = useState<UploadPhase>('idle')
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState('')
+  const [videoId, setVideoId] = useState<string | null>(null)
+  const [workspaceId, setWorkspaceId] = useState<string | null>(propWorkspaceId || null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const ALLOWED_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo']
-  const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100MB
+  const MAX_FILE_SIZE = 100 * 1024 * 1024
+
+  const isProcessing = phase === 'uploading' || phase === 'processing'
 
   const validateFile = (file: File): string | null => {
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -88,7 +90,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
       return
     }
 
-    setUploading(true)
+    setPhase('uploading')
     setError('')
     setUploadProgress(0)
 
@@ -118,27 +120,51 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
         if (e.lengthComputable) {
           const percentComplete = Math.round((e.loaded / e.total) * 100)
           setUploadProgress(percentComplete)
+          
+          // Transition to processing phase when upload reaches 100%
+          if (percentComplete === 100) {
+            setPhase('processing')
+          }
         }
       })
 
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
-          toast.success('Video uploaded successfully! Processing will begin shortly.')
-          
-          resetForm()
-          onOpenChange(false)
-          
-          if (onUploadComplete) {
-            onUploadComplete()
+          try {
+            const response = JSON.parse(xhr.responseText)
+            
+            // Store video and workspace IDs for navigation
+            if (response.videoId) {
+              setVideoId(response.videoId)
+            }
+            if (response.workspaceId) {
+              setWorkspaceId(response.workspaceId)
+            }
+            
+            setPhase('complete')
+            toast.success('Video uploaded and processed successfully!')
+            
+            if (onUploadComplete) {
+              onUploadComplete()
+            }
+          } catch {
+            setPhase('complete')
+            toast.success('Video uploaded successfully!')
           }
         } else {
-          const response = JSON.parse(xhr.responseText)
-          throw new Error(response.error || 'Upload failed')
+          try {
+            const response = JSON.parse(xhr.responseText)
+            throw new Error(response.error || 'Upload failed')
+          } catch {
+            throw new Error('Upload failed')
+          }
         }
       })
 
       xhr.addEventListener('error', () => {
-        throw new Error('Network error during upload')
+        setPhase('idle')
+        setError('Network error during upload')
+        toast.error('Network error during upload')
       })
 
       xhr.open('POST', uploadUrl)
@@ -148,9 +174,8 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
       console.error('Upload error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Upload failed. Please try again.'
       setError(errorMessage)
+      setPhase('idle')
       toast.error('Upload failed: ' + (err instanceof Error ? err.message : 'Please try again'))
-    } finally {
-      setUploading(false)
     }
   }
 
@@ -160,15 +185,25 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
     setDescription('')
     setUploadProgress(0)
     setError('')
+    setPhase('idle')
+    setVideoId(null)
+    setWorkspaceId(propWorkspaceId || null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }
 
-  const handleCancel = () => {
-    if (!uploading) {
+  const handleClose = () => {
+    if (!isProcessing) {
       resetForm()
       onOpenChange(false)
+    }
+  }
+
+  const handleViewVideo = () => {
+    if (videoId && workspaceId) {
+      router.push(`/dashboard/${workspaceId}/video/${videoId}`)
+      handleClose()
     }
   }
 
@@ -178,8 +213,40 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
 
   const showAiWarning = selectedFile && selectedFile.size > 25 * 1024 * 1024
 
+  // Success/Complete state
+  if (phase === 'complete') {
+    return (
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogContent className="sm:max-w-md">
+          <div className="flex flex-col items-center justify-center py-8 gap-4">
+            <div className="rounded-full bg-green-500/10 p-3">
+              <CheckCircle2 className="h-12 w-12 text-green-500" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Upload Complete!</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Your video has been uploaded and processed successfully.
+              </p>
+            </div>
+            <div className="flex gap-3 mt-4">
+              <Button variant="outline" onClick={handleClose}>
+                Close
+              </Button>
+              {videoId && workspaceId && (
+                <Button onClick={handleViewVideo} className="bg-brand hover:bg-brand-hover">
+                  <Video className="mr-2 h-4 w-4" />
+                  View Video
+                </Button>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Dialog open={open} onOpenChange={uploading ? undefined : onOpenChange}>
+    <Dialog open={open} onOpenChange={isProcessing ? undefined : handleClose}>
       <DialogContent className="sm:max-w-md overflow-hidden">
         <DialogHeader>
           <DialogTitle>Upload Video</DialogTitle>
@@ -195,7 +262,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
               type="file"
               accept="video/mp4,video/webm,video/quicktime,video/x-msvideo"
               onChange={handleFileChange}
-              disabled={uploading}
+              disabled={isProcessing}
               className="cursor-pointer w-full max-w-full overflow-hidden text-ellipsis"
             />
             {selectedFile && (
@@ -206,7 +273,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
             )}
             {showAiWarning && (
               <p className="mt-2 text-sm text-yellow-600">
-                ⚠️ File exceeds 25MB - AI processing will be skipped
+                Note: File exceeds 25MB - AI processing will be skipped
               </p>
             )}
           </div>
@@ -219,7 +286,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter video title"
-              disabled={uploading}
+              disabled={isProcessing}
               className="w-full"
             />
           </div>
@@ -232,17 +299,30 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter video description"
-              disabled={uploading}
+              disabled={isProcessing}
               rows={3}
               className="w-full resize-none"
             />
           </div>
 
-          {uploading && (
+          {/* Uploading Phase - Determinate Progress */}
+          {phase === 'uploading' && (
             <div className="space-y-2">
               <Progress value={uploadProgress} />
               <p className="text-sm text-center text-muted-foreground">
                 Uploading... {uploadProgress}%
+              </p>
+            </div>
+          )}
+
+          {/* Processing Phase - Indeterminate Progress */}
+          {phase === 'processing' && (
+            <div className="space-y-2">
+              <div className="relative">
+                <Progress value={100} className="[&>div]:animate-pulse" />
+              </div>
+              <p className="text-sm text-center text-muted-foreground">
+                Processing video...
               </p>
             </div>
           )}
@@ -257,18 +337,20 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
             <Button
               type="button"
               variant="outline"
-              onClick={handleCancel}
-              disabled={uploading}
+              onClick={handleClose}
+              disabled={isProcessing}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={!selectedFile || uploading}
+              disabled={!selectedFile || isProcessing}
               className="bg-[#9D9D9D] hover:bg-[#8D8D8D]"
             >
-              {uploading ? (
+              {phase === 'uploading' ? (
                 <>Uploading...</>
+              ) : phase === 'processing' ? (
+                <>Processing...</>
               ) : (
                 <>
                   <UploadIcon className="mr-2 h-4 w-4" />
@@ -282,4 +364,3 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
     </Dialog>
   )
 }
-
