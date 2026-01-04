@@ -180,7 +180,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
 
   return (
     <Dialog open={open} onOpenChange={uploading ? undefined : onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md overflow-hidden">
         <DialogHeader>
           <DialogTitle>Upload Video</DialogTitle>
           <DialogDescription>
@@ -188,20 +188,20 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleUpload} className="space-y-4">
-          <div>
+        <form onSubmit={handleUpload} className="space-y-4 overflow-hidden">
+          <div className="overflow-hidden">
             <Input
               ref={fileInputRef}
               type="file"
               accept="video/mp4,video/webm,video/quicktime,video/x-msvideo"
               onChange={handleFileChange}
               disabled={uploading}
-              className="cursor-pointer"
+              className="cursor-pointer w-full max-w-full overflow-hidden text-ellipsis"
             />
             {selectedFile && (
-              <div className="mt-2 flex items-center justify-between text-sm text-muted-foreground">
-                <span className="truncate">{selectedFile.name}</span>
-                <span className="ml-2">{fileSizeDisplay}</span>
+              <div className="mt-2 flex items-center justify-between text-sm text-muted-foreground gap-2 max-w-full overflow-hidden">
+                <span className="truncate min-w-0 flex-1 block overflow-hidden text-ellipsis">{selectedFile.name}</span>
+                <span className="flex-shrink-0 whitespace-nowrap">{fileSizeDisplay}</span>
               </div>
             )}
             {showAiWarning && (
@@ -211,7 +211,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
             )}
           </div>
 
-          <div>
+          <div className="overflow-hidden">
             <label className="text-sm font-medium mb-1.5 block">
               Title (optional)
             </label>
@@ -220,10 +220,11 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter video title"
               disabled={uploading}
+              className="w-full"
             />
           </div>
 
-          <div>
+          <div className="overflow-hidden">
             <label className="text-sm font-medium mb-1.5 block">
               Description (optional)
             </label>
@@ -233,6 +234,7 @@ export function UploadVideoDialog({ open, onOpenChange, onUploadComplete }: Uplo
               placeholder="Enter video description"
               disabled={uploading}
               rows={3}
+              className="w-full resize-none"
             />
           </div>
 
