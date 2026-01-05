@@ -38,6 +38,9 @@ type NotificationData = {
       senderId: string | null
       receiverId: string | null
       workSpaceId: string | null
+      WorkSpace: {
+        name: string
+      } | null
       sender: {
         image: string | null
         firstname: string | null
@@ -134,12 +137,28 @@ export function NotificationDropdown() {
   const getActorInfo = (n: NotificationData) => {
     if (n.type === 'INVITE' && n.NotificationInvite?.Invite) {
       const invite = n.NotificationInvite.Invite
+      // If current user is the sender, show receiver's avatar
       if (n.userId === invite.senderId) {
         return invite.receiver
       }
+      // If current user is the receiver, show sender's avatar
       return invite.sender
     }
     return n.Actor
+  }
+
+  const isInviteSender = (n: NotificationData) => {
+    if (n.type === 'INVITE' && n.NotificationInvite?.Invite) {
+      return n.userId === n.NotificationInvite.Invite.senderId
+    }
+    return false
+  }
+
+  const getWorkspaceName = (n: NotificationData) => {
+    if (n.type === 'INVITE' && n.NotificationInvite?.Invite?.WorkSpace) {
+      return n.NotificationInvite.Invite.WorkSpace.name
+    }
+    return 'a workspace'
   }
 
   const getVideoLink = (n: NotificationData) => {
@@ -208,6 +227,8 @@ export function NotificationDropdown() {
                   : 'Someone'
                 const videoLink = getVideoLink(n)
                 const icon = getNotificationIcon(n.type)
+                const isSender = isInviteSender(n)
+                const workspaceName = getWorkspaceName(n)
                 
                 const NotificationContent = (
                   <div
@@ -236,20 +257,34 @@ export function NotificationDropdown() {
                     
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-text-primary leading-snug">
-                        <span className="font-semibold">{actorName}</span>
-                        {' '}
-                        <span className="text-text-secondary">
-                          {n.type === 'VIDEO_VIEW' && 'viewed your video'}
-                          {n.type === 'VIDEO_LIKE' && 'liked your video'}
-                          {n.type === 'VIDEO_UPLOAD' && 'uploaded a new video'}
-                          {n.type === 'INVITE' && 'invited you to a workspace'}
-                        </span>
-                        {n.Video?.title && (
+                        {n.type === 'INVITE' && isSender ? (
                           <>
+                            <span className="text-text-secondary">You invited </span>
+                            <span className="font-semibold">{actorName}</span>
+                            <span className="text-text-secondary"> to join </span>
+                            <span className="font-medium">{workspaceName}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="font-semibold">{actorName}</span>
                             {' '}
-                            <span className="font-medium">
-                              &quot;{n.Video.title}&quot;
+                            <span className="text-text-secondary">
+                              {n.type === 'VIDEO_VIEW' && 'viewed your video'}
+                              {n.type === 'VIDEO_LIKE' && 'liked your video'}
+                              {n.type === 'VIDEO_UPLOAD' && 'uploaded a new video'}
+                              {n.type === 'INVITE' && `invites you to join `}
                             </span>
+                            {n.type === 'INVITE' && (
+                              <span className="font-medium">{workspaceName}</span>
+                            )}
+                            {n.Video?.title && (
+                              <>
+                                {' '}
+                                <span className="font-medium">
+                                  &quot;{n.Video.title}&quot;
+                                </span>
+                              </>
+                            )}
                           </>
                         )}
                       </p>

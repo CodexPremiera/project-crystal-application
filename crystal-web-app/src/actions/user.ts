@@ -230,6 +230,11 @@ export const getNotifications = async () => {
                     senderId: true,
                     receiverId: true,
                     workSpaceId: true,
+                    WorkSpace: {
+                      select: {
+                        name: true,
+                      },
+                    },
                     sender: {
                       select: {
                         image: true,
