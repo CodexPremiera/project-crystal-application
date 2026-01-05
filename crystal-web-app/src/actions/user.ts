@@ -205,6 +205,7 @@ export const getNotifications = async () => {
             userId: true,
             content: true,
             type: true,
+            isRead: true,
             createdAt: true,
             Actor: {
               select: {
@@ -259,6 +260,143 @@ export const getNotifications = async () => {
   } catch (error) {
     console.error(error)
     return { status: 400, data: [] }
+  }
+}
+
+/**
+ * Marks a single notification as read
+ *
+ * Database Operation: PUT (UPDATE query)
+ * Table: Notification
+ * 
+ * What it does:
+ * - Updates a notification's isRead status to true
+ * - Verifies the notification belongs to the current user
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Updates notification where id matches and userId matches
+ * 4. Returns success status
+ *
+ * @param notificationId - The ID of the notification to mark as read
+ * @returns Promise with status indicating success or failure
+ */
+export const markNotificationAsRead = async (notificationId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404 }
+    
+    await client.notification.updateMany({
+      where: {
+        id: notificationId,
+        userId: dbUser.id,
+      },
+      data: {
+        isRead: true,
+      },
+    })
+    
+    return { status: 200 }
+  } catch (error) {
+    console.error(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Marks all notifications as read for the current user
+ *
+ * Database Operation: PUT (UPDATE query)
+ * Table: Notification
+ * 
+ * What it does:
+ * - Updates all unread notifications for the current user to isRead = true
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Updates all notifications where userId matches and isRead is false
+ * 4. Returns success status
+ *
+ * @returns Promise with status indicating success or failure
+ */
+export const markAllNotificationsAsRead = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404 }
+    
+    await client.notification.updateMany({
+      where: {
+        userId: dbUser.id,
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+      },
+    })
+    
+    return { status: 200 }
+  } catch (error) {
+    console.error(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Gets the count of unread notifications for the current user
+ *
+ * Database Operation: GET (COUNT query)
+ * Table: Notification
+ * 
+ * What it retrieves:
+ * - Count of notifications where isRead is false
+ * 
+ * How it works:
+ * 1. Gets current authenticated user from Clerk
+ * 2. Finds user in database by clerkId
+ * 3. Counts notifications where userId matches and isRead is false
+ * 4. Returns the count
+ *
+ * @returns Promise with status and unread count
+ */
+export const getUnreadNotificationCount = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, count: 0 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404, count: 0 }
+    
+    const count = await client.notification.count({
+      where: {
+        userId: dbUser.id,
+        isRead: false,
+      },
+    })
+    
+    return { status: 200, count }
+  } catch (error) {
+    console.error(error)
+    return { status: 400, count: 0 }
   }
 }
 

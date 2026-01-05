@@ -1,5 +1,5 @@
 import React from "react";
-import {Bell, CreditCard, Settings, Home} from "@/components/icons";
+import {CreditCard, Settings, Home} from "@/components/icons";
 import {Users} from "@/components/icons/user";
 
 /**
@@ -26,10 +26,11 @@ import {Users} from "@/components/icons/user";
  * 
  * Menu Items:
  * - Home: Main workspace dashboard
- * - Notifications: User notification center
  * - Billing: Subscription and payment management
  * - Settings: User and workspace settings
  * - Users: Team member management (PUBLIC workspaces only)
+ * 
+ * Note: Notifications moved to header dropdown (YouTube-style)
  * 
  * Features:
  * - Dynamic workspace routing
@@ -60,11 +61,6 @@ export const MENU_ITEMS = ({
       icon: <Home />,
     },
     {
-      title: 'Notifications',
-      href: `/dashboard/${workspaceId}/notifications`,
-      icon: <Bell />,
-    },
-    {
       title: 'Billing',
       href: `/dashboard/${workspaceId}/billing`,
       icon: <CreditCard />,
@@ -76,9 +72,9 @@ export const MENU_ITEMS = ({
     },
   ]
 
-  // Add Users tab only for PUBLIC workspaces
+  // Add Users tab only for PUBLIC workspaces (after Home)
   if (currentWorkspace?.type === 'PUBLIC') {
-    baseItems.splice(2, 0, {
+    baseItems.splice(1, 0, {
       title: 'Users',
       href: `/dashboard/${workspaceId}/users`,
       icon: <Users opacity={30}/>,
