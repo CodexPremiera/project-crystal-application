@@ -1407,6 +1407,123 @@ export const getWorkspaceMembers = async (workspaceId: string) => {
 }
 
 /**
+ * Retrieves all workspace members (owner + members) in display order
+ * 
+ * Database Operation: GET (SELECT query)
+ * Tables: WorkSpace, User, Member
+ * 
+ * Display Order:
+ * 1. Owner (always first)
+ * 2. Current user (if member, not owner)
+ * 3. Other members (alphabetically by name)
+ * 
+ * @param workspaceId - The UUID of the workspace
+ * @returns Promise with ordered members list
+ */
+export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: [] }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true, clerkId: true }
+    })
+    
+    if (!dbUser) return { status: 404, data: [] }
+    
+    // Get workspace with owner and members
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+        OR: [
+          { User: { clerkId: user.id } },
+          { members: { some: { User: { clerkId: user.id } } } },
+        ],
+      },
+      select: {
+        userId: true,
+        User: {
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            image: true,
+            clerkId: true,
+          }
+        },
+        members: {
+          select: {
+            User: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+                image: true,
+                clerkId: true,
+              }
+            }
+          }
+        }
+      }
+    })
+    
+    if (!workspace) {
+      return { status: 403, data: [] }
+    }
+    
+    type MemberInfo = {
+      id: string
+      firstname: string | null
+      lastname: string | null
+      image: string | null
+      clerkId: string
+      role: 'owner' | 'you' | 'member'
+    }
+    
+    const result: MemberInfo[] = []
+    
+    // 1. Add owner first
+    if (workspace.User) {
+      result.push({
+        ...workspace.User,
+        role: workspace.User.clerkId === user.id ? 'owner' : 'owner'
+      })
+    }
+    
+    // Get all other members (excluding owner)
+    const otherMembers = workspace.members
+      .filter(m => m.User && m.User.clerkId !== workspace.User?.clerkId)
+      .map(m => ({
+        ...m.User!,
+        role: m.User!.clerkId === user.id ? 'you' as const : 'member' as const
+      }))
+    
+    // 2. Add current user if they're a member (not owner)
+    const currentUserMember = otherMembers.find(m => m.clerkId === user.id)
+    if (currentUserMember) {
+      result.push(currentUserMember)
+    }
+    
+    // 3. Add remaining members alphabetically
+    const remainingMembers = otherMembers
+      .filter(m => m.clerkId !== user.id)
+      .sort((a, b) => {
+        const nameA = `${a.firstname || ''} ${a.lastname || ''}`.trim().toLowerCase()
+        const nameB = `${b.firstname || ''} ${b.lastname || ''}`.trim().toLowerCase()
+        return nameA.localeCompare(nameB)
+      })
+    
+    result.push(...remainingMembers)
+    
+    return { status: 200, data: result }
+  } catch (error) {
+    console.log('Error getting workspace members ordered:', error)
+    return { status: 500, data: [] }
+  }
+}
+
+/**
  * Removes a user from a workspace
  * 
  * Database Operation: DELETE (DELETE operation)

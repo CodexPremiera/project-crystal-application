@@ -4,7 +4,7 @@ import { useQueryData } from '@/hooks/useQueryData'
 import { getWorkSpaces, getWorkspaceMemberCount } from '@/actions/workspace'
 import { WorkSpaceProps } from '@/types/index.type'
 import InviteWorkspaceModal from './invite-workspace-modal'
-import { Users } from '@/components/icons/user'
+import WorkspaceMembersModal from './workspace/workspace-members-modal'
 
 /**
  * Dashboard Invite Section Component
@@ -14,7 +14,7 @@ import { Users } from '@/components/icons/user'
  * the invite modal based on workspace type and user subscription.
  * 
  * Appearance:
- * - User count display with icon
+ * - User count display with icon (clickable to show members modal)
  * - Invite button (if conditions are met)
  * - Rounded container with proper spacing
  * 
@@ -22,6 +22,7 @@ import { Users } from '@/components/icons/user'
  * - Fetches workspace data using React Query
  * - Only shows invite functionality for PUBLIC workspaces with PRO subscription
  * - Displays current user count
+ * - Clicking user count opens members modal
  * 
  * Used in:
  * - Dashboard workspace pages
@@ -51,12 +52,10 @@ const DashboardInviteSection = ({ workspaceId }: Props) => {
 
   return (
     <div className="flex items-center bg-secondary text-secondary-foreground/80 shadow-xs rounded-full py-2 px-4 gap-3">
-      <div className="flex items-center gap-2">
-        <div>
-          <Users size={20} />
-        </div>
-        <span>{displayText}</span>
-      </div>
+      <WorkspaceMembersModal 
+        workspaceId={workspaceId}
+        memberCount={displayText}
+      />
       <InviteWorkspaceModal 
         workspaceId={workspaceId}
         currentWorkspace={currentWorkspace ? {
