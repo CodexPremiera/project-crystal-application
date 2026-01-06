@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn, extractWorkspaceIdFromPath } from '@/lib/utils'
 import { usePathname, useRouter } from 'next/navigation'
 import React, {useRef, useState} from 'react'
 import Loader from "@/components/global/loader/loader";
@@ -77,8 +77,7 @@ function Folder({ id, name, optimistic, count }: Props) {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false)
   const dragContext = useVideoDragSafe()
   
-  // Extract workspaceId from pathname (e.g., /dashboard/[workspaceId])
-  const workspaceId = pathName.split('/dashboard/')[1]?.split('/')[0] || ''
+  const workspaceId = extractWorkspaceIdFromPath(pathName) || ''
   
   const { deleteFolder, isDeleting } = useDeleteFolder(id, workspaceId)
   

@@ -4,6 +4,7 @@ import { useQueryData } from './useQueryData'
 import useZodForm from './useZodForm'
 import { createCommentAndReply, getUserProfile } from '@/actions/user'
 import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
+import { UserProfileResponse } from '@/types/index.type'
 
 /**
  * Custom hook for managing video comments and replies
@@ -44,10 +45,7 @@ import { MutationFunction, UseMutateFunction } from '@tanstack/react-query'
 export const useVideoComment = (videoId: string, commentId?: string) => {
   const { data } = useQueryData(['user-profile'], getUserProfile)
 
-  const { data: user } = data as {
-    status: number
-    data: { id: string; image: string }
-  }
+  const { data: user } = data as UserProfileResponse
   /**
    * Mutation with Callback Pattern
    * 

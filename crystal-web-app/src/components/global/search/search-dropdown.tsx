@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Search, Clock, X, Video, Folder, Building2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -8,7 +8,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { quickSearch, QuickSearchResult } from '@/actions/search'
 import Fuse from 'fuse.js'
-import { cn } from '@/lib/utils'
+import { cn, extractWorkspaceIdFromPath } from '@/lib/utils'
 
 /**
  * SearchDropdown Component
@@ -32,15 +32,7 @@ export function SearchDropdown() {
   const debouncedQuery = useDebounce(query, 300)
   const { recentSearches, addRecentSearch, removeRecentSearch } = useRecentSearches()
 
-  // Get workspace ID from pathname
-  const getWorkspaceId = useCallback(() => {
-    const segments = pathname.split('/')
-    const dashboardIndex = segments.indexOf('dashboard')
-    if (dashboardIndex !== -1 && segments[dashboardIndex + 1]) {
-      return segments[dashboardIndex + 1]
-    }
-    return null
-  }, [pathname])
+  const currentWorkspaceId = extractWorkspaceIdFromPath(pathname)
 
   // Fetch results when debounced query changes
   useEffect(() => {
@@ -103,9 +95,8 @@ export function SearchDropdown() {
     setIsOpen(false)
     setQuery('')
     
-    const workspaceId = getWorkspaceId()
-    if (workspaceId) {
-      router.push(`/dashboard/${workspaceId}/search?query=${encodeURIComponent(searchQuery.trim())}`)
+    if (currentWorkspaceId) {
+      router.push(`/dashboard/${currentWorkspaceId}/search?query=${encodeURIComponent(searchQuery.trim())}`)
     }
   }
 

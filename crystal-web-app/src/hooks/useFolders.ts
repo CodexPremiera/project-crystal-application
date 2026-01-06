@@ -5,6 +5,7 @@ import useZodForm from './useZodForm'
 import { moveVideoSchema } from '@/components/forms/change-video-location/schema'
 import { useMutation, useQueryClient, UseMutateFunction } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { FolderItem } from '@/types/index.type'
 
 /**
  * Custom hook for moving videos between workspaces and folders
@@ -51,22 +52,8 @@ export const useMoveVideos = (videoId: string, currentWorkspace: string, current
   const { folders } = useAppSelector((state) => state.FolderReducer)
   const { workspaces } = useAppSelector((state) => state.WorkSpaceReducer)
   
-  // fetching states
   const [isFetching, setIsFetching] = useState(false)
-  // stat folders
-  const [isFolders, setIsFolders] = useState<
-    | ({
-    _count: {
-      videos: number
-    }
-  } & {
-    id: string
-    name: string
-    createdAt: Date
-    workSpaceId: string | null
-  })[]
-    | undefined
-  >(undefined)
+  const [isFolders, setIsFolders] = useState<FolderItem[] | undefined>(undefined)
   
   const queryClient = useQueryClient()
   

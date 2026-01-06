@@ -133,3 +133,45 @@ export type VideoCommentProps = {
   }[]
 }
 
+export type FolderItem = {
+  _count: {
+    videos: number
+  }
+  id: string
+  name: string
+  createdAt: Date
+  workSpaceId: string | null
+}
+
+export type FoldersProps = {
+  status: number
+  data: FolderItem[]
+}
+
+export type WorkspaceDataResponse = {
+  workspace: Array<{ 
+    id: string
+    name: string
+    type: string 
+  }>
+  members: Array<{ 
+    WorkSpace: { 
+      id: string
+      name: string
+      type: string 
+    } | null 
+  }>
+}
+
+export type SubscriptionPlan = 'FREE' | 'PRO'
+
+export type WorkspaceType = 'PUBLIC' | 'PERSONAL'
+
+export type UserProfileResponse = {
+  status: number
+  data: { 
+    id: string
+    image: string 
+  }
+}
+
