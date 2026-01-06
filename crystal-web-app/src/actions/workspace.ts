@@ -1418,7 +1418,7 @@ export const getWorkspaceMembers = async (workspaceId: string) => {
  * 3. Other members (alphabetically by name)
  * 
  * @param workspaceId - The UUID of the workspace
- * @returns Promise with ordered members list
+ * @returns Promise with ordered members list including join dates
  */
 export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
   try {
@@ -1432,7 +1432,7 @@ export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
     
     if (!dbUser) return { status: 404, data: [] }
     
-    // Get workspace with owner and members
+    // Get workspace with owner and members (including join dates)
     const workspace = await client.workSpace.findUnique({
       where: {
         id: workspaceId,
@@ -1443,6 +1443,7 @@ export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
       },
       select: {
         userId: true,
+        createdAt: true,
         User: {
           select: {
             id: true,
@@ -1454,6 +1455,7 @@ export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
         },
         members: {
           select: {
+            createdAt: true,
             User: {
               select: {
                 id: true,
@@ -1479,24 +1481,27 @@ export const getWorkspaceMembersOrdered = async (workspaceId: string) => {
       image: string | null
       clerkId: string
       role: 'owner' | 'you' | 'member'
+      joinedAt: Date
     }
     
     const result: MemberInfo[] = []
     
-    // 1. Add owner first
+    // 1. Add owner first (joined when workspace was created)
     if (workspace.User) {
       result.push({
         ...workspace.User,
-        role: workspace.User.clerkId === user.id ? 'owner' : 'owner'
+        role: 'owner',
+        joinedAt: workspace.createdAt
       })
     }
     
-    // Get all other members (excluding owner)
+    // Get all other members (excluding owner) with their join dates
     const otherMembers = workspace.members
       .filter(m => m.User && m.User.clerkId !== workspace.User?.clerkId)
       .map(m => ({
         ...m.User!,
-        role: m.User!.clerkId === user.id ? 'you' as const : 'member' as const
+        role: m.User!.clerkId === user.id ? 'you' as const : 'member' as const,
+        joinedAt: m.createdAt
       }))
     
     // 2. Add current user if they're a member (not owner)

@@ -22,6 +22,7 @@ type MemberInfo = {
   image: string | null;
   clerkId: string;
   role: 'owner' | 'you' | 'member';
+  joinedAt: Date | string;
 };
 
 /**
@@ -31,8 +32,8 @@ type MemberInfo = {
  * Positioned directly below the trigger button.
  * 
  * Display Order:
- * 1. Owner (with crown badge below name)
- * 2. Current user if member (with "You" badge below name)
+ * 1. Owner (with crown badge)
+ * 2. Current user if member (with "You" badge)
  * 3. Other members (alphabetically)
  */
 function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
@@ -54,6 +55,26 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
     return (first + last).toUpperCase() || 'U';
   };
 
+  const formatJoinedDate = (date: Date | string) => {
+    const joinDate = new Date(date);
+    const now = new Date();
+    const diffMs = now.getTime() - joinDate.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffWeeks = Math.floor(diffDays / 7);
+    const diffMonths = Math.floor(diffDays / 30);
+    const diffYears = Math.floor(diffDays / 365);
+    
+    if (diffDays < 1) return 'Joined today';
+    if (diffDays === 1) return 'Joined yesterday';
+    if (diffDays < 7) return `Joined ${diffDays} days ago`;
+    if (diffWeeks === 1) return 'Joined 1 week ago';
+    if (diffWeeks < 4) return `Joined ${diffWeeks} weeks ago`;
+    if (diffMonths === 1) return 'Joined 1 month ago';
+    if (diffMonths < 12) return `Joined ${diffMonths} months ago`;
+    if (diffYears === 1) return 'Joined 1 year ago';
+    return `Joined ${diffYears} years ago`;
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -66,7 +87,7 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
       </PopoverTrigger>
       
       <PopoverContent 
-        className="w-[320px] p-0"
+        className="w-[400px] p-0"
         align="end"
         sideOffset={8}
       >
@@ -77,14 +98,14 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
           </h3>
         </div>
         
-        <ScrollArea className="max-h-[300px]">
+        <ScrollArea className="max-h-[350px]">
           <div className="flex flex-col p-2">
             {members.map((member) => (
               <div 
                 key={member.id}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-secondary/80 transition-colors"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-secondary/80 transition-colors"
               >
-                <Avatar className="h-9 w-9">
+                <Avatar className="h-10 w-10 flex-shrink-0">
                   {member.image ? (
                     <AvatarImage src={member.image} alt={getMemberName(member)} />
                   ) : null}
@@ -94,21 +115,26 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
                 </Avatar>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">
+                  <p className="font-medium text-sm truncate max-w-[200px]">
                     {getMemberName(member)}
                   </p>
-                  {member.role === 'owner' && (
-                    <Badge variant="secondary" className="mt-0.5 flex items-center gap-1 w-fit bg-amber-500/10 text-amber-500 border-amber-500/20 text-[10px] px-1.5 py-0">
-                      <Crown className="h-2.5 w-2.5" />
-                      Owner
-                    </Badge>
-                  )}
-                  {member.role === 'you' && (
-                    <Badge variant="secondary" className="mt-0.5 bg-purple-500/10 text-purple-500 border-purple-500/20 text-[10px] px-1.5 py-0">
-                      You
-                    </Badge>
-                  )}
+                  <p className="text-xs text-text-muted">
+                    {formatJoinedDate(member.joinedAt)}
+                  </p>
                 </div>
+                
+                {member.role === 'owner' && (
+                  <Badge variant="secondary" className="flex-shrink-0 flex items-center gap-1 bg-amber-500/10 text-amber-500 border-amber-500/20 text-xs px-2 py-0.5">
+                    <Crown className="h-3 w-3" />
+                    Owner
+                  </Badge>
+                )}
+                {member.role === 'you' && (
+                  <Badge variant="secondary" className="flex-shrink-0 flex items-center gap-1 bg-purple-500/10 text-purple-500 border-purple-500/20 text-xs px-2 py-0.5">
+                    <User className="h-3 w-3" />
+                    You
+                  </Badge>
+                )}
               </div>
             ))}
             
