@@ -35,8 +35,8 @@ const Search = ({ workspaceId }: Props) => {
   
   const { mutate, isPending } = useMutationData(
     ['invite-member'],
-    ((data: { receiverId: string; email: string }) =>
-      inviteMembers(workspaceId, data.receiverId, data.email)) as MutationFunction<unknown, unknown>
+    ((data: { receiverId: string }) =>
+      inviteMembers(workspaceId, data.receiverId)) as MutationFunction<unknown, unknown>
   )
   
   return (
@@ -86,7 +86,7 @@ const Search = ({ workspaceId }: Props) => {
               <div className="flex-1 flex justify-end items-center">
                 <Button
                   onClick={() =>
-                    mutate({ receiverId: user.id, email: user.email })
+                    mutate({ receiverId: user.id })
                   }
                   variant={'default'}
                   className="w-5/12 font-bold"

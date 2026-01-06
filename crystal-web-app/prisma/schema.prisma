@@ -135,6 +135,7 @@ model Notification {
   videoId          String?             @db.Uuid
   Actor            User?               @relation("NotificationActor", fields: [actorId], references: [id])
   actorId          String?             @db.Uuid
+  isRead           Boolean             @default(false)
   createdAt        DateTime            @default(now())
   NotificationInvite NotificationInvite?
 }
@@ -149,6 +150,7 @@ model Invite {
   WorkSpace         WorkSpace?          @relation(fields: [workSpaceId], references: [id], onDelete: Cascade)
   workSpaceId       String?             @db.Uuid
   accepted          Boolean             @default(false)
+  isActive          Boolean             @default(true)
   createdAt         DateTime            @default(now())
   NotificationInvite NotificationInvite[]
 }

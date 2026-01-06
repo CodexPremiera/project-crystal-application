@@ -1,6 +1,5 @@
 import React from "react";
-import {Bell, CreditCard, Settings, Home} from "@/components/icons";
-import {Users} from "@/components/icons/user";
+import {CreditCard, Settings, Home} from "@/components/icons";
 
 /**
  * Application Constants and Configuration
@@ -26,10 +25,11 @@ import {Users} from "@/components/icons/user";
  * 
  * Menu Items:
  * - Home: Main workspace dashboard
- * - Notifications: User notification center
  * - Billing: Subscription and payment management
  * - Settings: User and workspace settings
- * - Users: Team member management (PUBLIC workspaces only)
+ * 
+ * Note: Users management moved to members popover in dashboard
+ * Note: Notifications moved to header dropdown (YouTube-style)
  * 
  * Features:
  * - Dynamic workspace routing
@@ -48,21 +48,14 @@ import {Users} from "@/components/icons/user";
  */
 export const MENU_ITEMS = ({
                              workspaceId,
-                             currentWorkspace,
                            }: {
   workspaceId: string
-  currentWorkspace?: { type: 'PERSONAL' | 'PUBLIC' }
 }): { title: string; href: string; icon: React.ReactNode }[] => {
-  const baseItems = [
+  return [
     {
       title: 'Home',
       href: `/dashboard/${workspaceId}`,
       icon: <Home />,
-    },
-    {
-      title: 'Notifications',
-      href: `/dashboard/${workspaceId}/notifications`,
-      icon: <Bell />,
     },
     {
       title: 'Billing',
@@ -75,15 +68,4 @@ export const MENU_ITEMS = ({
       icon: <Settings />,
     },
   ]
-
-  // Add Users tab only for PUBLIC workspaces
-  if (currentWorkspace?.type === 'PUBLIC') {
-    baseItems.splice(2, 0, {
-      title: 'Users',
-      href: `/dashboard/${workspaceId}/users`,
-      icon: <Users opacity={30}/>,
-    })
-  }
-
-  return baseItems
 }

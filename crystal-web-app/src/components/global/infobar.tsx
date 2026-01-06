@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { UploadVideoDialog } from '@/components/global/upload-video-dialog';
 import { DownloadAppModal } from '@/components/global/download-app-modal';
 import { SearchDropdown } from '@/components/global/search/search-dropdown';
+import { NotificationDropdown } from '@/components/global/notifications/notification-dropdown';
 import { useDesktopApp } from '@/hooks/useDesktopApp';
 
 /**
@@ -62,6 +63,7 @@ function Infobar() {
             {isLaunching ? 'Launching...' : 'Record'}
           </span>
         </Button>
+        <NotificationDropdown />
         <UserButton />
       </div>
       
