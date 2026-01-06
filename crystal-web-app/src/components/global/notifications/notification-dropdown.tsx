@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQueryData } from '@/hooks/useQueryData'
 import { useMutationData } from '@/hooks/useMutationData'
 import { getNotifications, markAllNotificationsAsRead, acceptInvite, declineInvite, cancelInvite } from '@/actions/user'
+import { MutationFunction } from '@tanstack/react-query'
 import Link from 'next/link'
 
 type NotificationType = 'INVITE' | 'VIDEO_VIEW' | 'VIDEO_LIKE' | 'VIDEO_UPLOAD'
@@ -98,19 +99,19 @@ export function NotificationDropdown() {
 
   const { mutate: handleAccept, isPending: isAccepting } = useMutationData(
     ['accept-invite'],
-    (inviteId: string) => acceptInvite(inviteId),
+    ((inviteId: string) => acceptInvite(inviteId)) as MutationFunction<unknown, unknown>,
     'user-notifications'
   )
 
   const { mutate: handleDecline, isPending: isDeclining } = useMutationData(
     ['decline-invite'],
-    (inviteId: string) => declineInvite(inviteId),
+    ((inviteId: string) => declineInvite(inviteId)) as MutationFunction<unknown, unknown>,
     'user-notifications'
   )
 
   const { mutate: handleCancel, isPending: isCancelling } = useMutationData(
     ['cancel-invite'],
-    (inviteId: string) => cancelInvite(inviteId),
+    ((inviteId: string) => cancelInvite(inviteId)) as MutationFunction<unknown, unknown>,
     'user-notifications'
   )
 

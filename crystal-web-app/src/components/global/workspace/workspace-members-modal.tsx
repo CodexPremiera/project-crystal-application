@@ -19,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQueryData } from '@/hooks/useQueryData';
 import { useMutationData } from '@/hooks/useMutationData';
 import { getWorkspaceMembersOrdered, removeUserFromWorkspace } from '@/actions/workspace';
+import { MutationFunction } from '@tanstack/react-query';
 import { Users } from '@/components/icons/user';
 import { Crown, User } from 'lucide-react';
 
@@ -58,8 +59,8 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
   
   const { mutate: removeMember, isPending: isRemoving } = useMutationData(
     ['remove-member'],
-    (memberClerkId: string) => removeUserFromWorkspace(workspaceId, memberClerkId),
-    ['workspace-members-ordered', 'workspace-member-count']
+    ((memberClerkId: string) => removeUserFromWorkspace(workspaceId, memberClerkId)) as MutationFunction<unknown, unknown>,
+    'workspace-members-ordered'
   );
   
   const members = (membersData as { status: number; data: MemberInfo[] })?.data || [];
