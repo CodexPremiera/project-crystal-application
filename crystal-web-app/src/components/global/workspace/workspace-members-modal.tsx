@@ -1,12 +1,24 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQueryData } from '@/hooks/useQueryData';
-import { getWorkspaceMembersOrdered } from '@/actions/workspace';
+import { useMutationData } from '@/hooks/useMutationData';
+import { getWorkspaceMembersOrdered, removeUserFromWorkspace } from '@/actions/workspace';
 import { Users } from '@/components/icons/user';
 import { Crown, User } from 'lucide-react';
 
@@ -31,18 +43,37 @@ type MemberInfo = {
  * Displays a popover with all workspace members when clicking the user count.
  * Positioned directly below the trigger button.
  * 
- * Display Order:
- * 1. Owner (with crown badge)
- * 2. Current user if member (with "You" badge)
- * 3. Other members (alphabetically)
+ * Features:
+ * - Display ordered member list (owner first, then you, then alphabetical)
+ * - Owner can remove other members (with confirmation)
+ * - Shows role badges and join dates
  */
 function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
+  const [memberToRemove, setMemberToRemove] = useState<MemberInfo | null>(null);
+  
   const { data: membersData } = useQueryData(
     ['workspace-members-ordered', workspaceId],
     () => getWorkspaceMembersOrdered(workspaceId)
   );
   
+  const { mutate: removeMember, isPending: isRemoving } = useMutationData(
+    ['remove-member'],
+    (memberClerkId: string) => removeUserFromWorkspace(workspaceId, memberClerkId),
+    ['workspace-members-ordered', 'workspace-member-count']
+  );
+  
   const members = (membersData as { status: number; data: MemberInfo[] })?.data || [];
+  
+  // Check if current user is the owner
+  const isCurrentUserOwner = members.length > 0 && members[0]?.role === 'owner' && 
+    members.some(m => m.role === 'you') === false;
+
+  const handleRemoveConfirm = () => {
+    if (memberToRemove) {
+      removeMember(memberToRemove.clerkId);
+      setMemberToRemove(null);
+    }
+  };
 
   const getMemberName = (member: MemberInfo) => {
     const name = [member.firstname, member.lastname].filter(Boolean).join(' ');
@@ -135,6 +166,17 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
                     You
                   </Badge>
                 )}
+                {member.role === 'member' && isCurrentUserOwner && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-shrink-0 h-7 text-xs text-red-500 border-red-500/30 hover:text-red-600 hover:bg-red-500/10 hover:border-red-500/50"
+                    onClick={() => setMemberToRemove(member)}
+                    disabled={isRemoving}
+                  >
+                    Remove
+                  </Button>
+                )}
               </div>
             ))}
             
@@ -147,6 +189,27 @@ function WorkspaceMembersModal({ workspaceId, memberCount }: Props) {
           </div>
         </ScrollArea>
       </PopoverContent>
+      
+      <AlertDialog open={!!memberToRemove} onOpenChange={(open) => !open && setMemberToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Member</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove <strong>{memberToRemove ? getMemberName(memberToRemove) : ''}</strong> from this workspace?
+              They will lose access to all workspace content.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRemoveConfirm}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              {isRemoving ? 'Removing...' : 'Remove'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Popover>
   );
 }

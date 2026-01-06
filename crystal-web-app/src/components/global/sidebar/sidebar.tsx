@@ -101,7 +101,7 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
     item => item.id === activeWorkspaceId
   );
   
-  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId, currentWorkspace});
+  const menuItems = MENU_ITEMS({workspaceId: activeWorkspaceId});
   
   if (isFetched && workspace) {
     dispatch(WORKSPACES({ workspaces: workspace.workspace }))
