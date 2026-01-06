@@ -205,7 +205,6 @@ export const getNotifications = async () => {
             userId: true,
             content: true,
             type: true,
-            isRead: true,
             createdAt: true,
             Actor: {
               select: {
@@ -227,9 +226,12 @@ export const getNotifications = async () => {
               select: {
                 Invite: {
                   select: {
+                    id: true,
                     senderId: true,
                     receiverId: true,
                     workSpaceId: true,
+                    accepted: true,
+                    isActive: true,
                     WorkSpace: {
                       select: {
                         name: true,
@@ -265,143 +267,6 @@ export const getNotifications = async () => {
   } catch (error) {
     console.error(error)
     return { status: 400, data: [] }
-  }
-}
-
-/**
- * Marks a single notification as read
- *
- * Database Operation: PUT (UPDATE query)
- * Table: Notification
- * 
- * What it does:
- * - Updates a notification's isRead status to true
- * - Verifies the notification belongs to the current user
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Finds user in database by clerkId
- * 3. Updates notification where id matches and userId matches
- * 4. Returns success status
- *
- * @param notificationId - The ID of the notification to mark as read
- * @returns Promise with status indicating success or failure
- */
-export const markNotificationAsRead = async (notificationId: string) => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const dbUser = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: { id: true },
-    })
-    
-    if (!dbUser) return { status: 404 }
-    
-    await client.notification.updateMany({
-      where: {
-        id: notificationId,
-        userId: dbUser.id,
-      },
-      data: {
-        isRead: true,
-      },
-    })
-    
-    return { status: 200 }
-  } catch (error) {
-    console.error(error)
-    return { status: 400 }
-  }
-}
-
-/**
- * Marks all notifications as read for the current user
- *
- * Database Operation: PUT (UPDATE query)
- * Table: Notification
- * 
- * What it does:
- * - Updates all unread notifications for the current user to isRead = true
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Finds user in database by clerkId
- * 3. Updates all notifications where userId matches and isRead is false
- * 4. Returns success status
- *
- * @returns Promise with status indicating success or failure
- */
-export const markAllNotificationsAsRead = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const dbUser = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: { id: true },
-    })
-    
-    if (!dbUser) return { status: 404 }
-    
-    await client.notification.updateMany({
-      where: {
-        userId: dbUser.id,
-        isRead: false,
-      },
-      data: {
-        isRead: true,
-      },
-    })
-    
-    return { status: 200 }
-  } catch (error) {
-    console.error(error)
-    return { status: 400 }
-  }
-}
-
-/**
- * Gets the count of unread notifications for the current user
- *
- * Database Operation: GET (COUNT query)
- * Table: Notification
- * 
- * What it retrieves:
- * - Count of notifications where isRead is false
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Finds user in database by clerkId
- * 3. Counts notifications where userId matches and isRead is false
- * 4. Returns the count
- *
- * @returns Promise with status and unread count
- */
-export const getUnreadNotificationCount = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404, count: 0 }
-    
-    const dbUser = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: { id: true },
-    })
-    
-    if (!dbUser) return { status: 404, count: 0 }
-    
-    const count = await client.notification.count({
-      where: {
-        userId: dbUser.id,
-        isRead: false,
-      },
-    })
-    
-    return { status: 200, count }
-  } catch (error) {
-    console.error(error)
-    return { status: 400, count: 0 }
   }
 }
 
@@ -761,39 +626,31 @@ export const getFirstView = async () => {
 }
 
 /**
- * Sends workspace invitation to another user via email
+ * Sends workspace invitation to another user
  * 
  * Database Operation: POST (CREATE operations)
- * Tables: Invite (create), User (query + update), WorkSpace (query)
- * External: Email sending
+ * Tables: Invite (create), User (query + update), WorkSpace (query), Member (query)
  * 
  * What it creates:
  * - Invitation record in the database
- * - Notification record for the inviter
- * - Sends email notification to invited user
+ * - Notification records for both inviter and invitee
  * 
- * How it works:
- * 1. Gets current authenticated user (inviter) from Clerk
- * 2. Queries User table for inviter's profile information
- * 3. Queries WorkSpace table for workspace details
- * 4. Creates invitation record in Invite table
- * 5. Updates User table with notification for inviter
- * 6. Sends email notification to the invited user
- * 7. Returns success status with confirmation message
+ * Validation:
+ * - Cannot invite if user already has a pending invitation
+ * - Cannot invite if user is already a member of the workspace
  * 
  * @param workspaceId - ID of the workspace to invite user to
  * @param receiverId - ID of the user being invited
- * @param email - Email address of the user being invited
  * @returns Promise with invitation status and confirmation message
  */
 export const inviteMembers = async (
   workspaceId: string,
-  receiverId: string,
-  email: string
+  receiverId: string
 ) => {
   try {
     const user = await currentUser()
     if (!user) return { status: 404 }
+    
     const senderInfo = await client.user.findUnique({
       where: {
         clerkId: user.id,
@@ -804,98 +661,124 @@ export const inviteMembers = async (
         lastname: true,
       },
     })
-    if (senderInfo?.id) {
-      const workspace = await client.workSpace.findUnique({
-        where: {
-          id: workspaceId,
-        },
-        select: {
-          name: true,
-        },
-      })
-      if (workspace) {
-        const receiverInfo = await client.user.findUnique({
-          where: {
-            id: receiverId,
-          },
-          select: {
-            firstname: true,
-            lastname: true,
-          },
-        })
-        
-        const invitation = await client.invite.create({
-          data: {
-            senderId: senderInfo.id,
-            receiverId: receiverId,
-            workSpaceId: workspaceId,
-            content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
-          },
-          select: {
-            id: true,
-          },
-        })
-        
-        await client.user.update({
-          where: {
-            clerkId: user.id,
-          },
-          data: {
-            notification: {
-              create: {
-                content: `You invited ${receiverInfo?.firstname || ''} ${receiverInfo?.lastname || ''} into ${workspace.name}`,
-                type: 'INVITE',
-                NotificationInvite: {
-                  create: {
-                    inviteId: invitation.id,
-                  },
-                },
-              },
-            },
-          },
-        })
-        
-        await client.user.update({
-          where: {
-            id: receiverId,
-          },
-          data: {
-            notification: {
-              create: {
-                content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
-                type: 'INVITE',
-                NotificationInvite: {
-                  create: {
-                    inviteId: invitation.id,
-                  },
-                },
-              },
-            },
-          },
-        })
-        
-        if (invitation) {
-          const { transporter, mailOptions } = await sendEmail(
-            email,
-            'You got an invitation',
-            'You are invited to join ${workspace.name} Workspace, click accept to confirm',
-            `<a href="${process.env.NEXT_PUBLIC_HOST_URL}/invite/${invitation.id}" style="background-color: #000; padding: 5px 10px; border-radius: 10px;">Accept Invite</a>`
-          )
-          
-          transporter.sendMail(mailOptions, (error) => {
-            if (error) {
-              console.log('🔴', error.message)
-            } else {
-              console.log('✅ Email send')
-            }
-          })
-          return { status: 200, data: 'Invite sent' }
-        }
-        return { status: 400, data: 'invitation failed' }
-      }
-      return { status: 404, data: 'workspace not found' }
+    
+    if (!senderInfo?.id) {
+      return { status: 404, data: 'Sender not found' }
     }
-    return { status: 404, data: 'recipient not found' }
+    
+    const workspace = await client.workSpace.findUnique({
+      where: {
+        id: workspaceId,
+      },
+      select: {
+        name: true,
+        userId: true,
+      },
+    })
+    
+    if (!workspace) {
+      return { status: 404, data: 'Workspace not found' }
+    }
+    
+    // Check if user is already a member of the workspace
+    const existingMember = await client.member.findFirst({
+      where: {
+        userId: receiverId,
+        workSpaceId: workspaceId,
+      },
+    })
+    
+    if (existingMember) {
+      return { status: 409, data: 'User is already a member of this workspace' }
+    }
+    
+    // Check if user is the workspace owner
+    const receiver = await client.user.findUnique({
+      where: { id: receiverId },
+      select: { id: true },
+    })
+    
+    if (workspace.userId === receiverId) {
+      return { status: 409, data: 'Cannot invite the workspace owner' }
+    }
+    
+    // Check for pending invitation (only active, non-accepted invites)
+    const existingPendingInvite = await client.invite.findFirst({
+      where: {
+        receiverId: receiverId,
+        workSpaceId: workspaceId,
+        accepted: false,
+        isActive: true,
+      },
+    })
+    
+    if (existingPendingInvite) {
+      return { status: 409, data: 'User already has a pending invitation to this workspace' }
+    }
+    
+    const receiverInfo = await client.user.findUnique({
+      where: {
+        id: receiverId,
+      },
+      select: {
+        firstname: true,
+        lastname: true,
+      },
+    })
+    
+    const invitation = await client.invite.create({
+      data: {
+        senderId: senderInfo.id,
+        receiverId: receiverId,
+        workSpaceId: workspaceId,
+        content: `You are invited to join ${workspace.name} Workspace`,
+      },
+      select: {
+        id: true,
+      },
+    })
+    
+    // Create notification for sender
+    await client.user.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: {
+        notification: {
+          create: {
+            content: `You invited ${receiverInfo?.firstname || ''} ${receiverInfo?.lastname || ''} into ${workspace.name}`,
+            type: 'INVITE',
+            NotificationInvite: {
+              create: {
+                inviteId: invitation.id,
+              },
+            },
+          },
+        },
+      },
+    })
+    
+    // Create notification for receiver
+    await client.user.update({
+      where: {
+        id: receiverId,
+      },
+      data: {
+        notification: {
+          create: {
+            content: `You are invited to join ${workspace.name} Workspace`,
+            type: 'INVITE',
+            NotificationInvite: {
+              create: {
+                inviteId: invitation.id,
+              },
+            },
+          },
+        },
+      },
+    })
+    
+    return { status: 200, data: 'Invite sent' }
   } catch (error) {
     console.log(error)
     return { status: 400, data: 'Oops! something went wrong' }
@@ -931,16 +814,15 @@ export const inviteMembers = async (
 export const acceptInvite = async (inviteId: string) => {
   try {
     const user = await currentUser()
-    if (!user)
-      return {
-        status: 404,
-      }
+    if (!user) return { status: 404 }
+    
     const invitation = await client.invite.findUnique({
       where: {
         id: inviteId,
       },
       select: {
         workSpaceId: true,
+        isActive: true,
         receiver: {
           select: {
             clerkId: true,
@@ -949,13 +831,17 @@ export const acceptInvite = async (inviteId: string) => {
       },
     })
     
+    if (!invitation) return { status: 404, data: 'Invitation not found' }
+    if (!invitation.isActive) return { status: 400, data: 'Invitation is no longer active' }
     if (user.id !== invitation?.receiver?.clerkId) return { status: 401 }
-    const acceptInvite = client.invite.update({
+    
+    const acceptInviteOp = client.invite.update({
       where: {
         id: inviteId,
       },
       data: {
         accepted: true,
+        isActive: false,
       },
     })
     
@@ -973,14 +859,107 @@ export const acceptInvite = async (inviteId: string) => {
     })
     
     const membersTransaction = await client.$transaction([
-      acceptInvite,
+      acceptInviteOp,
       updateMember,
     ])
     
     if (membersTransaction) {
-      return { status: 200 }
+      return { status: 200, data: 'Invitation accepted' }
     }
     return { status: 400 }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Declines a workspace invitation (by the receiver)
+ * 
+ * Database Operation: PUT (UPDATE operation)
+ * Tables: Invite (update)
+ * 
+ * What it does:
+ * - Sets the invite's isActive to false
+ * - Does NOT add user to workspace
+ * 
+ * @param inviteId - ID of the invitation to decline
+ * @returns Promise with status
+ */
+export const declineInvite = async (inviteId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const invitation = await client.invite.findUnique({
+      where: { id: inviteId },
+      select: {
+        isActive: true,
+        receiver: {
+          select: { clerkId: true },
+        },
+      },
+    })
+    
+    if (!invitation) return { status: 404, data: 'Invitation not found' }
+    if (!invitation.isActive) return { status: 400, data: 'Invitation is no longer active' }
+    if (user.id !== invitation.receiver?.clerkId) return { status: 401, data: 'Unauthorized' }
+    
+    await client.invite.update({
+      where: { id: inviteId },
+      data: { isActive: false },
+    })
+    
+    return { status: 200, data: 'Invitation declined' }
+  } catch (error) {
+    console.log(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Cancels a workspace invitation (by the sender)
+ * 
+ * Database Operation: PUT (UPDATE operation)
+ * Tables: Invite (update)
+ * 
+ * What it does:
+ * - Sets the invite's isActive to false
+ * - Only the sender can cancel
+ * 
+ * @param inviteId - ID of the invitation to cancel
+ * @returns Promise with status
+ */
+export const cancelInvite = async (inviteId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404 }
+    
+    const invitation = await client.invite.findUnique({
+      where: { id: inviteId },
+      select: {
+        senderId: true,
+        isActive: true,
+      },
+    })
+    
+    if (!invitation) return { status: 404, data: 'Invitation not found' }
+    if (!invitation.isActive) return { status: 400, data: 'Invitation is no longer active' }
+    if (dbUser.id !== invitation.senderId) return { status: 401, data: 'Unauthorized' }
+    
+    await client.invite.update({
+      where: { id: inviteId },
+      data: { isActive: false },
+    })
+    
+    return { status: 200, data: 'Invitation cancelled' }
   } catch (error) {
     console.log(error)
     return { status: 400 }

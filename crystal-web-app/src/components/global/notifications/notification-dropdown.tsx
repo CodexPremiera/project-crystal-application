@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQueryData } from '@/hooks/useQueryData'
 import { useMutationData } from '@/hooks/useMutationData'
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '@/actions/user'
+import { getNotifications, acceptInvite, declineInvite, cancelInvite } from '@/actions/user'
 import Link from 'next/link'
 
 type NotificationType = 'INVITE' | 'VIDEO_VIEW' | 'VIDEO_LIKE' | 'VIDEO_UPLOAD'
@@ -19,7 +19,6 @@ type NotificationData = {
   userId: string | null
   content: string
   type: NotificationType
-  isRead: boolean
   createdAt: Date | string
   Actor: {
     id: string
@@ -35,9 +34,12 @@ type NotificationData = {
   } | null
   NotificationInvite: {
     Invite: {
+      id: string
       senderId: string | null
       receiverId: string | null
       workSpaceId: string | null
+      accepted: boolean
+      isActive: boolean
       WorkSpace: {
         name: string
       } | null
@@ -73,20 +75,26 @@ type NotificationData = {
 export function NotificationDropdown() {
   const [open, setOpen] = React.useState(false)
   
-  const { data: notifications, refetch } = useQueryData(
+  const { data: notifications } = useQueryData(
     ['user-notifications'],
     getNotifications
   )
 
-  const { mutate: markAsRead } = useMutationData(
-    ['mark-notification-read'],
-    async (notificationId: string) => await markNotificationAsRead(notificationId),
+  const { mutate: handleAccept, isPending: isAccepting } = useMutationData(
+    ['accept-invite'],
+    (inviteId: string) => acceptInvite(inviteId),
     'user-notifications'
   )
 
-  const { mutate: markAllAsRead } = useMutationData(
-    ['mark-all-notifications-read'],
-    async () => await markAllNotificationsAsRead(),
+  const { mutate: handleDecline, isPending: isDeclining } = useMutationData(
+    ['decline-invite'],
+    (inviteId: string) => declineInvite(inviteId),
+    'user-notifications'
+  )
+
+  const { mutate: handleCancel, isPending: isCancelling } = useMutationData(
+    ['cancel-invite'],
+    (inviteId: string) => cancelInvite(inviteId),
     'user-notifications'
   )
 
@@ -99,7 +107,7 @@ export function NotificationDropdown() {
   } || { status: 404, data: { notification: [], _count: { notification: 0 } } }
 
   const notificationList = notificationData?.notification || []
-  const unreadCount = notificationList.filter(n => !n.isRead).length
+  const notificationCount = notificationList.length
 
   const formatDate = (date: Date | string) => {
     const now = new Date()
@@ -154,6 +162,27 @@ export function NotificationDropdown() {
     return false
   }
 
+  const isActiveInvite = (n: NotificationData) => {
+    if (n.type === 'INVITE' && n.NotificationInvite?.Invite) {
+      return n.NotificationInvite.Invite.isActive && !n.NotificationInvite.Invite.accepted
+    }
+    return false
+  }
+
+  const getInviteId = (n: NotificationData) => {
+    return n.NotificationInvite?.Invite?.id || null
+  }
+
+  const getInviteStatus = (n: NotificationData) => {
+    if (n.type === 'INVITE' && n.NotificationInvite?.Invite) {
+      const invite = n.NotificationInvite.Invite
+      if (invite.accepted) return 'accepted'
+      if (!invite.isActive) return 'inactive'
+      return 'pending'
+    }
+    return null
+  }
+
   const getWorkspaceName = (n: NotificationData) => {
     if (n.type === 'INVITE' && n.NotificationInvite?.Invite?.WorkSpace) {
       return n.NotificationInvite.Invite.WorkSpace.name
@@ -168,25 +197,15 @@ export function NotificationDropdown() {
     return null
   }
 
-  const handleNotificationClick = (notification: NotificationData) => {
-    if (!notification.isRead) {
-      markAsRead(notification.id)
-    }
-  }
-
-  const handleMarkAllAsRead = () => {
-    markAllAsRead(undefined)
-  }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="relative flex items-center justify-center rounded-full h-10 w-10 p-0"
+        <div className="relative flex items-center justify-center rounded-full h-10 w-10 p-0 cursor-pointer hover:bg-surface-secondary/50 transition-colors"
         >
           <Bell width={24} height={24} />
-          {unreadCount > 0 && (
+          {notificationCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {notificationCount > 99 ? '99+' : notificationCount}
             </span>
           )}
         </div>
@@ -198,16 +217,6 @@ export function NotificationDropdown() {
       >
         <div className="flex items-center justify-between border-b px-4 py-3">
           <h3 className="font-semibold">Notifications</h3>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-brand hover:text-brand"
-              onClick={handleMarkAllAsRead}
-            >
-              Mark all as read
-            </Button>
-          )}
         </div>
         
         <ScrollArea className="h-[400px]">
@@ -229,15 +238,13 @@ export function NotificationDropdown() {
                 const icon = getNotificationIcon(n.type)
                 const isSender = isInviteSender(n)
                 const workspaceName = getWorkspaceName(n)
+                const inviteId = getInviteId(n)
+                const inviteStatus = getInviteStatus(n)
+                const showInviteActions = isActiveInvite(n)
                 
                 const NotificationContent = (
                   <div
-                    className={`
-                      flex gap-3 items-start px-4 py-3 transition-colors cursor-pointer
-                      hover:bg-surface-secondary/80
-                      ${!n.isRead ? 'bg-brand/5' : ''}
-                    `}
-                    onClick={() => handleNotificationClick(n)}
+                    className="flex gap-3 items-start px-4 py-3 transition-colors hover:bg-surface-secondary/80"
                   >
                     <div className="relative flex-shrink-0">
                       <Avatar className="h-10 w-10">
@@ -290,14 +297,63 @@ export function NotificationDropdown() {
                       </p>
                       <p className="text-text-muted text-xs mt-0.5">
                         {formatDate(n.createdAt)}
+                        {n.type === 'INVITE' && inviteStatus === 'accepted' && (
+                          <span className="ml-2 text-green-500">• Accepted</span>
+                        )}
+                        {n.type === 'INVITE' && inviteStatus === 'inactive' && !n.NotificationInvite?.Invite?.accepted && (
+                          <span className="ml-2 text-text-muted">• {isSender ? 'Cancelled' : 'Declined'}</span>
+                        )}
                       </p>
+                      
+                      {/* Invite action buttons */}
+                      {showInviteActions && inviteId && (
+                        <div className="flex gap-2 mt-2">
+                          {isSender ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-xs"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                handleCancel(inviteId)
+                              }}
+                              disabled={isCancelling}
+                            >
+                              {isCancelling ? 'Cancelling...' : 'Cancel Invite'}
+                            </Button>
+                          ) : (
+                            <>
+                              <Button
+                                size="sm"
+                                className="h-7 text-xs bg-brand hover:bg-brand/90"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  handleAccept(inviteId)
+                                }}
+                                disabled={isAccepting || isDeclining}
+                              >
+                                {isAccepting ? 'Accepting...' : 'Accept'}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-xs"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  handleDecline(inviteId)
+                                }}
+                                disabled={isAccepting || isDeclining}
+                              >
+                                {isDeclining ? 'Declining...' : 'Decline'}
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    
-                    {!n.isRead && (
-                      <div className="flex-shrink-0 mt-2">
-                        <div className="h-2 w-2 rounded-full bg-brand" />
-                      </div>
-                    )}
                   </div>
                 )
                 
@@ -306,10 +362,7 @@ export function NotificationDropdown() {
                     <Link 
                       key={n.id} 
                       href={videoLink}
-                      onClick={() => {
-                        handleNotificationClick(n)
-                        setOpen(false)
-                      }}
+                      onClick={() => setOpen(false)}
                     >
                       {NotificationContent}
                     </Link>
