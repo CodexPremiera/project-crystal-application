@@ -82,11 +82,21 @@ const Page = async ({ params }: Props) => {
   
   // Only await workspace data needed for initial render (workspace name)
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string; type: string }> } | undefined
+  const workspace = workspaceData.data as { 
+    workspace: Array<{ id: string; name: string; type: string }>
+    members: Array<{ WorkSpace: { id: string; name: string; type: string } | null }>
+  } | undefined
   
-  const currentWorkspace = workspace?.workspace.find(
+  // Check owned workspaces first, then member workspaces
+  const ownedWorkspace = workspace?.workspace.find(
     (item) => item.id === workspaceid
   )
+  const memberWorkspace = workspace?.members.find(
+    (item) => item.WorkSpace?.id === workspaceid
+  )?.WorkSpace
+  
+  const currentWorkspace = ownedWorkspace || memberWorkspace
+  const isOwner = !!ownedWorkspace
   
   // Check if workspace exists
   if (!currentWorkspace) {
@@ -124,6 +134,7 @@ const Page = async ({ params }: Props) => {
                 <WorkspaceActions 
                   workspaceId={workspaceid}
                   workspaceName={workspaceName}
+                  isOwner={isOwner}
                 />
               </DropdownMenuContent>
             </DropdownMenu>

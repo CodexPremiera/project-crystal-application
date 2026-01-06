@@ -1620,3 +1620,70 @@ export const deleteWorkspace = async (workspaceId: string) => {
     return { status: 500, data: 'Failed to delete workspace' }
   }
 }
+
+/**
+ * Leaves a workspace (removes current user's membership)
+ * 
+ * Database Operation: DELETE (removes Member record)
+ * Tables: Member (delete)
+ * 
+ * What it does:
+ * - Removes the current user's membership from the workspace
+ * - Does NOT delete the workspace itself
+ * 
+ * Validation:
+ * - User must be authenticated
+ * - User must be a member (not owner) of the workspace
+ * 
+ * @param workspaceId - The UUID of the workspace to leave
+ * @returns Promise with status and confirmation/error message
+ */
+export const leaveWorkspace = async (workspaceId: string) => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, data: 'User not authenticated' }
+    
+    // Find the user's database ID
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true }
+    })
+    
+    if (!dbUser) return { status: 404, data: 'User not found' }
+    
+    // Check if user is the owner (owners cannot leave, only delete)
+    const isOwner = await client.workSpace.findFirst({
+      where: {
+        id: workspaceId,
+        userId: dbUser.id
+      }
+    })
+    
+    if (isOwner) {
+      return { status: 403, data: 'Workspace owners cannot leave. Delete the workspace instead.' }
+    }
+    
+    // Find and delete the membership
+    const membership = await client.member.findFirst({
+      where: {
+        userId: dbUser.id,
+        workSpaceId: workspaceId
+      }
+    })
+    
+    if (!membership) {
+      return { status: 404, data: 'You are not a member of this workspace' }
+    }
+    
+    await client.member.delete({
+      where: {
+        id: membership.id
+      }
+    })
+    
+    return { status: 200, data: 'Successfully left the workspace' }
+  } catch (error) {
+    console.log('Error leaving workspace:', error)
+    return { status: 500, data: 'Failed to leave workspace' }
+  }
+}
