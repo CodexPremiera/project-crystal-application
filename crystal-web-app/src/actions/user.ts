@@ -4,6 +4,9 @@ import {currentUser} from "@clerk/nextjs/server";
 import { client } from "@/lib/prisma";
 import nodemailer from 'nodemailer'
 import Stripe from 'stripe'
+import { withAuth, withDbUser } from "@/lib/server-helpers"
+import { success, notFound, badRequest, serverError } from "@/lib/response"
+import { UserService, NotificationService, CommentService } from "@/services"
 
 const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET as string)
 
@@ -274,167 +277,54 @@ export const getNotifications = async () => {
 /**
  * Marks all unread notifications as read for the current user
  * 
- * Database Operation: PUT (UPDATE query)
- * Tables: Notification
- * 
- * What it does:
- * - Updates all notifications where isRead is false to true
- * - Only updates notifications belonging to the current user
+ * Uses: withDbUser helper, NotificationService
  * 
  * @returns Promise with status indicating success or failure
  */
 export const markAllNotificationsAsRead = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const dbUser = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: { id: true },
-    })
-    
-    if (!dbUser) return { status: 404 }
-    
-    await client.notification.updateMany({
-      where: {
-        userId: dbUser.id,
-        isRead: false,
-      },
-      data: {
-        isRead: true,
-      },
-    })
-    
-    return { status: 200 }
-  } catch (error) {
-    console.error(error)
-    return { status: 400 }
-  }
+  return withDbUser(async (_clerkUser, dbUser) => {
+    await NotificationService.markAllAsRead(dbUser.id)
+    return 'Notifications marked as read'
+  })
 }
 
 /**
  * Gets the count of unread notifications for the current user
  * 
- * Database Operation: GET (COUNT query)
- * Tables: Notification
+ * Uses: withDbUser helper, NotificationService
  * 
  * @returns Promise with status and unread count
  */
 export const getUnreadNotificationCount = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404, count: 0 }
-    
-    const dbUser = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: { id: true },
-    })
-    
-    if (!dbUser) return { status: 404, count: 0 }
-    
-    const count = await client.notification.count({
-      where: {
-        userId: dbUser.id,
-        isRead: false,
-      },
-    })
-    
-    return { status: 200, count }
-  } catch (error) {
-    console.error(error)
-    return { status: 400, count: 0 }
+  const response = await withDbUser(async (_clerkUser, dbUser) => {
+    return NotificationService.getUnreadCount(dbUser.id)
+  })
+  
+  if (response.status === 200) {
+    return { status: 200, count: response.data }
   }
+  return { status: response.status, count: 0 }
 }
 
 /**
  * Searches for users in the database based on provided query
  *
- * Database Operation: GET (SELECT query)
- * Tables: User (primary), Subscription
- * 
- * What it retrieves:
- * - Users matching search query in name or email fields
- * - User data with subscription plan information
- * - Excludes current user from results
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries User table with OR condition for:
- *    - First name (case-insensitive contains)
- *    - Last name (case-insensitive contains)
- *    - Email address (case-insensitive contains)
- * 3. Excludes current user using NOT clause
- * 4. Includes subscription plan data via Prisma relations
- * 5. Returns matching users with subscription information
+ * Uses: withAuth helper, UserService
  *
  * @param query - Search string to match against usernames and emails
  * @returns Promise with array of matching users or empty result
  */
 export const searchUsers = async (query: string) => {
-  try {
-    // Get current authenticated user
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    // Search for users matching query in multiple fields
-    const users = await client.user.findMany({
-      where: {
-        OR: [
-          { firstname: { contains: query } },
-          { email: { contains: query } },
-          { lastname: { contains: query } },
-        ],
-        // Exclude current user from search results
-        NOT: [{ clerkId: user.id }],
-      },
-      select: {
-        id: true,
-        subscription: {
-          select: {
-            plan: true,
-          },
-        },
-        firstname: true,
-        lastname: true,
-        image: true,
-        email: true,
-      },
-    })
-    
-    // Return users if found, otherwise return empty result
-    if (users && users.length > 0) {
-      return { status: 200, data: users }
-    }
-    
-    return { status: 404, data: undefined }
-  } catch (error) {
-    console.log(error);
-    return { status: 500, data: undefined };
-  }
+  return withAuth(async (clerkUser) => {
+    const users = await UserService.search(query, clerkUser.id)
+    return users.length > 0 ? users : []
+  })
 }
 
 /**
  * Creates new comments or replies to existing comments on videos
  * 
- * Database Operation: POST (CREATE operation)
- * Tables: Comment (create), Video (update)
- * 
- * What it creates:
- * - New top-level comments on videos
- * - Nested replies to existing comments
- * 
- * How it works:
- * 1. If commentId is provided, creates a reply to existing comment:
- *    - Updates Comment table with nested reply creation
- * 2. If no commentId, creates new top-level comment:
- *    - Updates Video table with nested comment creation
- * 3. Uses Prisma's nested create operations for efficient database updates
- * 4. Returns success status with confirmation message
- * 5. Handles database errors gracefully
- * 
- * Comment Types:
- * - Top-level comments: Direct comments on videos (commentId is undefined)
- * - Replies: Responses to existing comments (commentId is provided)
+ * Uses: CommentService
  * 
  * @param userId - ID of the user creating the comment
  * @param comment - The comment text content
@@ -450,255 +340,93 @@ export const createCommentAndReply = async (
 ) => {
   try {
     if (commentId) {
-      const reply = await client.comment.update({
-        where: {
-          id: commentId,
-        },
-        data: {
-          reply: {
-            create: {
-              comment,
-              userId,
-              videoId,
-            },
-          },
-        },
-      })
-      if (reply) {
-        return { status: 200, data: 'Reply posted' }
-      }
+      await CommentService.createReply(commentId, videoId, userId, comment)
+      return success('Reply posted')
     }
     
-    const newComment = await client.video.update({
-      where: {
-        id: videoId,
-      },
-      data: {
-        Comment: {
-          create: {
-            comment,
-            userId,
-          },
-        },
-      },
-    })
-    if (newComment) return { status: 200, data: 'New comment added' }
+    await CommentService.createOnVideo(videoId, userId, comment)
+    return success('New comment added')
   } catch (error) {
-    console.log(error)
-    return { status: 400 }
+    console.error('[createCommentAndReply Error]:', error)
+    return badRequest('Failed to create comment')
   }
 }
 
 /**
  * Retrieves current user's profile information for comment attribution
  * 
- * Database Operation: GET (SELECT query)
- * Table: User
- * 
- * What it retrieves:
- * - User ID and profile image for comment attribution
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries User table by clerkId
- * 3. Selects only id and image fields for efficiency
- * 4. Returns profile data for comment creation
- * 5. Handles authentication errors gracefully
+ * Uses: withAuth helper, UserService
  * 
  * @returns Promise with user profile data (ID and image) or error status
  */
 export const getUserProfile = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    const profileIdAndImage = await client.user.findUnique({
-      where: {
-        clerkId: user.id,
-      },
-      select: {
-        image: true,
-        id: true,
-      },
-    })
-    
-    if (profileIdAndImage) return { status: 200, data: profileIdAndImage }
-  } catch (error) {
-    console.log(error);
-    return { status: 400 }
-  }
+  return withAuth(async (clerkUser) => {
+    const profile = await UserService.getProfile(clerkUser.id)
+    if (!profile) throw new Error('Profile not found')
+    return profile
+  })
 }
 
 /**
  * Retrieves all comments and replies for a specific video
  * 
- * Database Operation: GET (SELECT query)
- * Tables: Comment (primary), User
- * 
- * What it retrieves:
- * - All top-level comments for the video
- * - Nested replies for each comment
- * - User information for comment attribution
- * 
- * How it works:
- * 1. Queries Comment table with OR condition:
- *    - Comments directly on video (videoId = videoId)
- *    - Comments on comments (commentId = videoId)
- * 2. Filters for top-level comments (commentId is null)
- * 3. Includes nested replies using Prisma's include functionality
- * 4. Includes user information for each comment and reply
- * 5. Returns hierarchical comment structure for UI rendering
+ * Uses: CommentService
  * 
  * @param Id - The video ID to fetch comments for
  * @returns Promise with complete comment thread data
  */
 export const getVideoComments = async (Id: string) => {
   try {
-    const comments = await client.comment.findMany({
-      where: {
-        OR: [{ videoId: Id }, { commentId: Id }],
-        commentId: null,
-      },
-      include: {
-        reply: {
-          include: {
-            User: true,
-          },
-        },
-        User: true,
-      },
-    })
-    
-    return { status: 200, data: comments }
+    const comments = await CommentService.getForVideo(Id)
+    return success(comments)
   } catch (error) {
-    console.log(error);
-    return { status: 400 }
+    console.error('[getVideoComments Error]:', error)
+    return badRequest('Failed to fetch comments')
   }
 }
 
 /**
  * Retrieves current user's subscription and payment information
  * 
- * Database Operation: GET (SELECT query)
- * Tables: User (primary), Subscription
- * 
- * What it retrieves:
- * - User's subscription plan (PRO/FREE)
- * - Payment information for access control
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries User table by clerkId
- * 3. Includes related subscription data via Prisma relations
- * 4. Returns subscription plan for access control
- * 5. Handles authentication errors gracefully
+ * Uses: withAuth helper, UserService
  * 
  * @returns Promise with user's subscription plan information
  */
 export const getPaymentInfo = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const payment = await client.user.findUnique({
-      where: {
-        clerkId: user.id,
-      },
-      select: {
-        subscription: {
-          select: { plan: true },
-        },
-      },
-    })
-    if (payment) {
-      return { status: 200, data: payment }
-    }
-  } catch (error) {
-    console.log(error);
-    return { status: 400 }
-  }
+  return withAuth(async (clerkUser) => {
+    const payment = await UserService.getSubscription(clerkUser.id)
+    if (!payment) throw new Error('Payment info not found')
+    return payment
+  })
 }
 
 /**
  * Updates user's first view notification preference
  * 
- * Database Operation: PUT (UPDATE operation)
- * Table: User
- * 
- * What it updates:
- * - User's firstView notification preference
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Updates User table by clerkId
- * 3. Sets firstView field to provided boolean value
- * 4. Returns success status with confirmation message
- * 5. Handles authentication and database errors gracefully
+ * Uses: withAuth helper, UserService
  * 
  * @param state - Boolean value to enable (true) or disable (false) first view notifications
  * @returns Promise with update status and confirmation message
  */
 export const enableFirstView = async (state: boolean) => {
-  try {
-    const user = await currentUser()
-    
-    if (!user) return { status: 404 }
-    
-    const view = await client.user.update({
-      where: {
-        clerkId: user.id,
-      },
-      data: {
-        firstView: state,
-      },
-    })
-    
-    if (view) {
-      return { status: 200, data: 'Setting updated' }
-    }
-  } catch (error) {
-    console.log(error)
-    return { status: 400 }
-  }
+  return withAuth(async (clerkUser) => {
+    await UserService.updateFirstViewPreference(clerkUser.id, state)
+    return 'Setting updated'
+  })
 }
 
 /**
  * Retrieves user's first view notification preference setting
  * 
- * Database Operation: GET (SELECT query)
- * Table: User
- * 
- * What it retrieves:
- * - User's firstView notification preference (boolean)
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries User table by clerkId
- * 3. Selects only firstView field for efficiency
- * 4. Returns the current preference value
- * 5. Handles authentication errors gracefully
+ * Uses: withAuth helper, UserService
  * 
  * @returns Promise with user's first view notification preference (boolean)
  */
 export const getFirstView = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    const userData = await client.user.findUnique({
-      where: {
-        clerkId: user.id,
-      },
-      select: {
-        firstView: true,
-      },
-    })
-    if (userData) {
-      return { status: 200, data: userData.firstView }
-    }
-    return { status: 400, data: false }
-  } catch (error) {
-    console.log(error)
-    return { status: 400 }
-  }
+  return withAuth(async (clerkUser) => {
+    const userData = await UserService.getFirstViewPreference(clerkUser.id)
+    return userData?.firstView ?? false
+  })
 }
 
 /**
