@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQueryData } from '@/hooks/useQueryData'
 import { useMutationData } from '@/hooks/useMutationData'
-import { getNotifications, acceptInvite, declineInvite, cancelInvite } from '@/actions/user'
+import { getNotifications, markAllNotificationsAsRead, acceptInvite, declineInvite, cancelInvite } from '@/actions/user'
 import Link from 'next/link'
 
 type NotificationType = 'INVITE' | 'VIDEO_VIEW' | 'VIDEO_LIKE' | 'VIDEO_UPLOAD'
@@ -19,6 +19,7 @@ type NotificationData = {
   userId: string | null
   content: string
   type: NotificationType
+  isRead: boolean
   createdAt: Date | string
   Actor: {
     id: string
@@ -74,11 +75,26 @@ type NotificationData = {
  */
 export function NotificationDropdown() {
   const [open, setOpen] = React.useState(false)
+  const [localUnreadCount, setLocalUnreadCount] = React.useState<number | null>(null)
   
   const { data: notifications } = useQueryData(
     ['user-notifications'],
     getNotifications
   )
+
+  const { mutate: markAllAsRead } = useMutationData(
+    ['mark-all-notifications-read'],
+    () => markAllNotificationsAsRead(),
+    'user-notifications'
+  )
+
+  // Mark all as read when dropdown opens
+  React.useEffect(() => {
+    if (open && localUnreadCount !== null && localUnreadCount > 0) {
+      markAllAsRead(undefined)
+      setLocalUnreadCount(0)
+    }
+  }, [open, localUnreadCount, markAllAsRead])
 
   const { mutate: handleAccept, isPending: isAccepting } = useMutationData(
     ['accept-invite'],
@@ -107,7 +123,21 @@ export function NotificationDropdown() {
   } || { status: 404, data: { notification: [], _count: { notification: 0 } } }
 
   const notificationList = notificationData?.notification || []
-  const notificationCount = notificationList.length
+  
+  // Calculate unread count from notifications
+  const unreadCount = React.useMemo(() => {
+    return notificationList.filter(n => !n.isRead).length
+  }, [notificationList])
+  
+  // Sync local unread count with server data
+  React.useEffect(() => {
+    if (localUnreadCount === null && unreadCount >= 0) {
+      setLocalUnreadCount(unreadCount)
+    }
+  }, [unreadCount, localUnreadCount])
+  
+  // Use local count for badge (updates immediately on open)
+  const badgeCount = localUnreadCount ?? unreadCount
 
   const formatDate = (date: Date | string) => {
     const now = new Date()
@@ -203,9 +233,9 @@ export function NotificationDropdown() {
         <div className="relative flex items-center justify-center rounded-full h-10 w-10 p-0 cursor-pointer hover:bg-surface-secondary/50 transition-colors"
         >
           <Bell width={24} height={24} />
-          {notificationCount > 0 && (
+          {badgeCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
-              {notificationCount > 99 ? '99+' : notificationCount}
+              {badgeCount > 99 ? '99+' : badgeCount}
             </span>
           )}
         </div>

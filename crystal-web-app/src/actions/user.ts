@@ -205,6 +205,7 @@ export const getNotifications = async () => {
             userId: true,
             content: true,
             type: true,
+            isRead: true,
             createdAt: true,
             Actor: {
               select: {
@@ -267,6 +268,81 @@ export const getNotifications = async () => {
   } catch (error) {
     console.error(error)
     return { status: 400, data: [] }
+  }
+}
+
+/**
+ * Marks all unread notifications as read for the current user
+ * 
+ * Database Operation: PUT (UPDATE query)
+ * Tables: Notification
+ * 
+ * What it does:
+ * - Updates all notifications where isRead is false to true
+ * - Only updates notifications belonging to the current user
+ * 
+ * @returns Promise with status indicating success or failure
+ */
+export const markAllNotificationsAsRead = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404 }
+    
+    await client.notification.updateMany({
+      where: {
+        userId: dbUser.id,
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+      },
+    })
+    
+    return { status: 200 }
+  } catch (error) {
+    console.error(error)
+    return { status: 400 }
+  }
+}
+
+/**
+ * Gets the count of unread notifications for the current user
+ * 
+ * Database Operation: GET (COUNT query)
+ * Tables: Notification
+ * 
+ * @returns Promise with status and unread count
+ */
+export const getUnreadNotificationCount = async () => {
+  try {
+    const user = await currentUser()
+    if (!user) return { status: 404, count: 0 }
+    
+    const dbUser = await client.user.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    })
+    
+    if (!dbUser) return { status: 404, count: 0 }
+    
+    const count = await client.notification.count({
+      where: {
+        userId: dbUser.id,
+        isRead: false,
+      },
+    })
+    
+    return { status: 200, count }
+  } catch (error) {
+    console.error(error)
+    return { status: 400, count: 0 }
   }
 }
 
