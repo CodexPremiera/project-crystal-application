@@ -158,7 +158,7 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-text-tertiary">
               Are you sure you want to delete &quot;{folder.name}&quot;? This action cannot be undone.
-              Videos in this folder will be moved to the workspace root.
+              All videos in this folder will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           

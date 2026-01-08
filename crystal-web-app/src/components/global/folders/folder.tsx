@@ -220,7 +220,7 @@ function Folder({ id, name, optimistic, count }: Props) {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-[#9D9D9D]">
               Are you sure you want to delete &quot;{name}&quot;? This action cannot be undone.
-              Videos in this folder will be moved to the workspace root.
+              All videos in this folder will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           

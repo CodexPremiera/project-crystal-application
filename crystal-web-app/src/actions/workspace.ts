@@ -1006,22 +1006,22 @@ export const deleteVideo = async (videoId: string) => {
 }
 
 /**
- * Deletes a folder and optionally its videos
+ * Deletes a folder and all its videos
  * 
  * Database Operation: DELETE
- * Tables: Folder (primary), Video (cascade or unlink)
+ * Tables: Folder (primary), Video (cascade delete)
  * 
  * What it does:
  * - Verifies user authentication
  * - Verifies user owns the folder's workspace
- * - Unlinks videos from folder (moves them to workspace root)
+ * - Deletes all videos in the folder
  * - Deletes the folder
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
  * 2. Fetches folder with workspace ownership info
  * 3. Verifies user owns the workspace
- * 4. Updates videos to remove folder association
+ * 4. Deletes all videos associated with the folder
  * 5. Deletes the folder record
  * 6. Returns success/error response
  * 
@@ -1055,10 +1055,9 @@ export const deleteFolder = async (folderId: string) => {
       return { status: 403, data: 'You can only delete your own folders' }
     }
     
-    // Unlink videos from folder (move to workspace root instead of deleting)
-    await client.video.updateMany({
-      where: { folderId },
-      data: { folderId: null }
+    // Delete all videos in the folder (cascade delete)
+    await client.video.deleteMany({
+      where: { folderId }
     })
     
     // Delete the folder
