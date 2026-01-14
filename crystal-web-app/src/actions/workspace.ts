@@ -6,6 +6,9 @@ import {sendEmail} from "@/actions/user";
 import { createClient, OAuthStrategy } from '@wix/sdk'
 import { items } from '@wix/data'
 import axios from 'axios'
+import { withAuth, withDbUser } from "@/lib/server-helpers"
+import { success, notFound, badRequest, serverError } from "@/lib/response"
+import { WorkspaceService, VideoService } from "@/services"
 
 
 
@@ -70,37 +73,20 @@ export const verifyAccessToWorkspace = async (workspaceId: string) => {
 /**
  * Retrieves all folders within a specific workspace
  * 
- * Database Operation: GET (SELECT query)
- * Tables: Folder (primary), Video (for count)
- * 
- * What it retrieves:
- * - All folders in the specified workspace
- * - Video count for each folder using aggregation
- * 
- * How it works:
- * 1. Queries Folder table where workSpaceId matches
- * 2. Uses Prisma's _count aggregation to count related videos
- * 3. Includes folder metadata (id, name, createdAt, workSpaceId)
- * 4. Returns folders array with video counts for UI display
+ * Uses: WorkspaceService
  * 
  * @param workSpaceId - The workspace ID to fetch folders for
  * @returns Promise with folders data or empty array
  */
 export const getWorkspaceFolders = async (workSpaceId: string) => {
   try {
-    const isFolders = await client.folder.findMany({
-      where: { workSpaceId },
-      include: {
-        _count: { select: { videos: true } }, // Include video count
-      },
-    })
-    
-    return isFolders && isFolders.length > 0 
-      ? { status: 200, data: isFolders }
-      : { status: 404, data: [] }
+    const folders = await WorkspaceService.getFolders(workSpaceId)
+    return folders.length > 0 
+      ? success(folders)
+      : { status: 404 as const, data: [] }
   } catch (error) {
-    console.log(error);
-    return { status: 403, data: [] }
+    console.error('[getWorkspaceFolders Error]:', error)
+    return { status: 403 as const, data: [] }
   }
 }
 
@@ -108,183 +94,46 @@ export const getWorkspaceFolders = async (workSpaceId: string) => {
 /**
  * Retrieves unfiled videos in a workspace (videos not in any folder)
  * 
- * Database Operation: GET (SELECT query)
- * Tables: Video (primary), Folder, User
- * 
- * What it retrieves:
- * - Only videos in workspace that are NOT in any folder
- * - Video metadata (title, source, processing status, views)
- * - Folder information for each video (will be null)
- * - User information (name, image) for each video
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries Video table for videos in workspace with no folder
- * 3. Includes related Folder and User data via Prisma relations
- * 4. Orders by creation date (oldest first)
- * 5. Returns unfiled video data for dashboard display
+ * Uses: withAuth helper, VideoService
  * 
  * @param workSpaceId - The workspace ID to fetch videos for
  * @returns Promise with unfiled videos data or 404 if none found
  */
 export const getAllUserVideos = async (workSpaceId: string) => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const videos = await client.video.findMany({
-      where: {
-        workSpaceId,
-        folderId: null,  // Only videos not in any folder
-      },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-        source: true,
-        processing: true,
-        Folder: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        User: {
-          select: {
-            firstname: true,
-            lastname: true,
-            image: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    })
-    
-    if (videos && videos.length > 0) {
-      return { status: 200, data: videos }
-    }
-    
-    return { status: 404 }
-  } catch (error) {
-    console.log(error)
-    return { status: 400 }
-  }
+  return withAuth(async () => {
+    const videos = await VideoService.getUnfiledInWorkspace(workSpaceId)
+    return videos
+  })
 }
 
 /**
  * Retrieves videos within a specific folder
  * 
- * Database Operation: GET (SELECT query)
- * Tables: Video (primary), Folder, User
- * 
- * What it retrieves:
- * - All videos in the specified folder
- * - Video metadata (title, source, processing status)
- * - Folder information for each video
- * - User information (name, image) for each video
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries Video table for videos matching the folderId
- * 3. Includes related Folder and User data via Prisma relations
- * 4. Orders by creation date (oldest first)
- * 5. Returns folder video data for folder page display
+ * Uses: withAuth helper, VideoService
  * 
  * @param folderId - The folder ID to fetch videos for
  * @returns Promise with folder videos data or 404 if none found
  */
 export const getFolderVideos = async (folderId: string) => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const videos = await client.video.findMany({
-      where: {
-        folderId,
-      },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-        source: true,
-        processing: true,
-        Folder: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        User: {
-          select: {
-            firstname: true,
-            lastname: true,
-            image: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'asc',
-      },
-    })
-    
-    if (videos && videos.length > 0) {
-      return { status: 200, data: videos }
-    }
-    
-    return { status: 404 }
-  } catch (error) {
-    console.log(error)
-    return { status: 400 }
-  }
+  return withAuth(async () => {
+    const videos = await VideoService.getInFolder(folderId)
+    return videos
+  })
 }
 
 /**
  * Retrieves all workspaces for the current user (owned + member of)
  * 
- * Database Operation: GET (SELECT query)
- * Tables: User (primary), WorkSpace, Member, Subscription
- * 
- * What it retrieves:
- * - User's owned workspaces (workspaces they created)
- * - User's member workspaces (workspaces they're invited to)
- * - User's subscription plan information
- * 
- * How it works:
- * 1. Gets current authenticated user from Clerk
- * 2. Queries User table by clerkId
- * 3. Includes related data via Prisma relations:
- *    - workspace: User's owned workspaces
- *    - members.WorkSpace: User's member workspaces
- *    - subscription: User's subscription plan
- * 4. Returns complete workspace hierarchy for navigation
+ * Uses: withAuth helper, WorkspaceService
  * 
  * @returns Promise with user's workspaces and subscription data
  */
 export const getWorkSpaces = async () => {
-  try {
-    const user = await currentUser()
-    if (!user) return { status: 404 }
-    
-    const workspaces = await client.user.findUnique({
-      where: { clerkId: user.id },
-      select: {
-        subscription: { select: { plan: true } },
-        workspace: { select: { id: true, name: true, type: true } }, // User's workspaces
-        members: {
-          select: { 
-            WorkSpace: { select: { id: true, name: true, type: true } } 
-          } 
-        }, // Member workspaces
-      },
-    })
-    
-    return workspaces ? { status: 200, data: workspaces } : { status: 404 }
-  } catch (error) {
-    console.log(error)
-    return { status: 400 }
-  }
+  return withAuth(async (clerkUser) => {
+    const workspaces = await WorkspaceService.getAllForUser(clerkUser.id)
+    if (!workspaces) throw new Error('Workspaces not found')
+    return workspaces
+  })
 }
 
 /**
@@ -1157,22 +1006,22 @@ export const deleteVideo = async (videoId: string) => {
 }
 
 /**
- * Deletes a folder and optionally its videos
+ * Deletes a folder and all its videos
  * 
  * Database Operation: DELETE
- * Tables: Folder (primary), Video (cascade or unlink)
+ * Tables: Folder (primary), Video (cascade delete)
  * 
  * What it does:
  * - Verifies user authentication
  * - Verifies user owns the folder's workspace
- * - Unlinks videos from folder (moves them to workspace root)
+ * - Deletes all videos in the folder
  * - Deletes the folder
  * 
  * How it works:
  * 1. Gets current authenticated user from Clerk
  * 2. Fetches folder with workspace ownership info
  * 3. Verifies user owns the workspace
- * 4. Updates videos to remove folder association
+ * 4. Deletes all videos associated with the folder
  * 5. Deletes the folder record
  * 6. Returns success/error response
  * 
@@ -1206,10 +1055,9 @@ export const deleteFolder = async (folderId: string) => {
       return { status: 403, data: 'You can only delete your own folders' }
     }
     
-    // Unlink videos from folder (move to workspace root instead of deleting)
-    await client.video.updateMany({
-      where: { folderId },
-      data: { folderId: null }
+    // Delete all videos in the folder (cascade delete)
+    await client.video.deleteMany({
+      where: { folderId }
     })
     
     // Delete the folder

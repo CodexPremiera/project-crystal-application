@@ -10,7 +10,7 @@ import EditVideoTitle from "@/components/global/videos/edit/edit-video-title";
 import EditVideoDesc from "@/components/global/videos/edit/edit-video-desc";
 import CopyLink from "@/components/global/videos/copy-link";
 import RichLink from "@/components/global/videos/rich-link";
-import {truncateString} from "@/lib/utils";
+import {truncateString, getDaysAgo, formatDaysAgo} from "@/lib/utils";
 import TabMenu from "@/components/global/tab-menu";
 import AiTools from "@/components/global/video-tools/ai-tools";
 import Comments from "@/components/global/video-tools/activities";
@@ -87,10 +87,7 @@ function VideoPreview({ videoId }: Props) {
     'preview-video'
   )
   
-  // Calculate days since video creation for display
-  const daysAgo = Math.floor(
-    (new Date().getTime() - video.createdAt.getTime()) / (24 * 60 * 60 * 1000)
-  )
+  const daysAgo = getDaysAgo(video.createdAt)
   
   // Record video view and notify owner (for public workspaces)
   useEffect(() => {
@@ -124,7 +121,7 @@ function VideoPreview({ videoId }: Props) {
               {video.User?.firstname} {video.User?.lastname}
             </p>
             <p className="text-text-muted">
-              {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
+              {formatDaysAgo(daysAgo)}
             </p>
           </span>
         </div>

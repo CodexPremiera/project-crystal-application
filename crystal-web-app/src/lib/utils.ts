@@ -75,3 +75,51 @@ export function cn(...inputs: ClassValue[]) {
 export const truncateString = (string: string, slice?: number) => {
   return string.slice(0, slice || 30) + '...'
 }
+
+/**
+ * Calculates the number of days between a given date and today
+ * 
+ * This utility function provides consistent date difference calculation
+ * across the application for displaying relative timestamps on videos,
+ * folders, and other dated content.
+ * 
+ * @param date - The date to calculate days from (can be Date object or string)
+ * @returns Number of days since the given date (0 for today)
+ */
+export const getDaysAgo = (date: Date | string): number => {
+  const targetDate = typeof date === 'string' ? new Date(date) : date
+  return Math.floor(
+    (new Date().getTime() - targetDate.getTime()) / (24 * 60 * 60 * 1000)
+  )
+}
+
+/**
+ * Formats a days ago value into a human-readable string
+ * 
+ * Converts the numeric days value into a user-friendly format
+ * showing "Today" for zero days or "Xd ago" for past dates.
+ * 
+ * @param daysAgo - Number of days since the date
+ * @returns Formatted string like "Today" or "5d ago"
+ */
+export const formatDaysAgo = (daysAgo: number): string => {
+  return daysAgo === 0 ? 'Today' : `${daysAgo}d ago`
+}
+
+/**
+ * Extracts workspace ID from a dashboard pathname
+ * 
+ * Parses the current URL path to extract the workspace ID segment.
+ * Useful for components that need workspace context from the URL.
+ * 
+ * @param pathname - The current URL pathname (e.g., "/dashboard/abc123/video/xyz")
+ * @returns The workspace ID string or null if not found
+ */
+export const extractWorkspaceIdFromPath = (pathname: string): string | null => {
+  const pathSegments = pathname.split('/')
+  const dashboardIndex = pathSegments.indexOf('dashboard')
+  if (dashboardIndex !== -1 && pathSegments[dashboardIndex + 1]) {
+    return pathSegments[dashboardIndex + 1]
+  }
+  return null
+}

@@ -8,6 +8,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import Videos from "@/components/global/videos/videos";
 import FolderHeader from "@/components/global/folders/folder-header";
+import { WorkspaceDataResponse } from "@/types/index.type";
 
 type Props = {
   params: Promise<{
@@ -88,9 +89,8 @@ const page = async ({ params }: Props) => {
     queryFn: () => Promise.resolve(folderInfo),
   })
   
-  // Fetch workspace name for header display
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as { workspace: Array<{ id: string; name: string }> } | undefined
+  const workspace = workspaceData.data as WorkspaceDataResponse | undefined
   const currentWorkspace = workspace?.workspace.find((item) => item.id === workspaceid)
   const workspaceName = currentWorkspace?.name || 'Workspace'
   

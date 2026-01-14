@@ -8,6 +8,7 @@ import {MoreHorizontal} from "lucide-react";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import DashboardInviteSection from "@/components/global/dashboard-invite-section";
 import WorkspaceActions from "@/components/global/workspace/workspace-actions";
+import { WorkspaceDataResponse } from "@/types/index.type";
 
 type Props = {
   params: Promise<{ workspaceid: string }>
@@ -80,12 +81,8 @@ const Page = async ({ params }: Props) => {
     queryFn: () => getWorkSpaces(),
   })
   
-  // Only await workspace data needed for initial render (workspace name)
   const workspaceData = await getWorkSpaces()
-  const workspace = workspaceData.data as { 
-    workspace: Array<{ id: string; name: string; type: string }>
-    members: Array<{ WorkSpace: { id: string; name: string; type: string } | null }>
-  } | undefined
+  const workspace = workspaceData.data as WorkspaceDataResponse | undefined
   
   // Check owned workspaces first, then member workspaces
   const ownedWorkspace = workspace?.workspace.find(

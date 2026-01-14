@@ -32,6 +32,7 @@ import { toast } from 'sonner'
 import EditFolderNameForm from '@/components/forms/edit-folder/edit-folder-name'
 import { useDownloadFolder } from '@/hooks/useDownloadFolder'
 import { useDeleteFolder } from '@/hooks/useDeleteFolder'
+import { getDaysAgo, formatDaysAgo } from '@/lib/utils'
 
 type Props = {
   folderId: string
@@ -74,9 +75,7 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
   
   const { deleteFolder, isDeleting } = useDeleteFolder(folderId, workspaceId)
   
-  const daysAgo = folder?.createdAt
-    ? Math.floor((new Date().getTime() - new Date(folder.createdAt).getTime()) / (24 * 60 * 60 * 1000))
-    : 0
+  const daysAgo = folder?.createdAt ? getDaysAgo(folder.createdAt) : 0
   
   const onCopyLink = () => {
     navigator.clipboard.writeText(
@@ -113,7 +112,7 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
         <div className="flex items-center gap-3">
           <span className="text-text-tertiary capitalize">{workspaceName}</span>
           <span className="text-text-muted">
-            {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
+            {formatDaysAgo(daysAgo)}
           </span>
         </div>
       </div>
@@ -159,7 +158,7 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-text-tertiary">
               Are you sure you want to delete &quot;{folder.name}&quot;? This action cannot be undone.
-              Videos in this folder will be moved to the workspace root.
+              All videos in this folder will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           

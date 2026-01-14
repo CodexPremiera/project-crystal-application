@@ -30,7 +30,7 @@ import {
 import ChangeVideoLocation from "@/components/forms/change-video-location/video-location-form";
 import { useVideoDragSafe } from "@/components/global/videos/video-drag-context";
 import { useDeleteVideo } from "@/hooks/useDeleteVideo";
-import { cn, truncateString } from "@/lib/utils";
+import { cn, truncateString, getDaysAgo, formatDaysAgo } from "@/lib/utils";
 
 type Props = {
   User: {
@@ -101,9 +101,7 @@ function VideoCard(props: Props) {
   const dragPreviewRef = useRef<HTMLDivElement>(null)
   const { deleteVideo, isDeleting } = useDeleteVideo(props.id)
   
-  const daysAgo = Math.floor(
-    (new Date().getTime() - props.createdAt!.getTime()) / (24 * 60 * 60 * 1000)
-  )
+  const daysAgo = getDaysAgo(props.createdAt!)
   
   const onCopyLink = () => {
     navigator.clipboard.writeText(
@@ -186,9 +184,9 @@ function VideoCard(props: Props) {
                     <p className="capitalize text-sm text-[#BDBDBD]">
                       {props.User?.firstname} {props.User?.lastname}
                     </p>
-                    <p className="text-[#6d6b6b] text-sm flex">
-                      {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
-                    </p>
+<p className="text-[#6d6b6b] text-sm flex">
+                                      {formatDaysAgo(daysAgo)}
+                                    </p>
                   </div>
                 </div>
               </div>

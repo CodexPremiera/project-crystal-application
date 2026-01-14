@@ -12,20 +12,7 @@ import {FOLDERS} from "@/redux/slices/folders";
 import Videos from "@/components/global/videos/videos";
 import CreateFolders from "@/components/global/create-folders";
 import { VideoDragProvider } from "@/components/global/videos/video-drag-context";
-
-export type FoldersProps = {
-  status: number
-  data: ({
-    _count: {
-      videos: number
-    }
-  } & {
-    id: string
-    name: string
-    createdAt: Date
-    workSpaceId: string | null
-  })[]
-}
+import { FoldersProps } from "@/types/index.type";
 
 type Props = {
   workspaceId: string;

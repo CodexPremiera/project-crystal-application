@@ -4,7 +4,7 @@ import CommentForm from '@/components/forms/comment-form'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
+import { cn, getDaysAgo, formatDaysAgo } from '@/lib/utils'
 import { CommentRepliesProps } from '@/types/index.type'
 import { DotIcon } from 'lucide-react'
 import React, { useState } from 'react'
@@ -54,9 +54,7 @@ const CommentCard = ({
   createdAt,
 }: Props) => {
   const [onReply, setOnReply] = useState<boolean>(false)
-  const daysAgo = Math.floor(
-    (new Date().getTime() - createdAt.getTime()) / (24 * 60 * 60 * 1000)
-  )
+  const daysAgo = getDaysAgo(createdAt)
 
   return (
     <Card
@@ -79,7 +77,7 @@ const CommentCard = ({
           <div className="flex items-center gap-[0]">
             <DotIcon className="text-[#707070]" />
             <span className="text-[#707070] text-xs ml-[-6px]">
-              {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
+              {formatDaysAgo(daysAgo)}
             </span>
           </div>
         </p>

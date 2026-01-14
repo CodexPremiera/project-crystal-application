@@ -183,6 +183,9 @@ enum NotificationType {
   VIDEO_VIEW
   VIDEO_LIKE
   VIDEO_UPLOAD
+  VIDEO_COMMENT
+  WORKSPACE_INVITE
+  INVITE_ACCEPTED
 }
 
 model VideoLike {

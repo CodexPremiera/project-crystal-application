@@ -9,6 +9,7 @@ import { DownloadAppModal } from '@/components/global/download-app-modal';
 import { SearchDropdown } from '@/components/global/search/search-dropdown';
 import { NotificationDropdown } from '@/components/global/notifications/notification-dropdown';
 import { useDesktopApp } from '@/hooks/useDesktopApp';
+import { extractWorkspaceIdFromPath } from '@/lib/utils';
 
 /**
  * Infobar Component
@@ -31,16 +32,8 @@ function Infobar() {
   const pathname = usePathname()
   
   const { launchApp, isLaunching, showDownloadModal, closeDownloadModal } = useDesktopApp()
-
-  // Extract workspace ID from current path for upload dialog navigation
-  const getWorkspaceId = (): string | null => {
-    const pathSegments = pathname.split('/')
-    const dashboardIndex = pathSegments.indexOf('dashboard')
-    if (dashboardIndex !== -1 && pathSegments[dashboardIndex + 1]) {
-      return pathSegments[dashboardIndex + 1]
-    }
-    return null
-  }
+  
+  const currentWorkspaceId = extractWorkspaceIdFromPath(pathname)
 
   return (
     <header className="pl-20 md:pl-[265px] fixed p-4 pr-8 w-full flex items-center justify-between gap-4 bg-surface-elevated/80 backdrop-blur-lg z-50">
@@ -70,7 +63,7 @@ function Infobar() {
       <UploadVideoDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
-        workspaceId={getWorkspaceId()}
+        workspaceId={currentWorkspaceId}
         onUploadComplete={() => {
           router.refresh()
         }}

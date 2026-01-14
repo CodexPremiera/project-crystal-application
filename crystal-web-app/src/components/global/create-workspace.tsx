@@ -7,6 +7,7 @@ import {useQueryData} from "@/hooks/useQueryData";
 import {Button} from "@/components/ui/button";
 import WorkspaceForm from "@/components/forms/workspace-form";
 import {Add} from "@/components/icons/add";
+import { SubscriptionPlan } from "@/types/index.type";
 
 /**
  * Create Workspace Component
@@ -53,12 +54,11 @@ function CreateWorkspace() {
    */
   const { data } = useQueryData(['user-workspaces'], getWorkSpaces)
   
-  // Extract subscription plan from the fetched data
   const { data: plan } = data as {
     status: number
     data: {
       subscription: {
-        plan: 'PRO' | 'FREE'
+        plan: SubscriptionPlan
       } | null
     }
   }
