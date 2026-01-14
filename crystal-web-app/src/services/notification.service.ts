@@ -7,6 +7,7 @@
  */
 
 import { client } from "@/lib/prisma"
+import { NotificationType } from "@prisma/client"
 
 /**
  * Notification select configuration for consistent data shape
@@ -129,7 +130,7 @@ export const NotificationService = {
   async create(data: {
     userId: string
     content: string
-    type: 'VIDEO_VIEW' | 'VIDEO_COMMENT' | 'VIDEO_LIKE' | 'WORKSPACE_INVITE' | 'INVITE_ACCEPTED'
+    type: NotificationType
     actorId?: string
     videoId?: string
   }) {

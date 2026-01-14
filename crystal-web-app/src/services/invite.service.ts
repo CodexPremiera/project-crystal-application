@@ -12,12 +12,13 @@ export const InviteService = {
   /**
    * Creates a new workspace invitation
    */
-  async create(senderId: string, receiverId: string, workspaceId: string) {
+  async create(senderId: string, receiverId: string, workspaceId: string, content: string) {
     return client.invite.create({
       data: {
         senderId,
         receiverId,
         workSpaceId: workspaceId,
+        content,
       },
     })
   },
