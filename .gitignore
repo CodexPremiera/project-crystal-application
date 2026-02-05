@@ -42,9 +42,7 @@ Thumbs.db
 /.cursorignore
 /.cursor/
 /docs/*
-/database_dump/*
-
-# Database dumps (large files with sensitive data)
+/database_dump/*# Database dumps (large files with sensitive data)
 database_dump/backups/*.sql
 database_dump/backups/*.dump
 database_dump/backups/*.bak
