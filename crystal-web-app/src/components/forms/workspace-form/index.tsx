@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-
+import { DialogClose } from '@/components/ui/dialog'
 import React from 'react'
 import Loader from "@/components/global/loader/loader";
 import {useCreateWorkspace} from "@/hooks/useCreateWorkspace";
@@ -48,18 +48,30 @@ const WorkspaceForm = () => {
         register={register as unknown as UseFormRegister<FieldValues>}
         name="name"
         placeholder={'Workspace Name'}
-        label="Name"
         errors={errors}
         inputType="input"
         type="text"
       />
-      <Button
-        className="text-sm w-full mt-2"
-        type="submit"
-        disabled={isPending}
-      >
-        <Loader state={isPending}>Create Workspace</Loader>
-      </Button>
+      <div className="flex w-full mt-4 justify-end gap-x-4">
+        <DialogClose asChild>
+          <Button
+            className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+            variant="ghost"
+            type="button"
+            disabled={isPending}
+          >
+            <Loader state={isPending}>Cancel</Loader> 
+          </Button>
+        </DialogClose>
+        <Button
+          className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+          variant="ghost"
+          type="submit"
+          disabled={isPending}
+        >
+          <Loader state={isPending}>Create Workspace</Loader> 
+        </Button>
+      </div>
     </form>
   )
 }

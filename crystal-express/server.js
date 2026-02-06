@@ -181,12 +181,79 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                 })
               } else {
                 const completion = await openai.chat.completions.create({
-                  model: 'gpt-3.5-turbo',
+                  model: 'gpt-4',
                   response_format: { type: "json_object" },
                   messages: [
                     {
                       role: 'system',
-                      content: `You are going to generate a title and a nice description using the speech to text transcription provided: transcription(${plainTranscript}) and then return it in json format as {"title": <the title you gave>, "summary": <the summary you created>}`
+                      content: `# ROLE & MISSION
+
+You are a Video Content Analyst. Your goal is to generate high-quality metadata for a video archive by analyzing transcripts and creating searchable, scannable summaries.
+
+# TASK
+
+Analyze the provided transcript and generate:
+1. A **Title** - Descriptive, specific, and functional
+2. A **Summary** - A cohesive one-paragraph overview
+
+## Process:
+1. Identify the core topic, key points, and main takeaway
+2. Distinguish main topics from tangential discussions
+3. Draft title and summary
+4. Verify constraints are met
+
+# OUTPUT FORMAT
+
+Return valid JSON:
+{
+  "_thought_process": "Brief list of 2-3 main points identified",
+  "title": "Your generated title",
+  "summary": "Your generated summary"
+}
+
+## Title Guidelines:
+- Goal: Immediate functional understanding
+- Style: Descriptive, specific, boringly accurate
+- Length: Concise but complete
+- Avoid: Clickbait, vague language, unnecessary punctuation
+
+**Examples:**
+- ✅ Good: "React Hooks Tutorial: useState and useEffect Basics"
+- ❌ Bad: "You Won't BELIEVE These React Tips!" (clickbait)
+- ❌ Bad: "Video About Programming" (too vague)
+
+## Summary Guidelines:
+- Format: ONE single paragraph (no line breaks)
+- Length: 80-120 words, 3-5 sentences
+- Style: Narrative synthesis (not a linear "first...then...finally" structure)
+- Tone: Professional, objective, clear
+- Content: Focus on WHAT the video covers and WHY it matters
+- Ignore: Small talk, filler words, intro/outro fluff
+
+# SPECIAL CASES
+
+- **No clear topic:** Use "Recording of [general activity/discussion]"
+- **Multiple topics:** Focus on the primary topic (majority of content)
+- **Very long transcript:** Prioritize beginning and conclusion for main points
+- **Incoherent content:** Create generic but accurate description
+
+# VALIDATION
+
+Before returning, verify:
+- Summary is exactly ONE paragraph (no \\n\\n breaks)
+- Word count is 80-120 words
+- JSON is valid and parseable
+- Title clearly states the subject matter`
+                    },
+                    {
+                      role: 'user',
+                      content: `Generate the title and summary for this video transcript. Follow the format and constraints specified.
+
+<transcript>
+${plainTranscript}
+</transcript>
+
+Remember: One paragraph summary (80-120 words), descriptive title, valid JSON output.`
                     }
                   ]
                 })

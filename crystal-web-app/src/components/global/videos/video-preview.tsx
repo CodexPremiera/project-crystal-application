@@ -23,9 +23,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Like} from "@/components/icons/like";
-import {Download, MoreHorizontal, Crown} from "lucide-react";
+import {Download, MoreHorizontal} from "lucide-react";
 import DeleteVideoConfirmation from './delete-video-confirmation'
 import { useDownloadVideo } from '@/hooks/useDownloadVideo'
+import ProBadge from "@/components/global/pro-badge"
 
 /**
  * Video Preview Component
@@ -219,12 +220,7 @@ function VideoPreview({ videoId }: Props) {
             <TabMenu
               defaultValue="Transcript"
               triggers={['Transcript', 'Comments']}
-              prefix={
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-surface border border-brand-border">
-                  <Crown className="h-4 w-4 text-brand" />
-                  <span className="text-sm font-medium text-brand">PRO</span>
-                </div>
-              }
+              prefix={<ProBadge showCrown={true} />}
             >
               <VideoTranscript 
                 transcript={video.summary!}

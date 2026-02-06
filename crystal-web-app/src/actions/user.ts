@@ -314,9 +314,9 @@ export const getUnreadNotificationCount = async () => {
  * @param query - Search string to match against usernames and emails
  * @returns Promise with array of matching users or empty result
  */
-export const searchUsers = async (query: string) => {
+export const searchUsers = async (query: string, workspaceId?: string) => {
   return withAuth(async (clerkUser) => {
-    const users = await UserService.search(query, clerkUser.id)
+    const users = await UserService.search(query, clerkUser.id, workspaceId)
     return users.length > 0 ? users : []
   })
 }

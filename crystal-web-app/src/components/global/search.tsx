@@ -1,5 +1,5 @@
 import { useSearch } from '@/hooks/useSearch'
-import React from 'react'
+import React, { useState } from 'react'
 import {Skeleton} from "@/components/ui/skeleton";
 import {Input} from "@/components/ui/input";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -30,14 +30,28 @@ const Search = ({ workspaceId }: Props) => {
   // Initialize search functionality with debouncing and user search
   const { query, onSearchQuery, isFetching, onUsers } = useSearch(
     'get-users',
-    'USERS'
+    'USERS',
+    workspaceId
   )
+  
+  // Track which user is currently being invited
+  const [invitingUserId, setInvitingUserId] = useState<string | null>(null)
   
   const { mutate, isPending } = useMutationData(
     ['invite-member'],
     ((data: { receiverId: string }) =>
-      inviteMembers(workspaceId, data.receiverId)) as MutationFunction<unknown, unknown>
+      inviteMembers(workspaceId, data.receiverId)) as MutationFunction<unknown, unknown>,
+    undefined,
+    () => {
+      // Clear the inviting state when mutation completes
+      setInvitingUserId(null)
+    }
   )
+  
+  const handleInvite = (userId: string) => {
+    setInvitingUserId(userId)
+    mutate({ receiverId: userId })
+  }
   
   return (
     <div className="flex flex-col gap-y-5">
@@ -60,7 +74,7 @@ const Search = ({ workspaceId }: Props) => {
         <p className="text-center text-sm text-[#a4a4a4]">No Users Found</p>
       ) : (
         // Results state: display found users with invite options
-        <div>
+        <div className="flex flex-col gap-y-3">
           {onUsers.map((user) => (
             <div key={user.id} className="flex gap-x-3 items-center border-2 w-full p-3 rounded-xl">
               {/* User avatar with fallback icon */}
@@ -82,22 +96,31 @@ const Search = ({ workspaceId }: Props) => {
                 </p>
               </div>
               
-              {/* Invite button (functionality to be implemented) */}
+              {/* Invite button */}
               <div className="flex-1 flex justify-end items-center">
-                <Button
-                  onClick={() =>
-                    mutate({ receiverId: user.id })
-                  }
-                  variant={'default'}
-                  className="w-5/12 font-bold"
-                >
-                  <Loader
-                    state={isPending}
-                    color="#000"
+                {user.receiver && user.receiver.length > 0 ? (
+                  <Button
+                    variant={'default'}
+                    className="w-5/12 font-bold"
+                    disabled
                   >
-                    Invite
-                  </Loader>
-                </Button>
+                    Invited
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handleInvite(user.id)}
+                    variant={'default'}
+                    className="w-5/12 font-bold"
+                    disabled={isPending && invitingUserId === user.id}
+                  >
+                    <Loader
+                      state={isPending && invitingUserId === user.id}
+                      color="#000"
+                    >
+                      Invite
+                    </Loader>
+                  </Button>
+                )}
               </div>
             </div>
           ))}

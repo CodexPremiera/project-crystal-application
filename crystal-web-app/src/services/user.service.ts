@@ -139,7 +139,43 @@ export const UserService = {
   /**
    * Searches for users by name or email
    */
-  async search(query: string, excludeClerkId: string) {
+  async search(query: string, excludeClerkId: string, workspaceId?: string) {
+    const baseSelect = {
+      id: true,
+      subscription: {
+        select: { plan: true },
+      },
+      firstname: true,
+      lastname: true,
+      image: true,
+      email: true,
+    }
+    
+    if (workspaceId) {
+      return client.user.findMany({
+        where: {
+          OR: [
+            { firstname: { contains: query } },
+            { email: { contains: query } },
+            { lastname: { contains: query } },
+          ],
+          NOT: [{ clerkId: excludeClerkId }],
+        },
+        select: {
+          ...baseSelect,
+          receiver: {
+            where: {
+              workSpaceId: workspaceId,
+              isActive: true,
+            },
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    }
+    
     return client.user.findMany({
       where: {
         OR: [
@@ -149,16 +185,7 @@ export const UserService = {
         ],
         NOT: [{ clerkId: excludeClerkId }],
       },
-      select: {
-        id: true,
-        subscription: {
-          select: { plan: true },
-        },
-        firstname: true,
-        lastname: true,
-        image: true,
-        email: true,
-      },
+      select: baseSelect,
     })
   },
 

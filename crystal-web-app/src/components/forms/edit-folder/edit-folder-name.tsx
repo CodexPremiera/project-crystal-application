@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import { DialogClose } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import Loader from "@/components/global/loader/loader"
 import React, { useState } from 'react'
 import { useMutationData } from '@/hooks/useMutationData'
@@ -49,21 +49,35 @@ const EditFolderNameForm = ({ folderId, name, onSuccess }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-y-5">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="folder-name">Title</Label>
-        <Input
-          id="folder-name"
-          value={folderName}
-          onChange={(e) => setFolderName(e.target.value)}
-          placeholder="Folder name..."
-          disabled={isPending}
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-y-3">
+      <Input
+        id="folder-name"
+        value={folderName}
+        onChange={(e) => setFolderName(e.target.value)}
+        placeholder="Folder name..."
+        disabled={isPending}
+      />
       
-      <Button className="max-w-25" variant="secondary" disabled={isPending}>
-        <Loader state={isPending}>Save</Loader>
-      </Button>
+      <div className="flex w-full mt-4 justify-end gap-x-4">
+        <DialogClose asChild>
+          <Button
+            className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+            variant="ghost"
+            type="button"
+            disabled={isPending}
+          >
+            Cancel
+          </Button>
+        </DialogClose>
+        <Button
+          className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+          variant="ghost"
+          type="submit"
+          disabled={isPending}
+        >
+          <Loader state={isPending}>Save</Loader>
+        </Button>
+      </div>
     </form>
   )
 }

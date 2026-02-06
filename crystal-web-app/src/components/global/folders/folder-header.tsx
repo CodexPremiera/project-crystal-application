@@ -16,6 +16,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import {
@@ -100,6 +102,9 @@ function FolderHeader({ folderId, workspaceId, workspaceName }: Props) {
               </Button>
             </DialogTrigger>
             <DialogContent showCloseButton={false}>
+              <DialogHeader>
+                <DialogTitle>Rename Folder</DialogTitle>
+              </DialogHeader>
               <EditFolderNameForm
                 folderId={folderId}
                 name={folder.name}

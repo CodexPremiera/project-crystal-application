@@ -21,6 +21,7 @@ import {useDispatch} from "react-redux";
 import {WORKSPACES} from "@/redux/slices/workspaces";
 import PaymentButton from "@/components/global/payment-button";
 import CreateWorkspace from "@/components/global/create-workspace";
+import ProBadge from "@/components/global/pro-badge";
 
 type Props = {
   activeWorkspaceId: string;
@@ -120,6 +121,9 @@ export default function Sidebar({ activeWorkspaceId }: Props) {
           alt="logo"
         />
         <p className="text-2xl">Crystal</p>
+        {workspace.subscription?.plan === 'PRO' && (
+          <ProBadge showCrown={false} />
+        )}
       </Link>
       
       <p className="w-full text-text-tertiary font-bold mt-16">Menu</p>
