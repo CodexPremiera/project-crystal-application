@@ -29,6 +29,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { useDeleteFolder } from "@/hooks/useDeleteFolder";
 import { toast } from 'sonner';
@@ -244,6 +246,9 @@ function Folder({ id, name, optimistic, count }: Props) {
       
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
         <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>Rename Folder</DialogTitle>
+          </DialogHeader>
           <EditFolderNameForm
             folderId={id}
             name={name}

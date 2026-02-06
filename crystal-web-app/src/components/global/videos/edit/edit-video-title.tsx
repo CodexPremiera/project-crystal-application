@@ -33,6 +33,7 @@ type Props = { title: string; description: string; videoId: string }
 const EditVideoTitle = ({ description, title, videoId }: Props) => {
   return (
     <Modal
+      title="Rename video"
       trigger={
         <Button variant={'ghost'}>
           <EditDuotone />

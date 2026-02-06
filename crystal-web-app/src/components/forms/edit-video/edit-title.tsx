@@ -1,4 +1,5 @@
 import {Button} from "@/components/ui/button";
+import { DialogClose } from "@/components/ui/dialog";
 import { useEditVideo } from '@/hooks/useEditVideo'
 import React from 'react'
 import FormGenerator from "@/components/forms/form-generator";
@@ -58,7 +59,7 @@ const EditTitleForm = ({ description, title, videoId }: Props) => {
   return (
     <form
       onSubmit={onFormSubmit}
-      className="flex flex-col gap-y-5"
+      className="flex flex-col gap-y-3"
     >
       {/* Video title input field */}
       <FormGenerator
@@ -68,13 +69,29 @@ const EditTitleForm = ({ description, title, videoId }: Props) => {
         inputType="input"
         type="text"
         placeholder={'Video Title...'}
-        label="Title"
       />
       
-      {/* Submit button with loading state */}
-      <Button className="max-w-25" variant="secondary">
-        <Loader state={isPending}>Save</Loader>
-      </Button>
+      {/* Action buttons */}
+      <div className="flex w-full mt-4 justify-end gap-x-4">
+        <DialogClose asChild>
+          <Button
+            className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+            variant="ghost"
+            type="button"
+            disabled={isPending}
+          >
+            Cancel
+          </Button>
+        </DialogClose>
+        <Button
+          className="text-sm mt-2 w-fit self-start bg-transparent text-foreground hover:bg-foreground hover:text-background transition-all duration-300 ease-in-out px-3 py-2"
+          variant="ghost"
+          type="submit"
+          disabled={isPending}
+        >
+          <Loader state={isPending}>Save</Loader>
+        </Button>
+      </div>
     </form>
   )
 }
