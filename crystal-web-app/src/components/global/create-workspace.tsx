@@ -70,7 +70,6 @@ function CreateWorkspace() {
     return (
       <Modal
         title="Create a Workspace"
-        description="Workspaces helps you collaborate with team members. You are assigned a default personal workspace where you can share videos in private with yourself."
         trigger={
           // Main trigger button that opens the workspace creation modal
           <Button variant="ghost" className='rounded-full'>
