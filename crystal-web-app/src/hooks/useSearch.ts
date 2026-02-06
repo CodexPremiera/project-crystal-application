@@ -13,9 +13,10 @@ import {searchUsers} from "@/actions/user";
  * 
  * @param key - Unique identifier for React Query cache
  * @param type - Type of search (currently supports 'USERS')
+ * @param workspaceId - Optional workspace ID to check invitation status
  * @returns Object containing search state and handlers
  */
-export const useSearch = (key: string, type: 'USERS') => {
+export const useSearch = (key: string, type: 'USERS', workspaceId?: string) => {
   // Current search input value
   const [query, setQuery] = useState('')
   // Debounced version of query (used for API calls)
@@ -31,6 +32,9 @@ export const useSearch = (key: string, type: 'USERS') => {
     lastname: string | null
     image: string | null
     email: string | null
+    receiver?: {
+      id: string
+    }[]
   }[]
     | undefined
   >(undefined)
@@ -71,11 +75,11 @@ export const useSearch = (key: string, type: 'USERS') => {
    * - Enables efficient cache management for search results
    */
   const { refetch, isFetching } = useQueryData(
-    [key, debounce],
+    [key, debounce, workspaceId],
     async ({ queryKey }) => {
       if (type === 'USERS') {
         // Call server action to search for users
-        const users = await searchUsers(queryKey[1] as string)
+        const users = await searchUsers(queryKey[1] as string, queryKey[2] as string | undefined)
         if (users.status === 200) setOnUsers(users.data)
       }
     },
