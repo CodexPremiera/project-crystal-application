@@ -48,7 +48,7 @@ jobs:
           echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > .env.production
           echo "VITE_HOST_URL=https://www.crystalapp.tech/api" >> .env.production
           echo "VITE_APP_URL=https://clerk.crystalapp.tech" >> .env.production
-          echo "VITE_SOCKET_URL=https://project-crystal-application-production.up.railway.app" >> .env.production
+          echo "VITE_SOCKET_URL=${{ secrets.VITE_SOCKET_URL }}" >> .env.production
           echo "APP_ROOT=https://clerk.crystalapp.tech" >> .env.production
 
       - name: Get version from package.json
