@@ -81,7 +81,7 @@ export async function POST(
         console.log('🟢 Voiceflow KB updated:', updateKB.status)
       } catch (kbError) {
         // Don't fail the entire request if KB update fails
-        console.log('⚠️ Voiceflow KB update failed (non-critical):', kbError.message)
+        console.log('⚠️ Voiceflow KB update failed (non-critical):', kbError instanceof Error ? kbError.message : String(kbError))
       }
 
       return NextResponse.json({ status: 200 })
