@@ -157,11 +157,19 @@ async function processVideo(filename, userId, customTitle = null, customDescript
           
           // Check if extracted audio is within Whisper's 25MB limit
           if(audioStat.size < 25000000) {
-            const transcription = await openai.audio.transcriptions.create({
-              file: fs.createReadStream(audioPath),
-              model: "whisper-1",
-              response_format: "verbose_json"
-            })
+            let transcription
+            try {
+              console.log('🔵 Starting Whisper transcription...')
+              transcription = await openai.audio.transcriptions.create({
+                file: fs.createReadStream(audioPath),
+                model: "whisper-1",
+                response_format: "verbose_json"
+              })
+              console.log('🟢 Whisper transcription completed')
+            } catch (whisperError) {
+              console.log('🔴 Whisper transcription failed:', whisperError.message)
+              throw whisperError
+            }
 
             if(transcription) {
               // Extract plain text and timestamped segments from verbose_json response
@@ -172,6 +180,8 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                 text: seg.text.trim()
               })) || []
 
+              console.log(`🔵 Transcript length: ${plainTranscript.length} characters`)
+
               // If custom title/description provided, use those; otherwise generate with AI
               let titleAndSummaryContent
               if (customTitle && customDescription) {
@@ -179,14 +189,17 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                   title: customTitle,
                   summary: customDescription
                 })
+                console.log('🔵 Using custom title and description')
               } else {
-                const completion = await openai.chat.completions.create({
-                  model: 'gpt-4',
-                  response_format: { type: "json_object" },
-                  messages: [
-                    {
-                      role: 'system',
-                      content: `# ROLE & MISSION
+                try {
+                  console.log('🔵 Generating title and summary with GPT-4...')
+                  const completion = await openai.chat.completions.create({
+                    model: 'gpt-4',
+                    response_format: { type: "json_object" },
+                    messages: [
+                      {
+                        role: 'system',
+                        content: `# ROLE & MISSION
 
 You are a Video Content Analyst. Your goal is to generate high-quality metadata for a video archive by analyzing transcripts and creating searchable, scannable summaries.
 
@@ -244,41 +257,66 @@ Before returning, verify:
 - Word count is 80-120 words
 - JSON is valid and parseable
 - Title clearly states the subject matter`
-                    },
-                    {
-                      role: 'user',
-                      content: `Generate the title and summary for this video transcript. Follow the format and constraints specified.
+                      },
+                      {
+                        role: 'user',
+                        content: `Generate the title and summary for this video transcript. Follow the format and constraints specified.
 
 <transcript>
 ${plainTranscript}
 </transcript>
 
 Remember: One paragraph summary (80-120 words), descriptive title, valid JSON output.`
-                    }
-                  ]
-                })
-                titleAndSummaryContent = completion.choices[0].message.content
+                      }
+                    ]
+                  })
+                  titleAndSummaryContent = completion.choices[0].message.content
+                  console.log('🟢 GPT-4 title and summary generated')
+                } catch (gptError) {
+                  console.log('🔴 GPT-4 generation failed:', gptError.message)
+                  throw gptError
+                }
               }
 
-              const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/transcribe`, {
-                filename: filename,
-                content: titleAndSummaryContent,
-                transcript: plainTranscript,
-                segments: segments
-              })
+              try {
+                console.log('🔵 Saving transcription to database...')
+                const titleAndSummaryGenerated = await axios.post(`${process.env.NEXT_API_HOST}recording/${userId}/transcribe`, {
+                  filename: filename,
+                  content: titleAndSummaryContent,
+                  transcript: plainTranscript,
+                  segments: segments
+                })
 
-              if(titleAndSummaryGenerated.data.status !== 200) {
-                console.log("🔴 Error: Something went wrong when generating title and summary")
+                if(titleAndSummaryGenerated.data.status === 200) {
+                  console.log("🟢 Transcription saved successfully to database")
+                } else {
+                  console.log("🔴 Error: Database returned status", titleAndSummaryGenerated.data.status)
+                  console.log("🔴 Response:", titleAndSummaryGenerated.data)
+                }
+              } catch (dbError) {
+                console.log('🔴 Failed to save transcription to database:', dbError.message)
+                if (dbError.response) {
+                  console.log('🔴 Response status:', dbError.response.status)
+                  console.log('🔴 Response data:', dbError.response.data)
+                }
+                throw dbError
               }
             }
           } else {
             console.log("⚠️ Extracted audio too large for AI processing (>25MB)")
           }
         } catch (aiError) {
-          if (aiError.status === 400 || aiError.message?.includes('Invalid file format')) {
-            console.log("⚠️ AI transcription skipped - file format not supported or no audio track")
+          // More specific error handling based on where it failed
+          if (aiError.message?.includes('Audio extraction') || aiError.code === 'ENOENT') {
+            console.log("🔴 Audio extraction failed - video may not have an audio track")
+          } else if (aiError.message?.includes('Whisper') || aiError.message?.includes('transcription')) {
+            console.log("🔴 Whisper transcription failed - audio format may be unsupported")
+          } else if (aiError.message?.includes('GPT') || aiError.message?.includes('completion')) {
+            console.log("🔴 GPT-4 title/summary generation failed")
+          } else if (aiError.message?.includes('database') || aiError.response?.status) {
+            console.log("🔴 Failed to save transcription to database - status:", aiError.response?.status || 'unknown')
           } else {
-            console.log("🔴 Error in AI processing:", aiError.message)
+            console.log("🔴 AI processing error:", aiError.message || aiError)
           }
         } finally {
           // Clean up temporary audio file
