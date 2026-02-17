@@ -6,59 +6,95 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  //WIRE UP AI AGENT
-  const body = await req.json()
-  const { id } = await params
+  try {
+    //WIRE UP AI AGENT
+    const body = await req.json()
+    const { id } = await params
 
-  const content = JSON.parse(body.content)
+    // Handle content whether it's already parsed or still a string
+    let content
+    try {
+      content = typeof body.content === 'string' 
+        ? JSON.parse(body.content) 
+        : body.content
+    } catch (parseError) {
+      console.log('🔴 Error parsing content JSON:', parseError)
+      return NextResponse.json({ 
+        status: 400, 
+        error: 'Invalid content format' 
+      })
+    }
 
-  const transcribed = await client.video.update({
-    where: {
-      userId: id,
-      source: body.filename,
-    },
-    data: {
-      title: content.title,
-      description: content.summary,
-      summary: body.transcript,
-      transcriptSegments: body.segments ?? null,
-    },
-  })
-  if (transcribed) {
-    console.log('🟢 Transcribed')
-    const options = {
-      method: 'POST',
-      url: process.env.VOICEFLOW_KNOWLEDGE_BASE_API,
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-        Authorization: process.env.VOICEFLOW_API_KEY,
+    // Validate required fields
+    if (!content.title || !content.summary) {
+      console.log('🔴 Missing required fields: title or summary')
+      return NextResponse.json({ 
+        status: 400, 
+        error: 'Missing title or summary in content' 
+      })
+    }
+
+    const transcribed = await client.video.update({
+      where: {
+        userId: id,
+        source: body.filename,
       },
       data: {
-        data: {
-          schema: {
-            searchableFields: ['title', 'transcript'],
-            metadataFields: ['title', 'transcript'],
-          },
-          name: content.title,
-          items: [
-            {
-              title: content.title,
-              transcript: body.transcript,
-            },
-          ],
-        },
+        title: content.title,
+        description: content.summary,
+        summary: body.transcript,
+        transcriptSegments: body.segments ?? null,
       },
-    }
+    })
 
-    const updateKB = await axios.request(options)
+    if (transcribed) {
+      console.log('🟢 Transcribed successfully:', content.title)
+      
+      // Update Voiceflow knowledge base
+      try {
+        const options = {
+          method: 'POST',
+          url: process.env.VOICEFLOW_KNOWLEDGE_BASE_API,
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: process.env.VOICEFLOW_API_KEY,
+          },
+          data: {
+            data: {
+              schema: {
+                searchableFields: ['title', 'transcript'],
+                metadataFields: ['title', 'transcript'],
+              },
+              name: content.title,
+              items: [
+                {
+                  title: content.title,
+                  transcript: body.transcript,
+                },
+              ],
+            },
+          },
+        }
 
-    if (updateKB.status === 200 || updateKB.status !== 200) {
-      console.log(updateKB.data)
+        const updateKB = await axios.request(options)
+        console.log('🟢 Voiceflow KB updated:', updateKB.status)
+      } catch (kbError) {
+        // Don't fail the entire request if KB update fails
+        console.log('⚠️ Voiceflow KB update failed (non-critical):', kbError.message)
+      }
+
       return NextResponse.json({ status: 200 })
     }
-  }
-  console.log('🔴 Transcription went wrong')
 
-  return NextResponse.json({ status: 400 })
+    console.log('🔴 Transcription update failed')
+    return NextResponse.json({ status: 400, error: 'Failed to update video' })
+
+  } catch (error) {
+    console.log('🔴 Transcription endpoint error:', error)
+    return NextResponse.json({ 
+      status: 500, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    })
+  }
 }
