@@ -194,7 +194,7 @@ async function processVideo(filename, userId, customTitle = null, customDescript
                 try {
                   console.log('🔵 Generating title and summary with GPT-4...')
                   const completion = await openai.chat.completions.create({
-                    model: 'gpt-4',
+                    model: 'gpt-4o-mini',
                     response_format: { type: "json_object" },
                     messages: [
                       {
@@ -306,17 +306,31 @@ Remember: One paragraph summary (80-120 words), descriptive title, valid JSON ou
             console.log("⚠️ Extracted audio too large for AI processing (>25MB)")
           }
         } catch (aiError) {
-          // More specific error handling based on where it failed
-          if (aiError.message?.includes('Audio extraction') || aiError.code === 'ENOENT') {
+          // Classify errors based on their actual source and structure
+          const isOpenAIError = aiError.constructor?.name?.includes('OpenAI') || 
+                                aiError.type?.startsWith('openai') ||
+                                (aiError.response?.headers && aiError.response?.headers['openai-organization'])
+          const isAxiosError = aiError.isAxiosError === true
+          const isFfmpegError = aiError.message?.toLowerCase().includes('ffmpeg') || 
+                                aiError.message?.toLowerCase().includes('output stream')
+          
+          if (isFfmpegError || aiError.code === 'ENOENT') {
             console.log("🔴 Audio extraction failed - video may not have an audio track")
-          } else if (aiError.message?.includes('Whisper') || aiError.message?.includes('transcription')) {
+            console.log("🔴 FFmpeg error:", aiError.message)
+          } else if (isOpenAIError && aiError.message?.toLowerCase().includes('transcription')) {
             console.log("🔴 Whisper transcription failed - audio format may be unsupported")
-          } else if (aiError.message?.includes('GPT') || aiError.message?.includes('completion')) {
+            console.log("🔴 OpenAI error:", aiError.message)
+            if (aiError.status) console.log("🔴 Status:", aiError.status)
+          } else if (isOpenAIError) {
             console.log("🔴 GPT-4 title/summary generation failed")
-          } else if (aiError.message?.includes('database') || aiError.response?.status) {
+            console.log("🔴 OpenAI error:", aiError.message)
+            if (aiError.status) console.log("🔴 Status:", aiError.status)
+          } else if (isAxiosError && aiError.config?.url?.includes('transcribe')) {
             console.log("🔴 Failed to save transcription to database - status:", aiError.response?.status || 'unknown')
+            console.log("🔴 Database error:", aiError.message)
           } else {
             console.log("🔴 AI processing error:", aiError.message || aiError)
+            if (aiError.stack) console.log("🔴 Stack:", aiError.stack)
           }
         } finally {
           // Clean up temporary audio file
